@@ -1,13 +1,13 @@
-FROM node:20-slim AS base
-RUN apt-get update && apt-get install -y --no-install-recommends openssl ca-certificates && rm -rf /var/lib/apt/lists/*
+FROM node:22-alpine AS base
+RUN apk add --no-cache libc6-compat openssl
 
-# Install dependencies
+# 1. Install dependencies
 FROM base AS deps
 WORKDIR /app
 COPY package.json package-lock.json ./
 RUN npm ci
 
-# Rebuild the source code only when needed
+# 2. Rebuild the source code only when needed
 FROM base AS builder
 WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
@@ -19,7 +19,7 @@ ENV NEXT_TELEMETRY_DISABLED=1
 ENV NODE_ENV=production
 RUN npm run build
 
-# Production image, copy all the files and run next
+# 3. Production image, copy all the files and run next
 FROM base AS runner
 WORKDIR /app
 
@@ -28,8 +28,11 @@ ENV NEXT_TELEMETRY_DISABLED=1
 ENV PORT=3005
 ENV HOSTNAME="0.0.0.0"
 
-RUN groupadd --system --gid 1001 nodejs && \
-    useradd --system --uid 1001 nextjs
+RUN addgroup --system --gid 1001 nodejs && \
+    adduser --system --uid 1001 nextjs
+
+# Set the correct permission for prerender cache
+RUN mkdir .next && chown nextjs:nodejs .next
 
 # Copy static assets and standalone build
 COPY --from=builder /app/public ./public
