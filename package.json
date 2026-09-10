@@ -4,14 +4,15 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build:seed": "esbuild prisma/seed.ts --bundle --platform=node --format=cjs --packages=external --alias:@=./src --outfile=prisma/seed.js",
+    "build": "npm run build:seed && next build",
     "start": "next start",
     "lint": "next lint",
     "typecheck": "tsc --noEmit",
     "db:generate": "prisma generate",
     "db:migrate": "prisma migrate dev",
     "db:migrate:deploy": "prisma migrate deploy",
-    "db:seed": "tsx prisma/seed.ts",
+    "db:seed": "node prisma/seed.js",
     "db:studio": "prisma studio",
     "test": "vitest run",
     "test:watch": "vitest",
@@ -86,6 +87,6 @@
     "vitest": "^2.1.9"
   },
   "prisma": {
-    "seed": "tsx prisma/seed.ts"
+    "seed": "node prisma/seed.js"
   }
 }

@@ -13,10 +13,16 @@ WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
-# Generate Prisma client and build Next.js application
-RUN npx prisma generate
+# Dummy environment variables for build time
+ENV DATABASE_URL="postgresql://postgres:postgres@localhost:5432/dummy"
+ENV BETTER_AUTH_SECRET="build-secret-12345678901234567890123456789012"
+ENV BETTER_AUTH_URL="http://localhost:3005"
+ENV NEXT_PUBLIC_APP_URL="http://localhost:3005"
 ENV NEXT_TELEMETRY_DISABLED=1
 ENV NODE_ENV=production
+
+# Generate Prisma client, compile seeder, and build Next.js application
+RUN npx prisma generate
 RUN npm run build
 
 # 3. Production image, copy all the files and run next
@@ -40,8 +46,17 @@ COPY --from=builder /app/prisma ./prisma
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 
+# Copy Prisma CLI from deps for offline runtime migrations
+COPY --from=deps /app/node_modules/prisma ./node_modules/prisma
+COPY --from=deps /app/node_modules/@prisma ./node_modules/@prisma
+
+# Copy startup entrypoint script
+COPY --chown=nextjs:nodejs docker-entrypoint.sh ./docker-entrypoint.sh
+RUN chmod +x ./docker-entrypoint.sh
+
 USER nextjs
 
 EXPOSE 3005
 
-CMD ["node", "server.js"]
+CMD ["./docker-entrypoint.sh"]
+

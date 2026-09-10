@@ -1,7 +1,7 @@
 import { prisma } from "@/lib/db/prisma";
 import { PERMISSIONS, ROLE_PERMISSIONS } from "@/lib/auth/permissions";
 import { createId } from "@paralleldrive/cuid2";
-import { hash } from "@node-rs/argon2";
+import { hashPassword } from "better-auth/crypto";
 
 async function main() {
   console.log("🌱 Starting database seed...");
@@ -94,12 +94,7 @@ async function main() {
   // 5. Create super admin user
   const adminEmail = process.env.SEED_ADMIN_EMAIL ?? "admin@raadhelabel.com";
   const adminPassword = process.env.SEED_ADMIN_PASSWORD ?? "Admin@123456";
-
-  const hashedPassword = await hash(adminPassword, {
-    memoryCost: 65536,
-    timeCost: 3,
-    parallelism: 4,
-  });
+  const hashedPassword = await hashPassword(adminPassword);
 
   let adminUser = await prisma.user.findUnique({ where: { email: adminEmail } });
   if (!adminUser) {
