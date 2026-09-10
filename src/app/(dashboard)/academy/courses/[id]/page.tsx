@@ -1,4 +1,4 @@
-import { requireAuth, requirePermission } from "@/lib/auth/guards";
+import { requireAuth, requirePermission, hasPermission } from "@/lib/auth/guards";
 import { PERMISSIONS } from "@/lib/auth/permissions";
 import { redirect, notFound } from "next/navigation";
 import { prisma } from "@/lib/db/prisma";
@@ -23,6 +23,8 @@ export default async function CourseDetailPage({ params }: PageProps) {
   const session = await requireAuth().catch(() => null);
   if (!session) redirect("/login");
   await requirePermission(session, PERMISSIONS.COURSES_VIEW);
+
+  const canViewFees = await hasPermission(session.userId, session.organizationId, PERMISSIONS.FEES_VIEW);
 
   const { id } = await params;
 
@@ -118,7 +120,7 @@ export default async function CourseDetailPage({ params }: PageProps) {
       </PageHeader>
 
       {/* KPI Cards */}
-      <div className="grid gap-4 grid-cols-2 lg:grid-cols-4">
+      <div className={`grid gap-4 ${canViewFees ? "grid-cols-2 lg:grid-cols-4" : "grid-cols-1 sm:grid-cols-3"}`}>
         <Card>
           <CardHeader className="pb-2">
             <CardDescription className="text-xs">Course Status</CardDescription>
@@ -130,14 +132,16 @@ export default async function CourseDetailPage({ params }: PageProps) {
           </CardHeader>
         </Card>
 
-        <Card>
-          <CardHeader className="pb-2">
-            <CardDescription className="text-xs">Standard Fee</CardDescription>
-            <CardTitle className="text-xl font-bold">
-              {formatCurrency(course.defaultFee.toString())}
-            </CardTitle>
-          </CardHeader>
-        </Card>
+        {canViewFees && (
+          <Card>
+            <CardHeader className="pb-2">
+              <CardDescription className="text-xs">Standard Fee</CardDescription>
+              <CardTitle className="text-xl font-bold">
+                {formatCurrency(course.defaultFee.toString())}
+              </CardTitle>
+            </CardHeader>
+          </Card>
+        )}
 
         <Card>
           <CardHeader className="pb-2">

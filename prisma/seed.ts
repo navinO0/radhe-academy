@@ -72,16 +72,14 @@ async function main() {
     const roleId = roles[roleName];
     if (!roleId) continue;
 
+    await prisma.rolePermission.deleteMany({ where: { roleId } });
+
     for (const permName of permissions) {
       const perm = await prisma.permission.findUnique({ where: { name: permName } });
       if (!perm) continue;
 
-      await prisma.rolePermission.upsert({
-        where: {
-          roleId_permissionId: { roleId, permissionId: perm.id },
-        },
-        update: {},
-        create: {
+      await prisma.rolePermission.create({
+        data: {
           id: createId(),
           roleId,
           permissionId: perm.id,
@@ -89,7 +87,7 @@ async function main() {
       });
     }
   }
-  console.log("✅ Role permissions assigned");
+  console.log("✅ Role permissions assigned and synced");
 
   // 5. Create super admin user
   const adminEmail = process.env.SEED_ADMIN_EMAIL ?? "admin@raadhelabel.com";

@@ -1,4 +1,4 @@
-import { requireAuth, requirePermission } from "@/lib/auth/guards";
+import { requireAuth, requirePermission, hasPermission } from "@/lib/auth/guards";
 import { PERMISSIONS } from "@/lib/auth/permissions";
 import { redirect, notFound } from "next/navigation";
 import { prisma } from "@/lib/db/prisma";
@@ -69,6 +69,9 @@ export default async function StudentDetailPage({ params }: PageProps) {
   const presentClasses = student.attendanceRecords.filter((a) => a.status === "PRESENT").length;
   const attendancePct = totalClasses > 0 ? Math.round((presentClasses / totalClasses) * 100) : 100;
 
+  // Check fee viewing permission
+  const canViewFees = await hasPermission(session.userId, session.organizationId, PERMISSIONS.FEES_VIEW);
+
   return (
     <div className="flex flex-col gap-6 p-4 sm:p-6 max-w-6xl">
       <PageHeader
@@ -121,6 +124,7 @@ export default async function StudentDetailPage({ params }: PageProps) {
           })),
         }}
         availableBatches={availableBatches}
+        canViewFees={canViewFees}
       />
     </div>
   );

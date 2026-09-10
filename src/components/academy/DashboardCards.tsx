@@ -19,9 +19,10 @@ import type { DashboardStats } from "@/server/services/dashboard.service";
 
 interface DashboardCardsProps {
   stats: DashboardStats;
+  canViewFinancials?: boolean;
 }
 
-export function DashboardCards({ stats }: DashboardCardsProps) {
+export function DashboardCards({ stats, canViewFinancials = false }: DashboardCardsProps) {
   return (
     <div className="space-y-6">
       {/* Students Row */}
@@ -64,44 +65,46 @@ export function DashboardCards({ stats }: DashboardCardsProps) {
         </div>
       </div>
 
-      {/* Financial Row */}
-      <div>
-        <h2 className="text-sm font-medium text-muted-foreground mb-3">Financial</h2>
-        <div className="grid gap-4 grid-cols-2 md:grid-cols-3 lg:grid-cols-6">
-          <StatCard
-            title="Total Fees"
-            value={formatCurrency(stats.financial.totalQuotedFees)}
-            icon={<IndianRupee className="h-4 w-4" />}
-          />
-          <StatCard
-            title="Collected"
-            value={formatCurrency(stats.financial.totalCollected)}
-            icon={<IndianRupee className="h-4 w-4" />}
-            variant="success"
-          />
-          <StatCard
-            title="Outstanding"
-            value={formatCurrency(stats.financial.outstandingBalance)}
-            icon={<AlertTriangle className="h-4 w-4" />}
-            variant="warning"
-          />
-          <StatCard
-            title="Today"
-            value={formatCurrency(stats.financial.collectedToday)}
-            icon={<IndianRupee className="h-4 w-4" />}
-          />
-          <StatCard
-            title="This Month"
-            value={formatCurrency(stats.financial.collectedThisMonth)}
-            icon={<TrendingUp className="h-4 w-4" />}
-          />
-          <StatCard
-            title="Reg. Fees"
-            value={formatCurrency(stats.financial.totalRegistrationFees)}
-            icon={<IndianRupee className="h-4 w-4" />}
-          />
+      {/* Financial Row (Only visible to Admin & Accountant) */}
+      {canViewFinancials && (
+        <div>
+          <h2 className="text-sm font-medium text-muted-foreground mb-3">Financial & Revenue</h2>
+          <div className="grid gap-4 grid-cols-2 md:grid-cols-3 lg:grid-cols-6">
+            <StatCard
+              title="Total Fees"
+              value={formatCurrency(stats.financial.totalQuotedFees)}
+              icon={<IndianRupee className="h-4 w-4" />}
+            />
+            <StatCard
+              title="Collected"
+              value={formatCurrency(stats.financial.totalCollected)}
+              icon={<IndianRupee className="h-4 w-4" />}
+              variant="success"
+            />
+            <StatCard
+              title="Outstanding"
+              value={formatCurrency(stats.financial.outstandingBalance)}
+              icon={<AlertTriangle className="h-4 w-4" />}
+              variant="warning"
+            />
+            <StatCard
+              title="Today"
+              value={formatCurrency(stats.financial.collectedToday)}
+              icon={<IndianRupee className="h-4 w-4" />}
+            />
+            <StatCard
+              title="This Month"
+              value={formatCurrency(stats.financial.collectedThisMonth)}
+              icon={<TrendingUp className="h-4 w-4" />}
+            />
+            <StatCard
+              title="Reg. Fees"
+              value={formatCurrency(stats.financial.totalRegistrationFees)}
+              icon={<IndianRupee className="h-4 w-4" />}
+            />
+          </div>
         </div>
-      </div>
+      )}
 
       {/* Attendance Row */}
       <div>

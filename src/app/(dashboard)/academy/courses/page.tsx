@@ -1,4 +1,4 @@
-import { requireAuth, requirePermission } from "@/lib/auth/guards";
+import { requireAuth, requirePermission, hasPermission } from "@/lib/auth/guards";
 import { PERMISSIONS } from "@/lib/auth/permissions";
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/db/prisma";
@@ -17,6 +17,8 @@ export default async function CoursesPage() {
   const session = await requireAuth().catch(() => null);
   if (!session) redirect("/login");
   await requirePermission(session, PERMISSIONS.COURSES_VIEW);
+
+  const canViewFees = await hasPermission(session.userId, session.organizationId, PERMISSIONS.FEES_VIEW);
 
   const courses = await prisma.course.findMany({
     where: { organizationId: session.organizationId },
@@ -82,10 +84,12 @@ export default async function CoursesPage() {
                       <p className="text-sm font-medium">{course._count.batches}</p>
                     </div>
                   </div>
-                  <div className="mt-3 pt-3 border-t">
-                    <p className="text-xs text-muted-foreground">Default Fee</p>
-                    <p className="text-lg font-semibold">{formatCurrency(course.defaultFee.toString())}</p>
-                  </div>
+                  {canViewFees && (
+                    <div className="mt-3 pt-3 border-t">
+                      <p className="text-xs text-muted-foreground">Default Fee</p>
+                      <p className="text-lg font-semibold">{formatCurrency(course.defaultFee.toString())}</p>
+                    </div>
+                  )}
                 </CardContent>
               </Card>
             </Link>

@@ -105,9 +105,14 @@ interface StudentProfileViewProps {
       date: string;
     }>;
   };
+  canViewFees?: boolean;
 }
 
-export function StudentProfileView({ student, availableBatches = [] }: StudentProfileViewProps) {
+export function StudentProfileView({
+  student,
+  availableBatches = [],
+  canViewFees = false,
+}: StudentProfileViewProps) {
   const router = useRouter();
   const [activeTab, setActiveTab] = useState("overview");
 
@@ -217,7 +222,7 @@ export function StudentProfileView({ student, availableBatches = [] }: StudentPr
   return (
     <div className="space-y-6">
       {/* Overview Stat Ribbon */}
-      <div className="grid gap-4 grid-cols-2 md:grid-cols-4">
+      <div className={`grid gap-4 ${canViewFees ? "grid-cols-2 md:grid-cols-4" : "grid-cols-2"}`}>
         <Card>
           <CardHeader className="p-4 pb-1">
             <CardDescription className="text-xs">Status</CardDescription>
@@ -229,23 +234,27 @@ export function StudentProfileView({ student, availableBatches = [] }: StudentPr
           </CardHeader>
         </Card>
 
-        <Card>
-          <CardHeader className="p-4 pb-1">
-            <CardDescription className="text-xs">Total Agreed Fee</CardDescription>
-            <CardTitle className="text-lg font-bold">{formatCurrency(student.totalPayable)}</CardTitle>
-          </CardHeader>
-        </Card>
+        {canViewFees && (
+          <>
+            <Card>
+              <CardHeader className="p-4 pb-1">
+                <CardDescription className="text-xs">Total Agreed Fee</CardDescription>
+                <CardTitle className="text-lg font-bold">{formatCurrency(student.totalPayable)}</CardTitle>
+              </CardHeader>
+            </Card>
 
-        <Card>
-          <CardHeader className="p-4 pb-1">
-            <CardDescription className="text-xs">Outstanding Dues</CardDescription>
-            <CardTitle className="text-lg font-bold">
-              <span className={parseFloat(student.outstanding) > 0 ? "text-amber-600" : "text-green-600"}>
-                {formatCurrency(student.outstanding)}
-              </span>
-            </CardTitle>
-          </CardHeader>
-        </Card>
+            <Card>
+              <CardHeader className="p-4 pb-1">
+                <CardDescription className="text-xs">Outstanding Dues</CardDescription>
+                <CardTitle className="text-lg font-bold">
+                  <span className={parseFloat(student.outstanding) > 0 ? "text-amber-600" : "text-green-600"}>
+                    {formatCurrency(student.outstanding)}
+                  </span>
+                </CardTitle>
+              </CardHeader>
+            </Card>
+          </>
+        )}
 
         <Card>
           <CardHeader className="p-4 pb-1">
@@ -261,8 +270,8 @@ export function StudentProfileView({ student, availableBatches = [] }: StudentPr
           <div className="overflow-x-auto pb-1 max-w-full">
             <TabsList className="inline-flex w-max sm:w-auto">
               <TabsTrigger value="overview">Overview</TabsTrigger>
-              <TabsTrigger value="fees">Fees & Payments</TabsTrigger>
-              <TabsTrigger value="instalments">Instalments</TabsTrigger>
+              {canViewFees && <TabsTrigger value="fees">Fees & Payments</TabsTrigger>}
+              {canViewFees && <TabsTrigger value="instalments">Instalments</TabsTrigger>}
               <TabsTrigger value="attendance">Attendance</TabsTrigger>
               <TabsTrigger value="notes">Notes</TabsTrigger>
             </TabsList>
@@ -295,7 +304,7 @@ export function StudentProfileView({ student, availableBatches = [] }: StudentPr
               batches={availableBatches}
             />
 
-            {parseFloat(student.outstanding) > 0 && (
+            {canViewFees && parseFloat(student.outstanding) > 0 && (
               <Button onClick={() => handleOpenPayment()} className="w-full sm:w-auto shrink-0">
                 <IndianRupee className="h-4 w-4 mr-1" />
                 Record Payment
@@ -404,143 +413,147 @@ export function StudentProfileView({ student, availableBatches = [] }: StudentPr
         </TabsContent>
 
         {/* Tab 2: Fees & Payments */}
-        <TabsContent value="fees" className="space-y-4">
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <div>
-                <CardTitle className="text-base">Payment History</CardTitle>
-                <CardDescription>Immutable record of all successful financial transactions</CardDescription>
-              </div>
-              {parseFloat(student.outstanding) > 0 && (
-                <Button size="sm" onClick={() => handleOpenPayment()}>
-                  <IndianRupee className="h-4 w-4 mr-1" />
-                  Receive Payment
-                </Button>
-              )}
-            </CardHeader>
-            <CardContent>
-              {student.payments.length === 0 ? (
-                <div className="text-center py-8 text-muted-foreground">No payments recorded yet.</div>
-              ) : (
+        {canViewFees && (
+          <TabsContent value="fees" className="space-y-4">
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between pb-2">
+                <div>
+                  <CardTitle className="text-base">Payment History</CardTitle>
+                  <CardDescription>Immutable record of all successful financial transactions</CardDescription>
+                </div>
+                {parseFloat(student.outstanding) > 0 && (
+                  <Button size="sm" onClick={() => handleOpenPayment()}>
+                    <IndianRupee className="h-4 w-4 mr-1" />
+                    Receive Payment
+                  </Button>
+                )}
+              </CardHeader>
+              <CardContent>
+                {student.payments.length === 0 ? (
+                  <div className="text-center py-8 text-muted-foreground">No payments recorded yet.</div>
+                ) : (
+                  <div className="overflow-x-auto">
+                    <Table>
+                      <TableHeader>
+                        <TableRow>
+                          <TableHead>Receipt #</TableHead>
+                          <TableHead>Date</TableHead>
+                          <TableHead>Instalment</TableHead>
+                          <TableHead>Method</TableHead>
+                          <TableHead>Reference</TableHead>
+                          <TableHead className="text-right">Amount</TableHead>
+                          <TableHead className="text-right">Receipt</TableHead>
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        {student.payments.map((payment) => (
+                          <TableRow key={payment.id}>
+                            <TableCell className="font-mono text-xs font-semibold">
+                              {payment.receiptNumber || "—"}
+                            </TableCell>
+                            <TableCell className="text-xs">{formatDate(payment.paymentDate)}</TableCell>
+                            <TableCell>{payment.instalmentLabel || "General"}</TableCell>
+                            <TableCell>{payment.paymentMethod.replace("_", " ")}</TableCell>
+                            <TableCell className="text-xs text-muted-foreground font-mono">
+                              {payment.transactionReference || "—"}
+                            </TableCell>
+                            <TableCell className="text-right font-medium">
+                              {formatCurrency(payment.amount)}
+                            </TableCell>
+                            <TableCell className="text-right">
+                              {payment.receiptPublicId && (
+                                <a
+                                  href={`/api/academy/receipts/${payment.receiptPublicId}/pdf`}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                >
+                                  <Button variant="ghost" size="sm">
+                                    <Download className="h-4 w-4" />
+                                  </Button>
+                                </a>
+                              )}
+                            </TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </TabsContent>
+        )}
+
+        {/* Tab 3: Instalments */}
+        {canViewFees && (
+          <TabsContent value="instalments" className="space-y-4">
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-base">Agreed Instalment Schedule</CardTitle>
+                <CardDescription>Track payments against scheduled dues</CardDescription>
+              </CardHeader>
+              <CardContent>
                 <div className="overflow-x-auto">
                   <Table>
                     <TableHeader>
                       <TableRow>
-                        <TableHead>Receipt #</TableHead>
-                        <TableHead>Date</TableHead>
-                        <TableHead>Instalment</TableHead>
-                        <TableHead>Method</TableHead>
-                        <TableHead>Reference</TableHead>
+                        <TableHead>Label</TableHead>
+                        <TableHead>Due Date</TableHead>
                         <TableHead className="text-right">Amount</TableHead>
-                        <TableHead className="text-right">Receipt</TableHead>
+                        <TableHead className="text-right">Paid</TableHead>
+                        <TableHead>Status</TableHead>
+                        <TableHead className="text-right">Action</TableHead>
                       </TableRow>
                     </TableHeader>
                     <TableBody>
-                      {student.payments.map((payment) => (
-                        <TableRow key={payment.id}>
-                          <TableCell className="font-mono text-xs font-semibold">
-                            {payment.receiptNumber || "—"}
-                          </TableCell>
-                          <TableCell className="text-xs">{formatDate(payment.paymentDate)}</TableCell>
-                          <TableCell>{payment.instalmentLabel || "General"}</TableCell>
-                          <TableCell>{payment.paymentMethod.replace("_", " ")}</TableCell>
-                          <TableCell className="text-xs text-muted-foreground font-mono">
-                            {payment.transactionReference || "—"}
-                          </TableCell>
-                          <TableCell className="text-right font-medium">
-                            {formatCurrency(payment.amount)}
-                          </TableCell>
-                          <TableCell className="text-right">
-                            {payment.receiptPublicId && (
-                              <a
-                                href={`/api/academy/receipts/${payment.receiptPublicId}/pdf`}
-                                target="_blank"
-                                rel="noopener noreferrer"
+                      {student.instalments.map((inst) => {
+                        const isDue = new Date(inst.dueDate) < new Date() && inst.status !== "PAID";
+                        return (
+                          <TableRow key={inst.id}>
+                            <TableCell className="font-medium">{inst.label}</TableCell>
+                            <TableCell className={isDue ? "text-red-600 font-medium" : ""}>
+                              {formatDate(inst.dueDate)}
+                            </TableCell>
+                            <TableCell className="text-right">{formatCurrency(inst.amount)}</TableCell>
+                            <TableCell className="text-right font-medium text-green-700">
+                              {formatCurrency(inst.paidAmount)}
+                            </TableCell>
+                            <TableCell>
+                              <Badge
+                                variant={
+                                  inst.status === "PAID"
+                                    ? "success"
+                                    : isDue
+                                    ? "destructive"
+                                    : inst.status === "PARTIALLY_PAID"
+                                    ? "warning"
+                                    : "secondary"
+                                }
                               >
-                                <Button variant="ghost" size="sm">
-                                  <Download className="h-4 w-4" />
+                                {inst.status === "PAID" ? "Paid" : isDue ? "Overdue" : inst.status.replace("_", " ")}
+                              </Badge>
+                            </TableCell>
+                            <TableCell className="text-right">
+                              {inst.status !== "PAID" && (
+                                <Button
+                                  variant="outline"
+                                  size="sm"
+                                  onClick={() => handleOpenPayment(inst.id)}
+                                >
+                                  Pay
                                 </Button>
-                              </a>
-                            )}
-                          </TableCell>
-                        </TableRow>
-                      ))}
+                              )}
+                            </TableCell>
+                          </TableRow>
+                        );
+                      })}
                     </TableBody>
                   </Table>
                 </div>
-              )}
-            </CardContent>
-          </Card>
-        </TabsContent>
-
-        {/* Tab 3: Instalments */}
-        <TabsContent value="instalments" className="space-y-4">
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-base">Agreed Instalment Schedule</CardTitle>
-              <CardDescription>Track payments against scheduled dues</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="overflow-x-auto">
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>Label</TableHead>
-                      <TableHead>Due Date</TableHead>
-                      <TableHead className="text-right">Amount</TableHead>
-                      <TableHead className="text-right">Paid</TableHead>
-                      <TableHead>Status</TableHead>
-                      <TableHead className="text-right">Action</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {student.instalments.map((inst) => {
-                      const isDue = new Date(inst.dueDate) < new Date() && inst.status !== "PAID";
-                      return (
-                        <TableRow key={inst.id}>
-                          <TableCell className="font-medium">{inst.label}</TableCell>
-                          <TableCell className={isDue ? "text-red-600 font-medium" : ""}>
-                            {formatDate(inst.dueDate)}
-                          </TableCell>
-                          <TableCell className="text-right">{formatCurrency(inst.amount)}</TableCell>
-                          <TableCell className="text-right font-medium text-green-700">
-                            {formatCurrency(inst.paidAmount)}
-                          </TableCell>
-                          <TableCell>
-                            <Badge
-                              variant={
-                                inst.status === "PAID"
-                                  ? "success"
-                                  : isDue
-                                  ? "destructive"
-                                  : inst.status === "PARTIALLY_PAID"
-                                  ? "warning"
-                                  : "secondary"
-                              }
-                            >
-                              {inst.status === "PAID" ? "Paid" : isDue ? "Overdue" : inst.status.replace("_", " ")}
-                            </Badge>
-                          </TableCell>
-                          <TableCell className="text-right">
-                            {inst.status !== "PAID" && (
-                              <Button
-                                variant="outline"
-                                size="sm"
-                                onClick={() => handleOpenPayment(inst.id)}
-                              >
-                                Pay
-                              </Button>
-                            )}
-                          </TableCell>
-                        </TableRow>
-                      );
-                    })}
-                  </TableBody>
-                </Table>
-              </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
+              </CardContent>
+            </Card>
+          </TabsContent>
+        )}
 
         {/* Tab 4: Attendance */}
         <TabsContent value="attendance" className="space-y-4">
@@ -610,144 +623,148 @@ export function StudentProfileView({ student, availableBatches = [] }: StudentPr
       </Tabs>
 
       {/* Record Payment Dialog */}
-      <Dialog open={isPaymentOpen} onOpenChange={setIsPaymentOpen}>
-        <DialogContent className="max-w-md">
-          <DialogHeader>
-            <DialogTitle>Record Payment</DialogTitle>
-            <DialogDescription>
-              Record a fee payment for {student.fullName} ({student.studentCode})
-            </DialogDescription>
-          </DialogHeader>
+      {canViewFees && (
+        <>
+          <Dialog open={isPaymentOpen} onOpenChange={setIsPaymentOpen}>
+            <DialogContent className="max-w-md">
+              <DialogHeader>
+                <DialogTitle>Record Payment</DialogTitle>
+                <DialogDescription>
+                  Record a fee payment for {student.fullName} ({student.studentCode})
+                </DialogDescription>
+              </DialogHeader>
 
-          <form onSubmit={handleRecordPayment} className="space-y-4 py-2">
-            {/* Payment Summary Safety Card */}
-            <div className="rounded-lg bg-muted p-3 space-y-1.5 text-xs">
-              <div className="flex justify-between">
-                <span className="text-muted-foreground">Current Total Outstanding:</span>
-                <span className="font-semibold text-amber-600">{formatCurrency(student.outstanding)}</span>
+              <form onSubmit={handleRecordPayment} className="space-y-4 py-2">
+                {/* Payment Summary Safety Card */}
+                <div className="rounded-lg bg-muted p-3 space-y-1.5 text-xs">
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground">Current Total Outstanding:</span>
+                    <span className="font-semibold text-amber-600">{formatCurrency(student.outstanding)}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground">Payment Amount:</span>
+                    <span className="font-semibold">{formatCurrency(paymentAmount || "0")}</span>
+                  </div>
+                  <div className="flex justify-between border-t pt-1.5 font-bold">
+                    <span>New Remaining Balance:</span>
+                    <span className={parseFloat(newBalancePreview) > 0 ? "text-amber-600" : "text-green-600"}>
+                      {formatCurrency(newBalancePreview)}
+                    </span>
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="instalmentSelect">Apply to Instalment *</Label>
+                  <Select value={selectedInstalmentId} onValueChange={setSelectedInstalmentId}>
+                    <SelectTrigger id="instalmentSelect">
+                      <SelectValue placeholder="Select instalment" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {student.instalments.map((inst) => {
+                        const remaining = Math.max(0, parseFloat(inst.amount) - parseFloat(inst.paidAmount));
+                        return (
+                          <SelectItem key={inst.id} value={inst.id}>
+                            {inst.label} (Remaining: ₹{remaining.toFixed(2)})
+                          </SelectItem>
+                        );
+                      })}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="payAmount">Amount (₹) *</Label>
+                  <Input
+                    id="payAmount"
+                    type="number"
+                    step="0.01"
+                    placeholder="10000"
+                    value={paymentAmount}
+                    onChange={(e) => setPaymentAmount(e.target.value)}
+                    required
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="paymentMethod">Payment Method *</Label>
+                  <Select value={paymentMethod} onValueChange={setPaymentMethod}>
+                    <SelectTrigger id="paymentMethod">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="UPI">UPI (GPay / PhonePe / Paytm)</SelectItem>
+                      <SelectItem value="CASH">Cash</SelectItem>
+                      <SelectItem value="BANK_TRANSFER">Bank Transfer (NEFT/IMPS)</SelectItem>
+                      <SelectItem value="CARD">Debit / Credit Card</SelectItem>
+                      <SelectItem value="OTHER">Other</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="txRef">Transaction Reference / UTR Number</Label>
+                  <Input
+                    id="txRef"
+                    placeholder="e.g. 123456789012"
+                    value={transactionReference}
+                    onChange={(e) => setTransactionReference(e.target.value)}
+                  />
+                </div>
+
+                <DialogFooter className="pt-4">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() => setIsPaymentOpen(false)}
+                    disabled={isSubmittingPayment}
+                  >
+                    Cancel
+                  </Button>
+                  <Button type="submit" disabled={isSubmittingPayment}>
+                    {isSubmittingPayment ? (
+                      <>
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        Processing...
+                      </>
+                    ) : (
+                      "Confirm & Issue Receipt"
+                    )}
+                  </Button>
+                </DialogFooter>
+              </form>
+            </DialogContent>
+          </Dialog>
+
+          {/* Payment Success Confirmation Dialog */}
+          <Dialog open={!!successReceipt} onOpenChange={() => setSuccessReceipt(null)}>
+            <DialogContent className="max-w-sm text-center">
+              <div className="flex flex-col items-center py-4 space-y-3">
+                <CheckCircle2 className="h-12 w-12 text-green-600" />
+                <DialogTitle className="text-xl">Payment Successful!</DialogTitle>
+                <p className="text-sm text-muted-foreground">
+                  Receipt <strong className="text-foreground">#{successReceipt?.receiptNumber}</strong> has been generated.
+                </p>
+                <div className="bg-muted w-full p-3 rounded-md text-sm">
+                  Remaining Balance:{" "}
+                  <strong>{formatCurrency(successReceipt?.remainingBalance || "0")}</strong>
+                </div>
+                <div className="flex gap-2 w-full pt-2">
+                  <a
+                    href={`/api/academy/receipts/${successReceipt?.receiptPublicId}/pdf`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-full"
+                  >
+                    <Button className="w-full">
+                      <Download className="mr-2 h-4 w-4" /> Download PDF
+                    </Button>
+                  </a>
+                </div>
               </div>
-              <div className="flex justify-between">
-                <span className="text-muted-foreground">Payment Amount:</span>
-                <span className="font-semibold">{formatCurrency(paymentAmount || "0")}</span>
-              </div>
-              <div className="flex justify-between border-t pt-1.5 font-bold">
-                <span>New Remaining Balance:</span>
-                <span className={parseFloat(newBalancePreview) > 0 ? "text-amber-600" : "text-green-600"}>
-                  {formatCurrency(newBalancePreview)}
-                </span>
-              </div>
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="instalmentSelect">Apply to Instalment *</Label>
-              <Select value={selectedInstalmentId} onValueChange={setSelectedInstalmentId}>
-                <SelectTrigger id="instalmentSelect">
-                  <SelectValue placeholder="Select instalment" />
-                </SelectTrigger>
-                <SelectContent>
-                  {student.instalments.map((inst) => {
-                    const remaining = Math.max(0, parseFloat(inst.amount) - parseFloat(inst.paidAmount));
-                    return (
-                      <SelectItem key={inst.id} value={inst.id}>
-                        {inst.label} (Remaining: ₹{remaining.toFixed(2)})
-                      </SelectItem>
-                    );
-                  })}
-                </SelectContent>
-              </Select>
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="payAmount">Amount (₹) *</Label>
-              <Input
-                id="payAmount"
-                type="number"
-                step="0.01"
-                placeholder="10000"
-                value={paymentAmount}
-                onChange={(e) => setPaymentAmount(e.target.value)}
-                required
-              />
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="paymentMethod">Payment Method *</Label>
-              <Select value={paymentMethod} onValueChange={setPaymentMethod}>
-                <SelectTrigger id="paymentMethod">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="UPI">UPI (GPay / PhonePe / Paytm)</SelectItem>
-                  <SelectItem value="CASH">Cash</SelectItem>
-                  <SelectItem value="BANK_TRANSFER">Bank Transfer (NEFT/IMPS)</SelectItem>
-                  <SelectItem value="CARD">Debit / Credit Card</SelectItem>
-                  <SelectItem value="OTHER">Other</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="txRef">Transaction Reference / UTR Number</Label>
-              <Input
-                id="txRef"
-                placeholder="e.g. 123456789012"
-                value={transactionReference}
-                onChange={(e) => setTransactionReference(e.target.value)}
-              />
-            </div>
-
-            <DialogFooter className="pt-4">
-              <Button
-                type="button"
-                variant="outline"
-                onClick={() => setIsPaymentOpen(false)}
-                disabled={isSubmittingPayment}
-              >
-                Cancel
-              </Button>
-              <Button type="submit" disabled={isSubmittingPayment}>
-                {isSubmittingPayment ? (
-                  <>
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Processing...
-                  </>
-                ) : (
-                  "Confirm & Issue Receipt"
-                )}
-              </Button>
-            </DialogFooter>
-          </form>
-        </DialogContent>
-      </Dialog>
-
-      {/* Payment Success Confirmation Dialog */}
-      <Dialog open={!!successReceipt} onOpenChange={() => setSuccessReceipt(null)}>
-        <DialogContent className="max-w-sm text-center">
-          <div className="flex flex-col items-center py-4 space-y-3">
-            <CheckCircle2 className="h-12 w-12 text-green-600" />
-            <DialogTitle className="text-xl">Payment Successful!</DialogTitle>
-            <p className="text-sm text-muted-foreground">
-              Receipt <strong className="text-foreground">#{successReceipt?.receiptNumber}</strong> has been generated.
-            </p>
-            <div className="bg-muted w-full p-3 rounded-md text-sm">
-              Remaining Balance:{" "}
-              <strong>{formatCurrency(successReceipt?.remainingBalance || "0")}</strong>
-            </div>
-            <div className="flex gap-2 w-full pt-2">
-              <a
-                href={`/api/academy/receipts/${successReceipt?.receiptPublicId}/pdf`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-full"
-              >
-                <Button className="w-full">
-                  <Download className="mr-2 h-4 w-4" /> Download PDF
-                </Button>
-              </a>
-            </div>
-          </div>
-        </DialogContent>
-      </Dialog>
+            </DialogContent>
+          </Dialog>
+        </>
+      )}
     </div>
   );
 }

@@ -81,9 +81,6 @@ var ROLE_PERMISSIONS = {
     PERMISSIONS.STUDENTS_UPDATE,
     PERMISSIONS.COURSES_VIEW,
     PERMISSIONS.BATCHES_VIEW,
-    PERMISSIONS.FEES_VIEW,
-    PERMISSIONS.PAYMENTS_VIEW,
-    PERMISSIONS.PAYMENTS_CREATE,
     PERMISSIONS.RECEIPTS_VIEW,
     PERMISSIONS.ATTENDANCE_VIEW,
     PERMISSIONS.ATTENDANCE_MARK
@@ -176,15 +173,12 @@ async function main() {
   for (const [roleName, permissions] of Object.entries(ROLE_PERMISSIONS)) {
     const roleId = roles[roleName];
     if (!roleId) continue;
+    await prisma.rolePermission.deleteMany({ where: { roleId } });
     for (const permName of permissions) {
       const perm = await prisma.permission.findUnique({ where: { name: permName } });
       if (!perm) continue;
-      await prisma.rolePermission.upsert({
-        where: {
-          roleId_permissionId: { roleId, permissionId: perm.id }
-        },
-        update: {},
-        create: {
+      await prisma.rolePermission.create({
+        data: {
           id: (0, import_cuid2.createId)(),
           roleId,
           permissionId: perm.id
@@ -192,7 +186,7 @@ async function main() {
       });
     }
   }
-  console.log("\u2705 Role permissions assigned");
+  console.log("\u2705 Role permissions assigned and synced");
   const adminEmail = process.env.SEED_ADMIN_EMAIL ?? "admin@raadhelabel.com";
   const adminPassword = process.env.SEED_ADMIN_PASSWORD ?? "Admin@123456";
   const hashedPassword = await (0, import_crypto.hashPassword)(adminPassword);
