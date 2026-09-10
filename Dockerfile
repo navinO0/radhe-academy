@@ -21,7 +21,7 @@ ENV NEXT_PUBLIC_APP_URL="http://localhost:3005"
 ENV NEXT_TELEMETRY_DISABLED=1
 ENV NODE_ENV=production
 
-# Generate Prisma client, compile seeder, and build Next.js application
+# Generate Prisma client and build application
 RUN npx prisma generate
 RUN npm run build
 
@@ -58,4 +58,3 @@ USER nextjs
 EXPOSE 3005
 
 CMD ["./docker-entrypoint.sh"]
-

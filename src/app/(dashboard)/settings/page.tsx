@@ -2,6 +2,7 @@ import { requireAuth } from "@/lib/auth/guards";
 import { redirect } from "next/navigation";
 import { PageHeader } from "@/components/layout/PageHeader";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { ChangePasswordCard } from "@/features/settings/components/ChangePasswordCard";
 
 export const metadata = { title: "Settings" };
 
@@ -13,6 +14,7 @@ export default async function SettingsPage() {
     <div className="flex flex-col gap-6 p-6 max-w-2xl">
       <PageHeader title="Settings" description="System preferences and user configuration" />
 
+      {/* User Profile Card */}
       <Card>
         <CardHeader>
           <CardTitle className="text-base">User Profile</CardTitle>
@@ -37,7 +39,9 @@ export default async function SettingsPage() {
           </div>
         </CardContent>
       </Card>
+
+      {/* Change Password Card */}
+      <ChangePasswordCard />
     </div>
   );
 }
-

@@ -26,4 +26,3 @@ fi
 
 echo "🚀 Starting Next.js application on port ${PORT:-3005}..."
 exec node server.js
-
