@@ -1,0 +1,126 @@
+// All permission strings used in the system
+// Grouped by module
+
+export const PERMISSIONS = {
+  // Academy module
+  ACADEMY_VIEW: "academy.view",
+
+  // Students
+  STUDENTS_VIEW: "academy.students.view",
+  STUDENTS_CREATE: "academy.students.create",
+  STUDENTS_UPDATE: "academy.students.update",
+  STUDENTS_ARCHIVE: "academy.students.archive",
+
+  // Courses
+  COURSES_VIEW: "academy.courses.view",
+  COURSES_MANAGE: "academy.courses.manage",
+
+  // Batches
+  BATCHES_VIEW: "academy.batches.view",
+  BATCHES_MANAGE: "academy.batches.manage",
+
+  // Fees
+  FEES_VIEW: "academy.fees.view",
+  FEES_MANAGE: "academy.fees.manage",
+
+  // Payments
+  PAYMENTS_VIEW: "academy.payments.view",
+  PAYMENTS_CREATE: "academy.payments.create",
+  PAYMENTS_CANCEL: "academy.payments.cancel",
+  PAYMENTS_REFUND: "academy.payments.refund",
+
+  // Receipts
+  RECEIPTS_VIEW: "academy.receipts.view",
+  RECEIPTS_GENERATE: "academy.receipts.generate",
+
+  // Attendance
+  ATTENDANCE_VIEW: "academy.attendance.view",
+  ATTENDANCE_MARK: "academy.attendance.mark",
+  ATTENDANCE_EDIT: "academy.attendance.edit",
+
+  // Reports
+  REPORTS_VIEW: "academy.reports.view",
+  REPORTS_EXPORT: "academy.reports.export",
+
+  // Administration
+  USERS_MANAGE: "admin.users.manage",
+  ROLES_MANAGE: "admin.roles.manage",
+  AUDIT_VIEW: "admin.audit.view",
+} as const;
+
+export type Permission = (typeof PERMISSIONS)[keyof typeof PERMISSIONS];
+
+// Default role permission sets
+export const ROLE_PERMISSIONS: Record<string, Permission[]> = {
+  SUPER_ADMIN: Object.values(PERMISSIONS),
+
+  ADMIN: [
+    PERMISSIONS.ACADEMY_VIEW,
+    PERMISSIONS.STUDENTS_VIEW,
+    PERMISSIONS.STUDENTS_CREATE,
+    PERMISSIONS.STUDENTS_UPDATE,
+    PERMISSIONS.STUDENTS_ARCHIVE,
+    PERMISSIONS.COURSES_VIEW,
+    PERMISSIONS.COURSES_MANAGE,
+    PERMISSIONS.BATCHES_VIEW,
+    PERMISSIONS.BATCHES_MANAGE,
+    PERMISSIONS.FEES_VIEW,
+    PERMISSIONS.FEES_MANAGE,
+    PERMISSIONS.PAYMENTS_VIEW,
+    PERMISSIONS.PAYMENTS_CREATE,
+    PERMISSIONS.PAYMENTS_CANCEL,
+    PERMISSIONS.PAYMENTS_REFUND,
+    PERMISSIONS.RECEIPTS_VIEW,
+    PERMISSIONS.RECEIPTS_GENERATE,
+    PERMISSIONS.ATTENDANCE_VIEW,
+    PERMISSIONS.ATTENDANCE_MARK,
+    PERMISSIONS.ATTENDANCE_EDIT,
+    PERMISSIONS.REPORTS_VIEW,
+    PERMISSIONS.REPORTS_EXPORT,
+    PERMISSIONS.USERS_MANAGE,
+    PERMISSIONS.AUDIT_VIEW,
+  ],
+
+  STAFF: [
+    PERMISSIONS.ACADEMY_VIEW,
+    PERMISSIONS.STUDENTS_VIEW,
+    PERMISSIONS.STUDENTS_CREATE,
+    PERMISSIONS.STUDENTS_UPDATE,
+    PERMISSIONS.COURSES_VIEW,
+    PERMISSIONS.BATCHES_VIEW,
+    PERMISSIONS.FEES_VIEW,
+    PERMISSIONS.PAYMENTS_VIEW,
+    PERMISSIONS.PAYMENTS_CREATE,
+    PERMISSIONS.RECEIPTS_VIEW,
+    PERMISSIONS.ATTENDANCE_VIEW,
+    PERMISSIONS.ATTENDANCE_MARK,
+  ],
+
+  ACCOUNTANT: [
+    PERMISSIONS.ACADEMY_VIEW,
+    PERMISSIONS.STUDENTS_VIEW,
+    PERMISSIONS.COURSES_VIEW,
+    PERMISSIONS.BATCHES_VIEW,
+    PERMISSIONS.FEES_VIEW,
+    PERMISSIONS.FEES_MANAGE,
+    PERMISSIONS.PAYMENTS_VIEW,
+    PERMISSIONS.PAYMENTS_CREATE,
+    PERMISSIONS.PAYMENTS_CANCEL,
+    PERMISSIONS.PAYMENTS_REFUND,
+    PERMISSIONS.RECEIPTS_VIEW,
+    PERMISSIONS.RECEIPTS_GENERATE,
+    PERMISSIONS.REPORTS_VIEW,
+    PERMISSIONS.REPORTS_EXPORT,
+  ],
+
+  INSTRUCTOR: [
+    PERMISSIONS.ACADEMY_VIEW,
+    PERMISSIONS.STUDENTS_VIEW,
+    PERMISSIONS.COURSES_VIEW,
+    PERMISSIONS.BATCHES_VIEW,
+    PERMISSIONS.ATTENDANCE_VIEW,
+    PERMISSIONS.ATTENDANCE_MARK,
+    PERMISSIONS.ATTENDANCE_EDIT,
+  ],
+};
+
