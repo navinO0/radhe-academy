@@ -20,6 +20,11 @@ const nextConfig: NextConfig = {
   poweredByHeader: false,
   cacheMaxMemorySize: 20 * 1024 * 1024, // 20MB cache cap for low RAM environments
   compress: false, // Offload compression to reverse proxy (Coolify/Traefik) to save Node.js CPU
+  typescript: {
+    // Disable typechecking during production build to save CPU/RAM and drastically reduce build time on low-resource servers.
+    // Type safety is maintained via `npm run typecheck` locally.
+    ignoreBuildErrors: true,
+  },
   experimental: {
     serverActions: {
       bodySizeLimit: "2mb",

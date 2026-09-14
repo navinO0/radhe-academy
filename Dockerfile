@@ -5,15 +5,16 @@ RUN apk add --no-cache libc6-compat openssl
 FROM base AS builder
 WORKDIR /app
 
-# Install dependencies with BuildKit npm cache mount
+# Install dependencies with BuildKit cache mount and offline optimization
 COPY package.json package-lock.json ./
-RUN --mount=type=cache,target=/root/.npm npm ci
+RUN --mount=type=cache,target=/root/.npm \
+    npm ci --prefer-offline --no-audit --no-fund
 
 # Generate Prisma Client (cached unless prisma schema changes)
 COPY prisma ./prisma
 RUN npx prisma generate
 
-# Copy application source code (including src/ directory)
+# Copy application source code
 COPY . .
 
 # Build-time environment variables for Next.js build
@@ -35,10 +36,6 @@ ENV NODE_ENV=production
 ENV NEXT_TELEMETRY_DISABLED=1
 ENV PORT=3005
 ENV HOSTNAME="0.0.0.0"
-# Resource-constrained home server tuning:
-# Cap V8 heap to prevent OOM kills & HDD swap thrashing, optimize for memory footprint
-ENV NODE_OPTIONS="--max-old-space-size=384 --optimize-for-size"
-ENV UV_THREADPOOL_SIZE=4
 
 # Non-root user for security
 RUN addgroup --system --gid 1001 nodejs && \
