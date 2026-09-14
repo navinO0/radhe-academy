@@ -20,8 +20,8 @@ COPY . .
 # Build-time environment variables for Next.js build
 ENV DATABASE_URL="postgresql://postgres:postgres@localhost:5432/dummy"
 ENV BETTER_AUTH_SECRET="build-secret-12345678901234567890123456789012"
-ENV BETTER_AUTH_URL="http://localhost:3005"
-ENV NEXT_PUBLIC_APP_URL="http://localhost:3005"
+ENV BETTER_AUTH_URL="http://localhost:3000"
+ENV NEXT_PUBLIC_APP_URL="http://localhost:3000"
 ENV NEXT_TELEMETRY_DISABLED=1
 ENV NODE_ENV=production
 
@@ -34,8 +34,11 @@ WORKDIR /app
 
 ENV NODE_ENV=production
 ENV NEXT_TELEMETRY_DISABLED=1
-ENV PORT=3005
+ENV PORT=3000
 ENV HOSTNAME="0.0.0.0"
+
+# Install Prisma CLI globally so all CLI engines, WASM files, and dependencies (effect, @prisma/engines) are complete
+RUN npm install -g prisma@6.3.1
 
 # Non-root user for security
 RUN addgroup --system --gid 1001 nodejs && \
@@ -50,15 +53,10 @@ COPY --from=builder --chown=nextjs:nodejs /app/prisma ./prisma
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 
-# Copy pre-installed Prisma CLI, engines, and runtime dependencies from builder
-COPY --from=builder --chown=nextjs:nodejs /app/node_modules/prisma ./node_modules/prisma
+# Copy runtime Prisma client and seed dependencies from builder
 COPY --from=builder --chown=nextjs:nodejs /app/node_modules/@prisma ./node_modules/@prisma
 COPY --from=builder --chown=nextjs:nodejs /app/node_modules/.prisma ./node_modules/.prisma
-COPY --from=builder --chown=nextjs:nodejs /app/node_modules/.bin/prisma ./node_modules/.bin/prisma
 COPY --from=builder --chown=nextjs:nodejs /app/node_modules/@paralleldrive ./node_modules/@paralleldrive
-
-# Ensure prisma binary is directly on PATH
-ENV PATH="/app/node_modules/.bin:$PATH"
 
 # Copy startup entrypoint script
 COPY --chown=nextjs:nodejs docker-entrypoint.sh ./docker-entrypoint.sh
@@ -66,10 +64,10 @@ RUN chmod +x ./docker-entrypoint.sh
 
 USER nextjs
 
-EXPOSE 3005
+EXPOSE 3000
 
-# Docker & Coolify health check
+# Docker & Coolify health check (dynamically evaluates $PORT, default 3000)
 HEALTHCHECK --interval=30s --timeout=5s --start-period=40s --retries=3 \
-  CMD wget --no-verbose --tries=1 --spider http://127.0.0.1:3005/api/health || exit 1
+  CMD wget --no-verbose --tries=1 --spider http://127.0.0.1:${PORT:-3000}/api/health || exit 1
 
 CMD ["./docker-entrypoint.sh"]

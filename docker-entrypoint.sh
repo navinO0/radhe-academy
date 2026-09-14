@@ -7,7 +7,7 @@ if [ -n "$DATABASE_URL" ] && [ "$DATABASE_URL" != "postgresql://postgres:postgre
   MAX_RETRIES=15
   RETRY_COUNT=0
 
-  until prisma migrate deploy || node ./node_modules/prisma/build/index.js migrate deploy || [ $RETRY_COUNT -ge $MAX_RETRIES ]; do
+  until prisma migrate deploy || [ $RETRY_COUNT -ge $MAX_RETRIES ]; do
     RETRY_COUNT=$((RETRY_COUNT + 1))
     echo "Database not ready (attempt $RETRY_COUNT/$MAX_RETRIES)... retrying in 3s"
     sleep 3
@@ -32,5 +32,5 @@ if [ -n "$DATABASE_URL" ] && [ "$DATABASE_URL" != "postgresql://postgres:postgre
   fi
 fi
 
-echo "🚀 Starting Next.js application on port ${PORT:-3005}..."
+echo "🚀 Starting Next.js application on port ${PORT:-3000}..."
 exec node server.js
