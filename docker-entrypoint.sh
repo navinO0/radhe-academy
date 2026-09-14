@@ -1,9 +1,23 @@
 #!/bin/sh
 set -e
 
-# Check and run database migrations and optional seeder on startup
-if [ -n "$DATABASE_URL" ] && [ "$DATABASE_URL" != "postgresql://postgres:postgres@localhost:5432/dummy" ]; then
-  echo "⏳ Checking database connection and applying migrations..."
+# Support explicit subcommands
+case "$1" in
+  migrate)
+    echo "🔄 Running database migrations..."
+    exec prisma migrate deploy
+    ;;
+  seed)
+    echo "🌱 Running database seeder..."
+    exec node ./prisma/seed.js
+    ;;
+esac
+
+# Default startup flow
+# Only run migrations on container boot if explicitly requested via AUTO_MIGRATE=true
+# (Best practice: decouple migration from web server startup)
+if [ "$AUTO_MIGRATE" = "true" ] && [ -n "$DATABASE_URL" ]; then
+  echo "⏳ AUTO_MIGRATE=true detected. Applying database migrations..."
   MAX_RETRIES=15
   RETRY_COUNT=0
 
@@ -15,22 +29,16 @@ if [ -n "$DATABASE_URL" ] && [ "$DATABASE_URL" != "postgresql://postgres:postgre
 
   if [ $RETRY_COUNT -lt $MAX_RETRIES ]; then
     echo "✅ Database migrations applied successfully."
-
-    # Seeder checks database state itself: runs if seed data is missing, skips if already seeded
-    if [ "$SKIP_SEED" = "true" ]; then
-      echo "ℹ️ Seeding skipped (SKIP_SEED=true)."
-    else
-      echo "🌱 Checking database seed state (auto-skips if already seeded)..."
-      if [ -f "./prisma/seed.js" ]; then
-        node ./prisma/seed.js || echo "⚠️ Seeding finished with warning."
-      else
-        echo "⚠️ ./prisma/seed.js not found. Skipping seed."
-      fi
-    fi
   else
-    echo "⚠️ Warning: Database was not reachable after $MAX_RETRIES attempts. Starting server..."
+    echo "⚠️ Warning: Database migration failed after $MAX_RETRIES attempts. Starting server anyway..."
   fi
 fi
 
-echo "🚀 Starting Next.js application on port ${PORT:-3000}..."
-exec node server.js
+# Optional auto-seeding if enabled
+if [ "$AUTO_SEED" = "true" ] && [ -f "./prisma/seed.js" ]; then
+  echo "🌱 AUTO_SEED=true detected. Running idempotent seeder..."
+  node ./prisma/seed.js || echo "⚠️ Seeding completed with warnings."
+fi
+
+echo "🚀 Starting Raadhe Academy on 0.0.0.0:${PORT:-3000}..."
+exec node server.js "$@"

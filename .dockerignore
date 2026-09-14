@@ -8,6 +8,7 @@ coverage
 
 # Version control
 .git
+.github
 .gitignore
 .gitattributes
 
