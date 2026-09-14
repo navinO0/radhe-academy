@@ -1,17 +1,18 @@
 "use server";
 
-import { requireAuth } from "@/lib/auth/guards";
+import { requireAuth, revokeAllUserSessions } from "@/lib/auth/guards";
 import { prisma } from "@/lib/db/prisma";
 import { writeAuditLog } from "@/lib/audit/audit.service";
 import { actionSuccess, actionError } from "@/lib/errors";
+import { rateLimiters } from "@/lib/rate-limit/limiter";
 import { hashPassword, verifyPassword } from "better-auth/crypto";
 import { z } from "zod";
 
 const changePasswordSchema = z
   .object({
-    currentPassword: z.string().min(1, "Current password is required"),
-    newPassword: z.string().min(8, "New password must be at least 8 characters"),
-    confirmPassword: z.string().min(1, "Confirm password is required"),
+    currentPassword: z.string().min(1, "Current password is required").max(128),
+    newPassword: z.string().min(8, "New password must be at least 8 characters").max(128),
+    confirmPassword: z.string().min(1, "Confirm password is required").max(128),
   })
   .refine((data) => data.newPassword === data.confirmPassword, {
     message: "New passwords do not match",
@@ -21,6 +22,12 @@ const changePasswordSchema = z
 export async function changePasswordAction(data: unknown) {
   try {
     const session = await requireAuth();
+
+    // Rate limit password change attempts per user
+    const limit = rateLimiters.auth(session.userId);
+    if (!limit.success) {
+      return actionError("Too many password attempts. Please wait 15 minutes before trying again.");
+    }
 
     const parsed = changePasswordSchema.safeParse(data);
     if (!parsed.success) {
@@ -59,6 +66,9 @@ export async function changePasswordAction(data: unknown) {
       data: { password: hashedNewPassword },
     });
 
+    // Security requirement: Revoke all other active sessions for this user
+    await revokeAllUserSessions(session.userId, session.sessionToken);
+
     await writeAuditLog({
       organizationId: session.organizationId,
       actorId: session.userId,
@@ -67,7 +77,7 @@ export async function changePasswordAction(data: unknown) {
       resourceId: session.userId,
     });
 
-    return actionSuccess(null, "Password has been updated successfully.");
+    return actionSuccess(null, "Password has been updated successfully. Other active sessions have been signed out.");
   } catch (err: any) {
     return actionError(err.message || "Failed to change password");
   }

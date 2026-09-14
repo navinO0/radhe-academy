@@ -4,7 +4,41 @@ import { createId } from "@paralleldrive/cuid2";
 import { hashPassword } from "better-auth/crypto";
 
 async function main() {
-  console.log("🌱 Starting database seed...");
+  console.log("🌱 Checking database seed status...");
+
+  const adminEmail = process.env.SEED_ADMIN_EMAIL ?? "admin@raadhelabel.com";
+  const forceSeed = process.env.FORCE_SEED === "true" || process.env.SEED_FORCE === "true";
+
+  if (!forceSeed) {
+    try {
+      const [existingOrg, existingAdmin, userCount] = await Promise.all([
+        prisma.organization.findFirst({
+          where: {
+            OR: [
+              { slug: "raadhe-label-academy" },
+              { name: process.env.ORGANIZATION_NAME ?? "Raadhe Label Academy" },
+            ],
+          },
+        }),
+        prisma.user.findUnique({ where: { email: adminEmail } }),
+        prisma.user.count(),
+      ]);
+
+      if (existingOrg && (existingAdmin || userCount > 0)) {
+        console.log(
+          `ℹ️ Database is already seeded (Organization: "${existingOrg.name}", Users: ${userCount}). Skipping seed.`
+        );
+        console.log("⏩ Set FORCE_SEED=true to force re-run the seed script.");
+        return;
+      }
+    } catch (err) {
+      console.warn("⚠️ Could not verify existing seed status, proceeding with seed check:", err);
+    }
+  } else {
+    console.log("⚡ FORCE_SEED=true detected. Proceeding with seed execution...");
+  }
+
+  console.log("🌱 Seed data not found. Executing database seed...");
 
   // 1. Create organization
   const org = await prisma.organization.upsert({
@@ -90,7 +124,6 @@ async function main() {
   console.log("✅ Role permissions assigned and synced");
 
   // 5. Create super admin user
-  const adminEmail = process.env.SEED_ADMIN_EMAIL ?? "admin@raadhelabel.com";
   const adminPassword = process.env.SEED_ADMIN_PASSWORD ?? "Admin@123456";
   const hashedPassword = await hashPassword(adminPassword);
 

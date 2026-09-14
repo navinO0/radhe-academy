@@ -2,13 +2,15 @@ import { NextRequest, NextResponse } from "next/server";
 import { requireAuth } from "@/lib/auth/guards";
 import { prisma } from "@/lib/db/prisma";
 import { rateLimiters } from "@/lib/rate-limit/limiter";
-import { RateLimitError, NotFoundError, ForbiddenError, handleApiError } from "@/lib/errors";
+import { RateLimitError, NotFoundError, handleApiError } from "@/lib/errors";
 import { renderReceiptPDF } from "@/lib/pdf/receipt.pdf";
+import { withApiLogging } from "@/lib/api-logger";
 
-export async function GET(
+export const GET = withApiLogging(async (
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
-) {
+) => {
+  const requestId = request.headers.get("x-request-id") || undefined;
   try {
     const session = await requireAuth();
 
@@ -42,7 +44,7 @@ export async function GET(
       },
     });
   } catch (err) {
-    const { status, body } = handleApiError(err);
+    const { status, body } = handleApiError(err, requestId);
     return NextResponse.json(body, { status });
   }
-}
+});

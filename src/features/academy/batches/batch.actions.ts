@@ -55,6 +55,10 @@ export async function updateBatchAction(batchId: string, data: unknown) {
     const session = await requireAuth();
     await requirePermission(session, PERMISSIONS.BATCHES_MANAGE);
 
+    if (!batchId || typeof batchId !== "string" || batchId.trim().length === 0) {
+      return actionError("Invalid batch ID");
+    }
+
     const parsed = updateBatchSchema.safeParse(data);
     if (!parsed.success) {
       return actionError("Validation failed", parsed.error.flatten().fieldErrors as Record<string, string[]>);

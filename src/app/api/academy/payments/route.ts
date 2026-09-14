@@ -7,8 +7,10 @@ import { writeAuditLog } from "@/lib/audit/audit.service";
 import { rateLimiters } from "@/lib/rate-limit/limiter";
 import { handleApiError, errorResponse, successResponse } from "@/lib/errors";
 import { RateLimitError } from "@/lib/errors";
+import { withApiLogging } from "@/lib/api-logger";
 
-export async function POST(request: NextRequest) {
+export const POST = withApiLogging(async (request: NextRequest) => {
+  const requestId = request.headers.get("x-request-id") || undefined;
   try {
     const session = await requireAuth();
     await requirePermission(session, PERMISSIONS.PAYMENTS_CREATE);
@@ -19,11 +21,16 @@ export async function POST(request: NextRequest) {
       throw new RateLimitError("Too many payment requests", limitResult.retryAfter);
     }
 
-    const body = await request.json() as unknown;
+    const body = (await request.json()) as unknown;
     const parsed = createPaymentSchema.safeParse(body);
     if (!parsed.success) {
       return NextResponse.json(
-        errorResponse("VALIDATION_ERROR", "Invalid request", parsed.error.flatten().fieldErrors as Record<string, string[]>),
+        errorResponse(
+          "VALIDATION_ERROR",
+          "Invalid request",
+          parsed.error.flatten().fieldErrors as Record<string, string[]>,
+          requestId
+        ),
         { status: 422 }
       );
     }
@@ -55,13 +62,13 @@ export async function POST(request: NextRequest) {
       },
     });
 
-    return NextResponse.json(successResponse(result), { status: 201 });
+    return NextResponse.json(successResponse(result, undefined, requestId), { status: 201 });
   } catch (err) {
-    const { status, body } = handleApiError(err);
+    const { status, body } = handleApiError(err, requestId);
     const response = NextResponse.json(body, { status });
     if (err instanceof RateLimitError && err.retryAfter) {
       response.headers.set("Retry-After", String(err.retryAfter));
     }
     return response;
   }
-}
+});

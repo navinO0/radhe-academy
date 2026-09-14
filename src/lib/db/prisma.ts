@@ -13,5 +13,6 @@ export const prisma =
         : ["error"],
   });
 
-if (process.env.NODE_ENV !== "production") globalForPrisma.prisma = prisma;
+// Retain singleton in global scope across all environments (prevents duplicate connections in standalone runtime)
+globalForPrisma.prisma = prisma;
 

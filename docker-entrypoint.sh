@@ -1,7 +1,7 @@
 #!/bin/sh
 set -e
 
-# Check and run database migrations and seeder on startup
+# Check and run database migrations and optional seeder on startup
 if [ -n "$DATABASE_URL" ] && [ "$DATABASE_URL" != "postgresql://postgres:postgres@localhost:5432/dummy" ]; then
   echo "⏳ Checking database connection and applying migrations..."
   MAX_RETRIES=15
@@ -15,9 +15,17 @@ if [ -n "$DATABASE_URL" ] && [ "$DATABASE_URL" != "postgresql://postgres:postgre
 
   if [ $RETRY_COUNT -lt $MAX_RETRIES ]; then
     echo "✅ Database migrations applied successfully."
-    echo "🌱 Running database seeder..."
-    if [ -f "./prisma/seed.js" ]; then
-      node ./prisma/seed.js || echo "⚠️ Seeding finished with warning."
+
+    # Seeder checks database state itself: runs if seed data is missing, skips if already seeded
+    if [ "$SKIP_SEED" = "true" ]; then
+      echo "ℹ️ Seeding skipped (SKIP_SEED=true)."
+    else
+      echo "🌱 Checking database seed state (auto-skips if already seeded)..."
+      if [ -f "./prisma/seed.js" ]; then
+        node ./prisma/seed.js || echo "⚠️ Seeding finished with warning."
+      else
+        echo "⚠️ ./prisma/seed.js not found. Skipping seed."
+      fi
     fi
   else
     echo "⚠️ Warning: Database was not reachable after $MAX_RETRIES attempts. Starting server..."
@@ -26,4 +34,3 @@ fi
 
 echo "🚀 Starting Next.js application on port ${PORT:-3005}..."
 exec node server.js
-

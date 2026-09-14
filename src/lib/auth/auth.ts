@@ -24,6 +24,12 @@ export const auth = betterAuth({
     useSecureCookies: process.env.NODE_ENV === "production",
     cookiePrefix: "raadhe",
     generateId: () => createId(),
+    defaultCookieAttributes: {
+      sameSite: "lax",
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      path: "/",
+    },
   },
   account: {
     accountLinking: {

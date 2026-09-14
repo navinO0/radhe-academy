@@ -1,6 +1,7 @@
 /**
  * Standardized API error and response utilities
  */
+import { logger } from "@/lib/logger";
 
 export class AppError extends Error {
   constructor(
@@ -66,6 +67,7 @@ export interface ApiSuccess<T> {
     total?: number;
     totalPages?: number;
   };
+  requestId?: string;
 }
 
 export interface ApiError {
@@ -75,48 +77,76 @@ export interface ApiError {
     message: string;
     errors?: Record<string, string[]>;
   };
+  requestId?: string;
 }
 
 export type ApiResponse<T> = ApiSuccess<T> | ApiError;
 
-export function successResponse<T>(data: T, meta?: ApiSuccess<T>["meta"]): ApiSuccess<T> {
-  return { success: true, data, meta };
+export function successResponse<T>(
+  data: T,
+  meta?: ApiSuccess<T>["meta"],
+  requestId?: string
+): ApiSuccess<T> {
+  return {
+    success: true,
+    data,
+    meta,
+    ...(requestId ? { requestId } : {}),
+  };
 }
 
 export function errorResponse(
   code: string,
   message: string,
-  errors?: Record<string, string[]>
+  errors?: Record<string, string[]>,
+  requestId?: string
 ): ApiError {
   return {
     success: false,
     error: { code, message, errors },
+    ...(requestId ? { requestId } : {}),
   };
 }
 
 /**
- * Safe error handler — never leaks stack traces or SQL errors to clients
+ * Safe error handler — never leaks stack traces or SQL errors to clients in production
  */
-export function handleApiError(err: unknown): {
+export function handleApiError(
+  err: unknown,
+  requestId?: string
+): {
   status: number;
   body: ApiError;
 } {
   if (err instanceof AppError) {
+    if (err.statusCode >= 500) {
+      logger.error(
+        { err, code: err.code, statusCode: err.statusCode, requestId },
+        "[AppError] Internal service error"
+      );
+    } else {
+      logger.warn(
+        { code: err.code, statusCode: err.statusCode, message: err.message, requestId },
+        "[AppError] Handled operational error"
+      );
+    }
+
     return {
       status: err.statusCode,
       body: errorResponse(
         err.code ?? "ERROR",
         err.message,
-        err instanceof ValidationError ? err.errors : undefined
+        err instanceof ValidationError ? err.errors : undefined,
+        requestId
       ),
     };
   }
 
-  // Log full error server-side, return generic message
-  console.error("[API Error]", err);
+  // Log full structured error server-side with stack trace, return generic message to client
+  logger.error({ err, requestId }, "[API Error] Unexpected exception");
   return {
     status: 500,
-    body: errorResponse("INTERNAL_ERROR", "An unexpected error occurred"),
+    body: errorResponse("INTERNAL_ERROR", "An unexpected error occurred", undefined, requestId),
   };
 }
 
@@ -136,4 +166,3 @@ export function actionError<T>(
 ): ActionResult<T> {
   return { success: false, error, errors };
 }
-

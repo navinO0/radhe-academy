@@ -7,15 +7,19 @@ const PUBLIC_ROUTES = [
   "/forgot-password",
   "/reset-password",
   "/api/auth",
+  "/api/health",
+  "/health",
 ];
 
 export default function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  // Allow public routes
-  if (PUBLIC_ROUTES.some((route) => pathname.startsWith(route))) {
-    return NextResponse.next();
-  }
+  // Preserve or generate correlation request ID
+  const requestId = request.headers.get("x-request-id")?.trim() || crypto.randomUUID();
+
+  // Forward request ID to downstream server components & API routes
+  const requestHeaders = new Headers(request.headers);
+  requestHeaders.set("x-request-id", requestId);
 
   // Allow static assets, next internal files, and files with extensions
   if (
@@ -23,7 +27,20 @@ export default function proxy(request: NextRequest) {
     pathname.startsWith("/favicon") ||
     pathname.includes(".")
   ) {
-    return NextResponse.next();
+    const response = NextResponse.next({
+      request: { headers: requestHeaders },
+    });
+    response.headers.set("x-request-id", requestId);
+    return response;
+  }
+
+  // Allow public routes
+  if (PUBLIC_ROUTES.some((route) => pathname.startsWith(route))) {
+    const response = NextResponse.next({
+      request: { headers: requestHeaders },
+    });
+    response.headers.set("x-request-id", requestId);
+    return response;
   }
 
   // Edge-safe session cookie presence check
@@ -36,15 +53,21 @@ export default function proxy(request: NextRequest) {
   if (!sessionToken) {
     const loginUrl = new URL("/login", request.url);
     loginUrl.searchParams.set("callbackUrl", pathname);
-    return NextResponse.redirect(loginUrl);
+    const redirectResponse = NextResponse.redirect(loginUrl);
+    redirectResponse.headers.set("x-request-id", requestId);
+    return redirectResponse;
   }
 
-  const requestId = crypto.randomUUID();
-  const response = NextResponse.next();
+  const response = NextResponse.next({
+    request: { headers: requestHeaders },
+  });
   response.headers.set("x-request-id", requestId);
 
   return response;
 }
+
+// Support both Next.js 16 proxy convention and legacy middleware convention
+export const middleware = proxy;
 
 export const config = {
   matcher: [

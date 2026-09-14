@@ -1,20 +1,21 @@
 "use server";
 
-import { requireAuth, requirePermission } from "@/lib/auth/guards";
+import { requireAuth, requirePermission, revokeAllUserSessions } from "@/lib/auth/guards";
 import { PERMISSIONS } from "@/lib/auth/permissions";
 import { prisma } from "@/lib/db/prisma";
 import { writeAuditLog } from "@/lib/audit/audit.service";
 import { actionSuccess, actionError } from "@/lib/errors";
+import { rateLimiters } from "@/lib/rate-limit/limiter";
 import { hashPassword } from "better-auth/crypto";
 import { createId } from "@paralleldrive/cuid2";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 
 const createUserSchema = z.object({
-  name: z.string().min(2, "Name must be at least 2 characters").max(100),
-  email: z.string().email("Enter a valid email address"),
-  password: z.string().min(8, "Password must be at least 8 characters"),
-  phone: z.string().optional(),
+  name: z.string().trim().min(2, "Name must be at least 2 characters").max(100),
+  email: z.string().trim().email("Enter a valid email address").max(255),
+  password: z.string().min(8, "Password must be at least 8 characters").max(128),
+  phone: z.string().trim().max(20).optional(),
   roleId: z.string().min(1, "Please select a role"),
 });
 
@@ -22,6 +23,12 @@ export async function createUserAction(data: unknown) {
   try {
     const session = await requireAuth();
     await requirePermission(session, PERMISSIONS.USERS_MANAGE);
+
+    // Rate limit user creation by admin to prevent spamming
+    const limit = rateLimiters.userManagement(session.userId);
+    if (!limit.success) {
+      return actionError("Too many user operations. Please wait before creating another user.");
+    }
 
     const parsed = createUserSchema.safeParse(data);
     if (!parsed.success) {
@@ -44,6 +51,11 @@ export async function createUserAction(data: unknown) {
 
     if (!role) {
       return actionError("Selected role does not exist.");
+    }
+
+    // Privilege escalation protection: Only SUPER_ADMIN can assign SUPER_ADMIN role
+    if (role.name === "SUPER_ADMIN" && !session.roleNames.includes("SUPER_ADMIN")) {
+      return actionError("Only Super Administrators can create a user with the SUPER_ADMIN role.");
     }
 
     const hashedPassword = await hashPassword(password);
@@ -106,8 +118,30 @@ export async function updateUserRoleAction(userId: string, roleId: string) {
     const session = await requireAuth();
     await requirePermission(session, PERMISSIONS.USERS_MANAGE);
 
+    if (!userId || typeof userId !== "string" || !roleId || typeof roleId !== "string") {
+      return actionError("Invalid parameters");
+    }
+
+    if (userId === session.userId) {
+      return actionError("You cannot change your own role.");
+    }
+
+    // IDOR protection: ensure target user belongs to the same organization
+    const targetUserOrg = await prisma.userOrganization.findFirst({
+      where: { userId, organizationId: session.organizationId },
+    });
+
+    if (!targetUserOrg) {
+      return actionError("User not found in this organization.");
+    }
+
     const role = await prisma.role.findUnique({ where: { id: roleId } });
     if (!role) return actionError("Role not found");
+
+    // Privilege escalation protection
+    if (role.name === "SUPER_ADMIN" && !session.roleNames.includes("SUPER_ADMIN")) {
+      return actionError("Only Super Administrators can assign the SUPER_ADMIN role.");
+    }
 
     await prisma.$transaction(async (tx) => {
       await tx.userRole.deleteMany({
@@ -126,6 +160,9 @@ export async function updateUserRoleAction(userId: string, roleId: string) {
         },
       });
     });
+
+    // Revoke target user's active sessions so permission changes apply immediately
+    await revokeAllUserSessions(userId);
 
     await writeAuditLog({
       organizationId: session.organizationId,
@@ -148,8 +185,21 @@ export async function toggleUserStatusAction(userId: string, currentStatus: stri
     const session = await requireAuth();
     await requirePermission(session, PERMISSIONS.USERS_MANAGE);
 
+    if (!userId || typeof userId !== "string") {
+      return actionError("Invalid user ID");
+    }
+
     if (userId === session.userId) {
       return actionError("You cannot deactivate your own account.");
+    }
+
+    // IDOR protection: ensure target user belongs to the same organization
+    const targetUserOrg = await prisma.userOrganization.findFirst({
+      where: { userId, organizationId: session.organizationId },
+    });
+
+    if (!targetUserOrg) {
+      return actionError("User not found in this organization.");
     }
 
     const nextStatus = currentStatus === "ACTIVE" ? "INACTIVE" : "ACTIVE";
@@ -158,6 +208,11 @@ export async function toggleUserStatusAction(userId: string, currentStatus: stri
       where: { id: userId },
       data: { status: nextStatus },
     });
+
+    // Revoke all sessions if user was deactivated
+    if (nextStatus === "INACTIVE") {
+      await revokeAllUserSessions(userId);
+    }
 
     await writeAuditLog({
       organizationId: session.organizationId,
@@ -180,8 +235,27 @@ export async function resetUserPasswordAction(userId: string, newPassword: unkno
     const session = await requireAuth();
     await requirePermission(session, PERMISSIONS.USERS_MANAGE);
 
-    if (typeof newPassword !== "string" || newPassword.length < 8) {
-      return actionError("New password must be at least 8 characters long.");
+    if (!userId || typeof userId !== "string") {
+      return actionError("Invalid user ID");
+    }
+
+    // Rate limit password resets per admin
+    const limit = rateLimiters.userManagement(session.userId);
+    if (!limit.success) {
+      return actionError("Too many password reset requests. Please wait.");
+    }
+
+    // IDOR protection: verify user belongs to same organization
+    const targetUserOrg = await prisma.userOrganization.findFirst({
+      where: { userId, organizationId: session.organizationId },
+    });
+
+    if (!targetUserOrg) {
+      return actionError("User not found in this organization.");
+    }
+
+    if (typeof newPassword !== "string" || newPassword.length < 8 || newPassword.length > 128) {
+      return actionError("New password must be between 8 and 128 characters long.");
     }
 
     const hashedPassword = await hashPassword(newPassword);
@@ -195,6 +269,9 @@ export async function resetUserPasswordAction(userId: string, newPassword: unkno
         password: hashedPassword,
       },
     });
+
+    // Revoke all active sessions for the target user after password reset
+    await revokeAllUserSessions(userId);
 
     await writeAuditLog({
       organizationId: session.organizationId,

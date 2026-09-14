@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/db/prisma";
 import type { AuditAction } from "@prisma/client";
+import { logger } from "@/lib/logger";
 
 export interface AuditLogEntry {
   organizationId?: string;
@@ -35,7 +36,7 @@ export async function writeAuditLog(entry: AuditLogEntry): Promise<void> {
     });
   } catch (err) {
     // Audit log failures must NOT break the main operation
-    console.error("[AuditLog] Failed to write audit log:", err);
+    logger.error({ err, entry: sanitizeAuditMetadata((entry.metadata as Record<string, unknown>) ?? {}) }, "[AuditLog] Failed to write audit log");
   }
 }
 

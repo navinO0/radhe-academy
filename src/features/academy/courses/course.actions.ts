@@ -52,6 +52,10 @@ export async function updateCourseAction(courseId: string, data: unknown) {
     const session = await requireAuth();
     await requirePermission(session, PERMISSIONS.COURSES_MANAGE);
 
+    if (!courseId || typeof courseId !== "string" || courseId.trim().length === 0) {
+      return actionError("Invalid course ID");
+    }
+
     const parsed = updateCourseSchema.safeParse(data);
     if (!parsed.success) {
       return actionError("Validation failed", parsed.error.flatten().fieldErrors as Record<string, string[]>);
