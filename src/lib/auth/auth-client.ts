@@ -2,8 +2,17 @@
 
 import { createAuthClient } from "better-auth/react";
 
+// In the browser, dynamically resolve the current origin so pre-built Docker images
+// work seamlessly across any domain without hardcoding build-time localhost:3000
+const getBaseURL = () => {
+  if (typeof window !== "undefined") {
+    return window.location.origin;
+  }
+  return process.env.NEXT_PUBLIC_APP_URL || process.env.BETTER_AUTH_URL || "http://localhost:3000";
+};
+
 export const authClient = createAuthClient({
-  baseURL: process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000",
+  baseURL: getBaseURL(),
 });
 
 export const {
