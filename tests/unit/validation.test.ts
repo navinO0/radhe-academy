@@ -4,6 +4,8 @@ import {
   emailSchema,
   amountSchema,
   createPaymentSchema,
+  issueRefundSchema,
+  cancelOrDeleteStudentSchema,
 } from "@/lib/validation/schemas";
 
 describe("Validation Schemas", () => {
@@ -49,6 +51,47 @@ describe("Validation Schemas", () => {
     // Missing idempotencyKey (must be UUID)
     const invalidKey = { ...validPayment, idempotencyKey: "not-a-uuid" };
     expect(createPaymentSchema.safeParse(invalidKey).success).toBe(false);
+  });
+
+  it("validates refund schema", () => {
+    const validRefund = {
+      paymentId: "pay_123",
+      amount: "1500",
+      reason: "Course withdrawal within cancellation window",
+      refundMethod: "UPI",
+    };
+    expect(issueRefundSchema.safeParse(validRefund).success).toBe(true);
+
+    const invalidRefund = {
+      paymentId: "pay_123",
+      amount: "-100", // Invalid amount
+      reason: "", // Empty reason
+    };
+    expect(issueRefundSchema.safeParse(invalidRefund).success).toBe(false);
+  });
+
+  it("validates student cancel/delete schema", () => {
+    const validCancel = {
+      studentPublicId: "stu_123",
+      action: "CANCEL",
+      reason: "Medical reasons",
+      waiveRemainingBalance: true,
+    };
+    expect(cancelOrDeleteStudentSchema.safeParse(validCancel).success).toBe(true);
+
+    const validDelete = {
+      studentPublicId: "stu_123",
+      action: "DELETE",
+      reason: "Duplicate registration entry",
+    };
+    expect(cancelOrDeleteStudentSchema.safeParse(validDelete).success).toBe(true);
+
+    const invalidAction = {
+      studentPublicId: "stu_123",
+      action: "INVALID",
+      reason: "Some reason",
+    };
+    expect(cancelOrDeleteStudentSchema.safeParse(invalidAction).success).toBe(false);
   });
 });
 

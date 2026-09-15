@@ -296,3 +296,121 @@ export async function cancelPayment(input: {
   });
 }
 
+export interface IssuePaymentRefundInput {
+  organizationId: string;
+  paymentId: string;
+  amount: string;
+  refundMethod: "CASH" | "UPI" | "BANK_TRANSFER" | "CARD" | "OTHER";
+  transactionReference?: string;
+  reason: string;
+  createdById: string;
+}
+
+/**
+ * Issue a partial or full refund against a payment.
+ * Records PaymentAdjustment, reverses instalment paid amounts, and recalculates student balances.
+ */
+export async function issuePaymentRefund(input: IssuePaymentRefundInput) {
+  const refundAmount = new Decimal(input.amount);
+  if (refundAmount.lte(0)) {
+    throw new AppError("Refund amount must be greater than zero", 422);
+  }
+
+  return await prisma.$transaction(async (tx) => {
+    const payment = await tx.payment.findFirst({
+      where: { id: input.paymentId, organizationId: input.organizationId },
+      include: {
+        instalment: true,
+        adjustments: true,
+        student: { select: { id: true, publicId: true, fullName: true, studentCode: true } },
+      },
+    });
+
+    if (!payment) throw new NotFoundError("Payment");
+    if (payment.status !== "SUCCESSFUL" && payment.status !== "REFUNDED") {
+      throw new ConflictError("Refunds can only be issued against successful payments");
+    }
+
+    // Calculate maximum refundable amount
+    const existingRefunds = payment.adjustments
+      .filter((a) => a.type === "REFUND" || a.type === "CANCELLATION")
+      .reduce((acc, a) => acc.add(new Decimal(a.amount.toString())), new Decimal(0));
+
+    const originalAmount = new Decimal(payment.amount.toString());
+    const maxRefundable = originalAmount.sub(existingRefunds);
+
+    if (refundAmount.gt(maxRefundable)) {
+      throw new AppError(
+        `Refund amount ₹${refundAmount.toFixed(2)} exceeds maximum refundable balance ₹${maxRefundable.toFixed(2)}`,
+        422
+      );
+    }
+
+    // 1. Create PaymentAdjustment record
+    const reasonText = `${input.refundMethod}: ${input.reason}${
+      input.transactionReference ? ` (Ref: ${input.transactionReference})` : ""
+    }`;
+
+    const adjustment = await tx.paymentAdjustment.create({
+      data: {
+        paymentId: payment.id,
+        type: "REFUND",
+        amount: refundAmount.toDecimalPlaces(2),
+        reason: reasonText,
+        createdById: input.createdById,
+      },
+    });
+
+    // 2. If fully refunded, update payment status to REFUNDED
+    const totalRefundedNow = existingRefunds.add(refundAmount);
+    if (totalRefundedNow.gte(originalAmount)) {
+      await tx.payment.update({
+        where: { id: payment.id },
+        data: { status: "REFUNDED" },
+      });
+    }
+
+    // 3. Reverse instalment paid amount
+    if (payment.instalmentId && payment.instalment) {
+      const currentInstalment = await tx.instalment.findUnique({
+        where: { id: payment.instalmentId },
+      });
+      if (currentInstalment) {
+        const currentInstPaid = new Decimal(currentInstalment.paidAmount.toString());
+        const newInstPaid = currentInstPaid.sub(refundAmount);
+        const safePaid = newInstPaid.lte(0) ? new Decimal(0) : newInstPaid.toDecimalPlaces(2);
+        const instTotal = new Decimal(currentInstalment.amount.toString());
+        const newStatus = safePaid.gte(instTotal)
+          ? "PAID"
+          : safePaid.gt(0)
+          ? "PARTIALLY_PAID"
+          : "PENDING";
+
+        await tx.instalment.update({
+          where: { id: currentInstalment.id },
+          data: {
+            paidAmount: safePaid,
+            status: newStatus,
+            updatedAt: new Date(),
+          },
+        });
+      }
+    }
+
+    // 4. Recalculate balance for student
+    const financials = await recalculateStudentBalance(payment.studentId, tx);
+
+    return {
+      adjustmentId: adjustment.id,
+      paymentId: payment.id,
+      studentId: payment.studentId,
+      studentPublicId: payment.student.publicId,
+      refundAmount: refundAmount.toFixed(2),
+      remainingRefundable: maxRefundable.sub(refundAmount).toFixed(2),
+      newOutstandingBalance: financials.outstandingBalance.toFixed(2),
+      effectivePaid: financials.totalPaid.sub(financials.totalAdjustments).toFixed(2),
+    };
+  });
+}
+
+

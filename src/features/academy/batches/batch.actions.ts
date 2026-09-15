@@ -108,4 +108,85 @@ export async function updateBatchAction(batchId: string, data: unknown) {
   }
 }
 
+export async function deleteBatchAction(
+  batchId: string,
+  options?: { forceUnassign?: boolean }
+) {
+  try {
+    const session = await requireAuth();
+    await requirePermission(session, PERMISSIONS.BATCHES_MANAGE);
+
+    if (!batchId) {
+      return actionError("Batch ID is required");
+    }
+
+    const batch = await prisma.batch.findFirst({
+      where: {
+        OR: [{ id: batchId }, { publicId: batchId }],
+        organizationId: session.organizationId,
+      },
+      include: {
+        _count: { select: { students: true } },
+      },
+    });
+
+    if (!batch) {
+      return actionError("Batch not found");
+    }
+
+    if (batch._count.students > 0 && !options?.forceUnassign) {
+      return actionError(
+        `Batch '${batch.name}' has ${batch._count.students} enrolled student(s). Please unassign students first, or confirm to delete and unassign them.`
+      );
+    }
+
+    await prisma.$transaction(async (tx) => {
+      // 1. Unassign students if forceUnassign
+      if (batch._count.students > 0) {
+        await tx.student.updateMany({
+          where: { batchId: batch.id },
+          data: { batchId: null },
+        });
+        await tx.batchStudent.deleteMany({
+          where: { batchId: batch.id },
+        });
+      }
+
+      // 2. Delete class sessions and attendance records
+      const sessions = await tx.classSession.findMany({
+        where: { batchId: batch.id },
+        select: { id: true },
+      });
+      if (sessions.length > 0) {
+        const sessionIds = sessions.map((s) => s.id);
+        await tx.attendanceRecord.deleteMany({
+          where: { sessionId: { in: sessionIds } },
+        });
+        await tx.classSession.deleteMany({
+          where: { batchId: batch.id },
+        });
+      }
+
+      // 3. Delete batch
+      await tx.batch.delete({ where: { id: batch.id } });
+    });
+
+    await writeAuditLog({
+      organizationId: session.organizationId,
+      actorId: session.userId,
+      action: "DELETE",
+      resourceType: "batch",
+      resourceId: batch.id,
+      metadata: { name: batch.name, courseId: batch.courseId },
+    });
+
+    revalidatePath("/academy/batches");
+    revalidatePath(`/academy/courses/${batch.courseId}`);
+    return actionSuccess({ deleted: true }, `Batch '${batch.name}' deleted successfully.`);
+  } catch (err: any) {
+    return actionError(err.message || "Failed to delete batch");
+  }
+}
+
+
 

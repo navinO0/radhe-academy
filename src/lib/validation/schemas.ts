@@ -283,3 +283,23 @@ export const reportQuerySchema = z.object({
   { message: "Date range cannot exceed 1 year" }
 );
 
+// ---- Refund & Cancellation schemas ----
+export const issueRefundSchema = z.object({
+  paymentId: z.string().min(1, "Payment ID is required"),
+  amount: amountSchema,
+  refundMethod: z.enum(["CASH", "UPI", "BANK_TRANSFER", "CARD", "OTHER"]),
+  transactionReference: z.string().max(100).optional(),
+  reason: z.string().min(2, "Please provide a reason for the refund").max(500),
+});
+
+export const cancelOrDeleteStudentSchema = z.object({
+  studentPublicId: z.string().min(1, "Student ID is required"),
+  action: z.enum(["DELETE", "CANCEL"]),
+  reason: z.string().min(2, "Please provide a reason").max(500),
+  waiveRemainingBalance: z.boolean().optional().default(false),
+  refundAmount: z.string().optional(),
+  refundMethod: z.enum(["CASH", "UPI", "BANK_TRANSFER", "CARD", "OTHER"]).optional(),
+  transactionReference: z.string().max(100).optional(),
+});
+
+

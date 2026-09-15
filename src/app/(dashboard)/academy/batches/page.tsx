@@ -12,6 +12,7 @@ import {
 import Link from "next/link";
 import { formatDate } from "@/lib/utils";
 import { EditBatchDialog } from "@/features/academy/batches/components/EditBatchDialog";
+import { DeleteBatchDialog } from "@/features/academy/batches/components/DeleteBatchDialog";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Batches" };
@@ -107,20 +108,29 @@ export default async function BatchesPage() {
                       </Badge>
                     </TableCell>
                     <TableCell className="text-right">
-                      <EditBatchDialog
-                        batch={{
-                          id: batch.id,
-                          name: batch.name,
-                          courseId: batch.course.id,
-                          instructorId: batch.instructor?.id,
-                          capacity: batch.capacity,
-                          startDate: batch.startDate ? new Date(batch.startDate).toISOString().split("T")[0] : null,
-                          endDate: batch.endDate ? new Date(batch.endDate).toISOString().split("T")[0] : null,
-                          status: batch.status as any,
-                        }}
-                        courses={courses}
-                        instructors={instructors}
-                      />
+                      <div className="flex items-center justify-end gap-1">
+                        <EditBatchDialog
+                          batch={{
+                            id: batch.id,
+                            name: batch.name,
+                            courseId: batch.course.id,
+                            instructorId: batch.instructor?.id,
+                            capacity: batch.capacity,
+                            startDate: batch.startDate ? new Date(batch.startDate).toISOString().split("T")[0] : null,
+                            endDate: batch.endDate ? new Date(batch.endDate).toISOString().split("T")[0] : null,
+                            status: batch.status as any,
+                          }}
+                          courses={courses}
+                          instructors={instructors}
+                        />
+                        <DeleteBatchDialog
+                          batch={{
+                            id: batch.id,
+                            name: batch.name,
+                            studentCount: batch._count.students,
+                          }}
+                        />
+                      </div>
                     </TableCell>
                   </TableRow>
                 ))}

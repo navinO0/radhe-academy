@@ -11,7 +11,9 @@ import { formatCurrency, formatDate } from "@/lib/utils";
 import Link from "next/link";
 import { ArrowLeft, Layers, Plus, UserPlus, Users } from "lucide-react";
 import { EditCourseDialog } from "@/features/academy/courses/components/EditCourseDialog";
+import { DeleteCourseDialog } from "@/features/academy/courses/components/DeleteCourseDialog";
 import { EditBatchDialog } from "@/features/academy/batches/components/EditBatchDialog";
+import { DeleteBatchDialog } from "@/features/academy/batches/components/DeleteBatchDialog";
 
 export const dynamic = "force-dynamic";
 
@@ -104,6 +106,15 @@ export default async function CourseDetailPage({ params }: PageProps) {
               duration: course.duration,
               defaultFee: course.defaultFee.toString(),
               status: course.status as any,
+            }}
+          />
+          <DeleteCourseDialog
+            course={{
+              id: course.id,
+              name: course.name,
+              studentCount: course._count.students,
+              batchCount: course._count.batches,
+              status: course.status,
             }}
           />
           <Link href="/academy/batches/new">
@@ -221,21 +232,30 @@ export default async function CourseDetailPage({ params }: PageProps) {
                         </Badge>
                       </TableCell>
                       <TableCell className="text-right">
-                        <EditBatchDialog
-                          batch={{
-                            id: batch.id,
-                            name: batch.name,
-                            courseId: course.id,
-                            instructorId: batch.instructorId,
-                            capacity: batch.capacity,
-                            startDate: batch.startDate ? new Date(batch.startDate).toISOString().split("T")[0] : null,
-                            endDate: batch.endDate ? new Date(batch.endDate).toISOString().split("T")[0] : null,
-                            timing: (batch.schedule as any)?.time || null,
-                            status: batch.status as any,
-                          }}
-                          courses={[{ id: course.id, name: course.name }]}
-                          instructors={instructors}
-                        />
+                        <div className="flex items-center justify-end gap-1">
+                          <EditBatchDialog
+                            batch={{
+                              id: batch.id,
+                              name: batch.name,
+                              courseId: course.id,
+                              instructorId: batch.instructorId,
+                              capacity: batch.capacity,
+                              startDate: batch.startDate ? new Date(batch.startDate).toISOString().split("T")[0] : null,
+                              endDate: batch.endDate ? new Date(batch.endDate).toISOString().split("T")[0] : null,
+                              timing: (batch.schedule as any)?.time || null,
+                              status: batch.status as any,
+                            }}
+                            courses={[{ id: course.id, name: course.name }]}
+                            instructors={instructors}
+                          />
+                          <DeleteBatchDialog
+                            batch={{
+                              id: batch.id,
+                              name: batch.name,
+                              studentCount: batch._count.students,
+                            }}
+                          />
+                        </div>
                       </TableCell>
                     </TableRow>
                   ))}

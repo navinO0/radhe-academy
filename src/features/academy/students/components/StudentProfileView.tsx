@@ -46,6 +46,8 @@ import {
 import { toast } from "sonner";
 import { EditStudentDialog } from "./EditStudentDialog";
 import { StudentAvatar } from "./StudentAvatar";
+import { IssueRefundDialog } from "./IssueRefundDialog";
+import { CancelStudentDialog } from "./CancelStudentDialog";
 
 interface StudentProfileViewProps {
   availableBatches?: Array<{ id: string; name: string }>;
@@ -98,6 +100,13 @@ interface StudentProfileViewProps {
       receiptNumber?: string;
       receiptPublicId?: string;
       instalmentLabel?: string;
+      adjustments?: Array<{
+        id: string;
+        type: string;
+        amount: string;
+        reason: string;
+        createdAt: string;
+      }>;
     }>;
     attendance: Array<{
       id: string;
@@ -313,6 +322,20 @@ export function StudentProfileView({
                 Record Payment
               </Button>
             )}
+
+            <CancelStudentDialog
+              student={{
+                id: student.id,
+                publicId: student.publicId,
+                studentCode: student.studentCode,
+                fullName: student.fullName,
+                status: student.status,
+                totalPayable: student.totalPayable,
+                totalPaid: student.totalPaid,
+                outstanding: student.outstanding,
+                batchName: student.batch?.name,
+              }}
+            />
           </div>
         </div>
 
@@ -463,39 +486,79 @@ export function StudentProfileView({
                           <TableHead>Method</TableHead>
                           <TableHead>Reference</TableHead>
                           <TableHead className="text-right">Amount</TableHead>
-                          <TableHead className="text-right">Receipt</TableHead>
+                          <TableHead className="text-right">Refunded</TableHead>
+                          <TableHead className="text-right">Actions</TableHead>
                         </TableRow>
                       </TableHeader>
                       <TableBody>
-                        {student.payments.map((payment) => (
-                          <TableRow key={payment.id}>
-                            <TableCell className="font-mono text-xs font-semibold">
-                              {payment.receiptNumber || "—"}
-                            </TableCell>
-                            <TableCell className="text-xs">{formatDate(payment.paymentDate)}</TableCell>
-                            <TableCell>{payment.instalmentLabel || "General"}</TableCell>
-                            <TableCell>{payment.paymentMethod.replace("_", " ")}</TableCell>
-                            <TableCell className="text-xs text-muted-foreground font-mono">
-                              {payment.transactionReference || "—"}
-                            </TableCell>
-                            <TableCell className="text-right font-medium">
-                              {formatCurrency(payment.amount)}
-                            </TableCell>
-                            <TableCell className="text-right">
-                              {payment.receiptPublicId && (
-                                <a
-                                  href={`/api/academy/receipts/${payment.receiptPublicId}/pdf`}
-                                  target="_blank"
-                                  rel="noopener noreferrer"
-                                >
-                                  <Button variant="ghost" size="sm">
-                                    <Download className="h-4 w-4" />
-                                  </Button>
-                                </a>
-                              )}
-                            </TableCell>
-                          </TableRow>
-                        ))}
+                        {student.payments.map((payment) => {
+                          const refundedAmount = (payment.adjustments ?? [])
+                            .filter((a) => a.type === "REFUND" || a.type === "CANCELLATION")
+                            .reduce((acc, a) => acc + parseFloat(a.amount), 0);
+                          const maxRefundable = Math.max(0, parseFloat(payment.amount) - refundedAmount);
+
+                          return (
+                            <TableRow key={payment.id}>
+                              <TableCell className="font-mono text-xs font-semibold">
+                                <div className="flex items-center gap-1.5 flex-wrap">
+                                  <span>{payment.receiptNumber || "—"}</span>
+                                  {payment.status === "REFUNDED" ? (
+                                    <Badge variant="destructive" className="text-[10px] px-1 py-0 h-4">
+                                      REFUNDED
+                                    </Badge>
+                                  ) : refundedAmount > 0 ? (
+                                    <Badge variant="secondary" className="text-[10px] px-1 py-0 h-4 text-amber-600 bg-amber-50">
+                                      PARTIAL REFUND
+                                    </Badge>
+                                  ) : null}
+                                </div>
+                              </TableCell>
+                              <TableCell className="text-xs">{formatDate(payment.paymentDate)}</TableCell>
+                              <TableCell>{payment.instalmentLabel || "General"}</TableCell>
+                              <TableCell>{payment.paymentMethod.replace("_", " ")}</TableCell>
+                              <TableCell className="text-xs text-muted-foreground font-mono">
+                                {payment.transactionReference || "—"}
+                              </TableCell>
+                              <TableCell className="text-right font-medium">
+                                {formatCurrency(payment.amount)}
+                              </TableCell>
+                              <TableCell className="text-right font-medium text-amber-600">
+                                {refundedAmount > 0 ? formatCurrency(refundedAmount.toFixed(2)) : "—"}
+                              </TableCell>
+                              <TableCell className="text-right">
+                                <div className="flex items-center justify-end gap-1">
+                                  {payment.receiptPublicId && (
+                                    <a
+                                      href={`/api/academy/receipts/${payment.receiptPublicId}/pdf`}
+                                      target="_blank"
+                                      rel="noopener noreferrer"
+                                      title="Download Receipt PDF"
+                                    >
+                                      <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+                                        <Download className="h-4 w-4" />
+                                      </Button>
+                                    </a>
+                                  )}
+                                  {canViewFees && maxRefundable > 0 && payment.status !== "CANCELLED" && (
+                                    <IssueRefundDialog
+                                      payment={{
+                                        id: payment.id,
+                                        receiptNumber: payment.receiptNumber,
+                                        amount: payment.amount,
+                                        paymentDate: payment.paymentDate,
+                                        paymentMethod: payment.paymentMethod,
+                                        refundedAmount: refundedAmount.toFixed(2),
+                                        maxRefundable: maxRefundable.toFixed(2),
+                                      }}
+                                      studentName={student.fullName}
+                                      studentPublicId={student.publicId}
+                                    />
+                                  )}
+                                </div>
+                              </TableCell>
+                            </TableRow>
+                          );
+                        })}
                       </TableBody>
                     </Table>
                   </div>

@@ -101,30 +101,47 @@ export async function listStudents(query: StudentListQuery) {
     prisma.student.count({ where }),
   ]);
 
-  // Calculate paid amounts for each student
+  // Calculate paid amounts and adjustments for each student
   const studentIds = students.map((s) => s.id);
-  const paidAmounts = await prisma.payment.groupBy({
-    by: ["studentId"],
-    where: { studentId: { in: studentIds }, status: "SUCCESSFUL" },
-    _sum: { amount: true },
-  });
+  const [paidAmounts, adjustments] = await Promise.all([
+    prisma.payment.groupBy({
+      by: ["studentId"],
+      where: { studentId: { in: studentIds }, status: { in: ["SUCCESSFUL", "REFUNDED"] } },
+      _sum: { amount: true },
+    }),
+    prisma.paymentAdjustment.findMany({
+      where: {
+        payment: { studentId: { in: studentIds } },
+        type: { in: ["REFUND", "CANCELLATION"] },
+      },
+      select: {
+        amount: true,
+        payment: { select: { studentId: true } },
+      },
+    }),
+  ]);
 
   const paidMap = new Map(
     paidAmounts.map((p) => [p.studentId, p._sum.amount ?? new Decimal(0)])
   );
+  const adjustmentMap = new Map<string, Decimal>();
+  for (const adj of adjustments) {
+    const sId = adj.payment.studentId;
+    const current = adjustmentMap.get(sId) ?? new Decimal(0);
+    adjustmentMap.set(sId, current.add(new Decimal(adj.amount.toString())));
+  }
 
   const enriched = students.map((s) => {
     const totalPayable = s.feeAgreement?.totalPayable
       ? new Decimal(s.feeAgreement.totalPayable.toString())
       : new Decimal(0);
-    const totalPaid = paidMap.has(s.id)
+    const grossPaid = paidMap.has(s.id)
       ? new Decimal(paidMap.get(s.id)!.toString())
       : new Decimal(0);
-    const outstanding = totalPayable.sub(totalPaid);
-    const isOverdue =
-      outstanding.gt(0) &&
-      // Check if any instalment is past due (simplified for list view)
-      true;
+    const totalRefunds = adjustmentMap.get(s.id) ?? new Decimal(0);
+    const totalPaid = Decimal.max(new Decimal(0), grossPaid.sub(totalRefunds));
+    const outstanding = Decimal.max(new Decimal(0), totalPayable.sub(totalPaid));
+    const isOverdue = outstanding.gt(0) && true;
 
     return {
       ...s,
@@ -418,4 +435,118 @@ export async function updateStudent(
     return updated;
   });
 }
+
+export interface CancelOrDeleteStudentInput {
+  studentPublicId: string;
+  organizationId: string;
+  reason: string;
+  action: "DELETE" | "CANCEL";
+  waiveRemainingBalance?: boolean;
+  refundAmount?: string;
+  refundMethod?: "CASH" | "UPI" | "BANK_TRANSFER" | "CARD" | "OTHER";
+  transactionReference?: string;
+  userId: string;
+}
+
+/**
+ * Delete a student (if ₹0 paid) or Cancel admission & settle accounts (preserving audit/accounting records).
+ */
+export async function cancelOrDeleteStudent(input: CancelOrDeleteStudentInput) {
+  return await prisma.$transaction(async (tx) => {
+    const student = await tx.student.findFirst({
+      where: { publicId: input.studentPublicId, organizationId: input.organizationId },
+      include: {
+        payments: {
+          where: { status: { in: ["SUCCESSFUL", "REFUNDED"] } },
+          orderBy: { paymentDate: "desc" },
+        },
+        feeAgreement: {
+          include: { instalments: true },
+        },
+      },
+    });
+
+    if (!student) throw new NotFoundError("Student");
+
+    const successfulPayments = student.payments.filter((p) => p.status === "SUCCESSFUL");
+
+    // Case 1: Hard Delete requested
+    if (input.action === "DELETE") {
+      if (successfulPayments.length > 0) {
+        throw new ConflictError(
+          "Cannot permanently delete a student with recorded payments. Please use 'Cancel Admission' to preserve financial and audit records."
+        );
+      }
+
+      // Safe to delete clean test/unpaid records
+      await tx.attendanceRecord.deleteMany({ where: { studentId: student.id } });
+      await tx.batchStudent.deleteMany({ where: { studentId: student.id } });
+      await tx.instalment.deleteMany({ where: { studentId: student.id } });
+      await tx.feeAgreement.deleteMany({ where: { studentId: student.id } });
+      await tx.student.delete({ where: { id: student.id } });
+
+      return {
+        action: "DELETED",
+        studentCode: student.studentCode,
+        fullName: student.fullName,
+        message: `Student ${student.studentCode} (${student.fullName}) permanently deleted.`,
+      };
+    }
+
+    // Case 2: Cancel Admission & Settlement (All records maintained)
+    // 1. Mark student status as CANCELLED and unassign batch
+    await tx.student.update({
+      where: { id: student.id },
+      data: {
+        status: "CANCELLED",
+        batchId: null,
+        notes: student.notes
+          ? `${student.notes}\n[Admission Cancelled: ${input.reason}]`
+          : `[Admission Cancelled: ${input.reason}]`,
+        updatedById: input.userId,
+      },
+    });
+
+    // 2. Free up batch seat by setting BatchStudent status to DROPPED
+    await tx.batchStudent.updateMany({
+      where: { studentId: student.id },
+      data: { status: "DROPPED" },
+    });
+
+    // 3. Cancel unpaid future instalments
+    await tx.instalment.updateMany({
+      where: {
+        studentId: student.id,
+        status: { in: ["PENDING", "OVERDUE"] },
+      },
+      data: { status: "CANCELLED" },
+    });
+
+    // 4. Waive remaining balance if requested
+    if (input.waiveRemainingBalance && student.feeAgreement) {
+      const grossPaid = successfulPayments.reduce(
+        (acc, p) => acc.add(new Decimal(p.amount.toString())),
+        new Decimal(0)
+      );
+
+      await tx.feeAgreement.update({
+        where: { id: student.feeAgreement.id },
+        data: {
+          totalPayable: grossPaid.toDecimalPlaces(2),
+          discountReason: student.feeAgreement.discountReason
+            ? `${student.feeAgreement.discountReason} (Balance waived upon cancellation)`
+            : "Balance waived upon cancellation",
+        },
+      });
+    }
+
+    return {
+      action: "CANCELLED",
+      studentCode: student.studentCode,
+      fullName: student.fullName,
+      message: `Admission for ${student.studentCode} (${student.fullName}) has been cancelled. Batch seat freed and unpaid dues settled.`,
+    };
+  });
+}
+
 

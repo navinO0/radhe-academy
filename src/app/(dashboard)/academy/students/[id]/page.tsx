@@ -32,8 +32,8 @@ export default async function StudentDetailPage({ params }: PageProps) {
         },
       },
       payments: {
-        where: { status: "SUCCESSFUL" },
-        include: { receipt: true, instalment: true },
+        where: { status: { in: ["SUCCESSFUL", "REFUNDED"] } },
+        include: { receipt: true, instalment: true, adjustments: true },
         orderBy: { paymentDate: "desc" },
       },
       receipts: {
@@ -59,9 +59,16 @@ export default async function StudentDetailPage({ params }: PageProps) {
     orderBy: { name: "asc" },
   });
 
-  // Calculate totals
+  // Calculate totals factoring in refunds
   const totalPayable = student.feeAgreement?.totalPayable.toNumber() ?? 0;
-  const totalPaid = student.payments.reduce((sum, p) => sum + p.amount.toNumber(), 0);
+  const grossPaid = student.payments.reduce((sum, p) => sum + p.amount.toNumber(), 0);
+  const totalRefunds = student.payments.reduce((sum, p) => {
+    const adjSum = p.adjustments
+      .filter((a) => a.type === "REFUND" || a.type === "CANCELLATION")
+      .reduce((s, a) => s + a.amount.toNumber(), 0);
+    return sum + adjSum;
+  }, 0);
+  const totalPaid = Math.max(0, grossPaid - totalRefunds);
   const outstanding = Math.max(0, totalPayable - totalPaid);
 
   // Calculate attendance %
@@ -114,6 +121,13 @@ export default async function StudentDetailPage({ params }: PageProps) {
             receiptNumber: p.receipt?.receiptNumber,
             receiptPublicId: p.receipt?.publicId,
             instalmentLabel: p.instalment?.label,
+            adjustments: p.adjustments.map((a) => ({
+              id: a.id,
+              type: a.type,
+              amount: a.amount.toString(),
+              reason: a.reason,
+              createdAt: a.createdAt.toISOString(),
+            })),
           })),
           attendance: student.attendanceRecords.map((a) => ({
             id: a.id,

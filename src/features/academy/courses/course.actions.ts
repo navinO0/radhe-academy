@@ -101,4 +101,84 @@ export async function updateCourseAction(courseId: string, data: unknown) {
   }
 }
 
+export async function deleteCourseAction(
+  courseId: string,
+  options?: { forceArchive?: boolean }
+) {
+  try {
+    const session = await requireAuth();
+    await requirePermission(session, PERMISSIONS.COURSES_MANAGE);
+
+    if (!courseId) {
+      return actionError("Course ID is required");
+    }
+
+    const course = await prisma.course.findFirst({
+      where: {
+        OR: [{ id: courseId }, { publicId: courseId }],
+        organizationId: session.organizationId,
+      },
+      include: {
+        _count: { select: { students: true, batches: true } },
+      },
+    });
+
+    if (!course) {
+      return actionError("Course not found");
+    }
+
+    // Check if course has students
+    if (course._count.students > 0) {
+      if (options?.forceArchive) {
+        await prisma.course.update({
+          where: { id: course.id },
+          data: { status: "ARCHIVED" },
+        });
+
+        await writeAuditLog({
+          organizationId: session.organizationId,
+          actorId: session.userId,
+          action: "ARCHIVE",
+          resourceType: "course",
+          resourceId: course.id,
+          metadata: { name: course.name, studentCount: course._count.students },
+        });
+
+        revalidatePath("/academy/courses");
+        return actionSuccess(
+          { archived: true },
+          `Course '${course.name}' has been archived (preserved for ${course._count.students} student records).`
+        );
+      }
+
+      return actionError(
+        `Cannot delete '${course.name}' because it has ${course._count.students} enrolled student(s). You can archive this course instead.`
+      );
+    }
+
+    // Course has 0 students — safe to delete empty batches and course
+    await prisma.$transaction(async (tx) => {
+      if (course._count.batches > 0) {
+        await tx.batch.deleteMany({ where: { courseId: course.id } });
+      }
+      await tx.course.delete({ where: { id: course.id } });
+    });
+
+    await writeAuditLog({
+      organizationId: session.organizationId,
+      actorId: session.userId,
+      action: "DELETE",
+      resourceType: "course",
+      resourceId: course.id,
+      metadata: { name: course.name },
+    });
+
+    revalidatePath("/academy/courses");
+    return actionSuccess({ deleted: true }, `Course '${course.name}' deleted successfully.`);
+  } catch (err: any) {
+    return actionError(err.message || "Failed to delete course");
+  }
+}
+
+
 
