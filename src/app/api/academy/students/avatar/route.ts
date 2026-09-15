@@ -36,3 +36,4 @@ export async function GET(request: Request) {
     return new Response("Avatar not found", { status: 404 });
   }
 }
+

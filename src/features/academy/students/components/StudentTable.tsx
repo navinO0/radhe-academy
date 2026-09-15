@@ -182,6 +182,8 @@ export function StudentTable({
                         <StudentAvatar
                           profileImageKey={student.profileImageKey}
                           fullName={student.fullName}
+                          subtitle={`${student.studentCode} • Profile Photo`}
+                          previewable
                           className="h-8 w-8 text-[11px]"
                         />
                         <span className="truncate">{student.fullName}</span>

@@ -359,6 +359,8 @@ export function StudentProfileView({
                   <StudentAvatar
                     profileImageKey={student.profileImageKey}
                     fullName={student.fullName}
+                    subtitle={`${student.studentCode} • Profile Photo`}
+                    previewable
                     className="h-16 w-16 text-lg border-2 border-primary/20"
                   />
                   <div>
