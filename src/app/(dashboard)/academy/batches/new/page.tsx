@@ -19,7 +19,7 @@ export default async function NewBatchPage() {
   const [courses, instructors] = await Promise.all([
     prisma.course.findMany({
       where: { organizationId: session.organizationId, status: "ACTIVE" },
-      select: { id: true, name: true },
+      select: { id: true, name: true, duration: true },
       orderBy: { name: "asc" },
     }),
     prisma.user.findMany({

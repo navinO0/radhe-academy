@@ -20,6 +20,7 @@ import {
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { createStudentAction } from "@/features/academy/students/student.actions";
 import { Loader2, Plus, Trash2 } from "lucide-react";
+import { StudentAvatarUpload } from "./StudentAvatarUpload";
 
 interface CourseOption {
   id: string;
@@ -64,6 +65,7 @@ export function StudentRegistrationForm({ courses, batches }: StudentRegistratio
 
   // Form fields
   const [fullName, setFullName] = useState("");
+  const [profileImageKey, setProfileImageKey] = useState("");
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
   const [gender, setGender] = useState<string>("FEMALE");
@@ -134,6 +136,16 @@ export function StudentRegistrationForm({ courses, batches }: StudentRegistratio
       return;
     }
 
+    if (!gender) {
+      toast.error("Please select a gender");
+      return;
+    }
+
+    if (!dateOfBirth) {
+      toast.error("Please provide the student's date of birth");
+      return;
+    }
+
     if (parseFloat(instalmentsTotal) !== parseFloat(totalPayable)) {
       toast.error(`Instalments total (₹${instalmentsTotal}) must match Total Payable (₹${totalPayable})`);
       return;
@@ -142,10 +154,11 @@ export function StudentRegistrationForm({ courses, batches }: StudentRegistratio
     startTransition(async () => {
       const payload = {
         fullName,
+        profileImageKey: profileImageKey || undefined,
         phone,
         email: email || undefined,
         gender: gender as any,
-        dateOfBirth: dateOfBirth ? new Date(dateOfBirth) : undefined,
+        dateOfBirth: new Date(dateOfBirth),
         joiningDate: new Date(joiningDate || today),
         address: address || undefined,
         city: city || undefined,
@@ -187,9 +200,19 @@ export function StudentRegistrationForm({ courses, batches }: StudentRegistratio
           <Card>
             <CardHeader>
               <CardTitle className="text-base">1. Personal Information</CardTitle>
-              <CardDescription>Basic contact details and identification</CardDescription>
+              <CardDescription>Basic contact details, identification, and profile photo</CardDescription>
             </CardHeader>
             <CardContent className="grid gap-4 sm:grid-cols-2">
+              <div className="space-y-2 sm:col-span-2 pb-2 border-b">
+                <Label>Student Profile Photo</Label>
+                <StudentAvatarUpload
+                  value={profileImageKey}
+                  onChange={(key) => setProfileImageKey(key || "")}
+                  fullName={fullName}
+                  studentIdentifier={fullName ? fullName.toLowerCase().replace(/\s+/g, "-") : "new-student"}
+                />
+              </div>
+
               <div className="space-y-2 sm:col-span-2">
                 <Label htmlFor="fullName">Full Name *</Label>
                 <Input
@@ -225,8 +248,8 @@ export function StudentRegistrationForm({ courses, batches }: StudentRegistratio
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="gender">Gender</Label>
-                <Select value={gender} onValueChange={setGender}>
+                <Label htmlFor="gender">Gender *</Label>
+                <Select value={gender} onValueChange={setGender} required>
                   <SelectTrigger id="gender">
                     <SelectValue placeholder="Select gender" />
                   </SelectTrigger>
@@ -240,12 +263,14 @@ export function StudentRegistrationForm({ courses, batches }: StudentRegistratio
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="dateOfBirth">Date of Birth</Label>
+                <Label htmlFor="dateOfBirth">Date of Birth *</Label>
                 <Input
                   id="dateOfBirth"
                   type="date"
                   value={dateOfBirth}
                   onChange={(e) => setDateOfBirth(e.target.value)}
+                  max={today}
+                  required
                 />
               </div>
 

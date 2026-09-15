@@ -23,12 +23,15 @@ import {
 } from "@/components/ui/select";
 import { formatDate, formatCurrency } from "@/lib/utils";
 import { ChevronLeft, ChevronRight, Search, X } from "lucide-react";
+import { StudentAvatar } from "./StudentAvatar";
 
 type Student = {
   id: string;
   publicId: string;
   studentCode: string;
   fullName: string;
+  profileImageKey?: string | null;
+  gender?: string | null;
   phone: string;
   status: string;
   joiningDate: Date;
@@ -175,7 +178,14 @@ export function StudentTable({
                       {student.studentCode}
                     </TableCell>
                     <TableCell className="font-medium">
-                      {student.fullName}
+                      <div className="flex items-center gap-2.5">
+                        <StudentAvatar
+                          profileImageKey={student.profileImageKey}
+                          fullName={student.fullName}
+                          className="h-8 w-8 text-[11px]"
+                        />
+                        <span className="truncate">{student.fullName}</span>
+                      </div>
                     </TableCell>
                     <TableCell className="hidden md:table-cell text-muted-foreground">
                       {student.phone}

@@ -4,9 +4,9 @@ const CSP_HEADER = `
   default-src 'self';
   script-src 'self' 'unsafe-inline' 'unsafe-eval';
   style-src 'self' 'unsafe-inline';
-  img-src 'self' data: blob: https://*.amazonaws.com https://*.r2.cloudflarestorage.com;
+  img-src 'self' data: blob: https://*.amazonaws.com https://*.r2.cloudflarestorage.com https://*.storageapi.dev https://t3.storageapi.dev;
   font-src 'self' data:;
-  connect-src 'self' https://*.amazonaws.com https://*.r2.cloudflarestorage.com;
+  connect-src 'self' https://*.amazonaws.com https://*.r2.cloudflarestorage.com https://*.storageapi.dev https://t3.storageapi.dev;
   frame-ancestors 'none';
   object-src 'none';
   base-uri 'self';
@@ -41,6 +41,14 @@ const nextConfig: NextConfig = {
       {
         protocol: "https",
         hostname: "**.r2.cloudflarestorage.com",
+      },
+      {
+        protocol: "https",
+        hostname: "**.storageapi.dev",
+      },
+      {
+        protocol: "https",
+        hostname: "t3.storageapi.dev",
       },
     ],
   },

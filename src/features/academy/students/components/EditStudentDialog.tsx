@@ -25,6 +25,7 @@ import {
 import { Pencil, Loader2, User, Phone, MapPin, ShieldAlert, GraduationCap } from "lucide-react";
 import { toast } from "sonner";
 import { updateStudentAction } from "../student.actions";
+import { StudentAvatarUpload } from "./StudentAvatarUpload";
 
 interface EditStudentDialogProps {
   student: {
@@ -34,6 +35,7 @@ interface EditStudentDialogProps {
     fullName: string;
     phone: string;
     email: string | null;
+    profileImageKey?: string | null;
     gender: string | null;
     dateOfBirth?: string | null;
     address: string | null;
@@ -61,6 +63,7 @@ export function EditStudentDialog({
   const [isPending, startTransition] = useTransition();
 
   const [fullName, setFullName] = useState(student.fullName);
+  const [profileImageKey, setProfileImageKey] = useState<string | null>(student.profileImageKey || null);
   const [phone, setPhone] = useState(student.phone);
   const [email, setEmail] = useState(student.email || "");
   const [gender, setGender] = useState(student.gender || "FEMALE");
@@ -82,10 +85,19 @@ export function EditStudentDialog({
       toast.error("Full name and phone number are required");
       return;
     }
+    if (!gender) {
+      toast.error("Gender is required");
+      return;
+    }
+    if (!dateOfBirth) {
+      toast.error("Date of birth is required");
+      return;
+    }
 
     startTransition(async () => {
       const res = await updateStudentAction(student.publicId, {
         fullName,
+        profileImageKey,
         phone,
         email: email || undefined,
         gender,
@@ -138,6 +150,16 @@ export function EditStudentDialog({
               <User className="h-3.5 w-3.5" /> Personal Information
             </h4>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="space-y-2 sm:col-span-2 pb-2 border-b">
+                <Label>Student Profile Photo</Label>
+                <StudentAvatarUpload
+                  value={profileImageKey}
+                  onChange={(key) => setProfileImageKey(key)}
+                  fullName={fullName}
+                  studentIdentifier={student.studentCode || student.publicId}
+                />
+              </div>
+
               <div className="space-y-2 sm:col-span-2">
                 <Label htmlFor="edit-fullName">Full Name *</Label>
                 <Input
@@ -170,8 +192,8 @@ export function EditStudentDialog({
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="edit-gender">Gender</Label>
-                <Select value={gender} onValueChange={setGender}>
+                <Label htmlFor="edit-gender">Gender *</Label>
+                <Select value={gender} onValueChange={setGender} required>
                   <SelectTrigger id="edit-gender">
                     <SelectValue placeholder="Select gender" />
                   </SelectTrigger>
@@ -185,12 +207,14 @@ export function EditStudentDialog({
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="edit-dob">Date of Birth</Label>
+                <Label htmlFor="edit-dob">Date of Birth *</Label>
                 <Input
                   id="edit-dob"
                   type="date"
                   value={dateOfBirth}
                   onChange={(e) => setDateOfBirth(e.target.value)}
+                  max={new Date().toISOString().split("T")[0]}
+                  required
                 />
               </div>
             </div>

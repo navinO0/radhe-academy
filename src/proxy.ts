@@ -9,6 +9,7 @@ const PUBLIC_ROUTES = [
   "/api/auth",
   "/api/health",
   "/health",
+  "/api/academy/students/avatar",
 ];
 
 export default function proxy(request: NextRequest) {

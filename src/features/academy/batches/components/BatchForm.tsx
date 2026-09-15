@@ -13,12 +13,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Loader2 } from "lucide-react";
+import { Loader2, Calendar } from "lucide-react";
 import { toast } from "sonner";
 import { createBatchAction } from "@/features/academy/batches/batch.actions";
+import { calculateEndDateFromDuration } from "@/lib/utils/duration";
 
 interface BatchFormProps {
-  courses: Array<{ id: string; name: string }>;
+  courses: Array<{ id: string; name: string; duration?: string | null }>;
   instructors: Array<{ id: string; name: string }>;
 }
 
@@ -33,6 +34,29 @@ export function BatchForm({ courses, instructors }: BatchFormProps) {
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [timing, setTiming] = useState("10:00 AM - 12:00 PM");
+
+  const selectedCourse = courses.find((c) => c.id === courseId);
+
+  const handleCourseChange = (newCourseId: string) => {
+    setCourseId(newCourseId);
+    const course = courses.find((c) => c.id === newCourseId);
+    if (course?.duration && startDate) {
+      const calculated = calculateEndDateFromDuration(startDate, course.duration);
+      if (calculated) {
+        setEndDate(calculated);
+      }
+    }
+  };
+
+  const handleStartDateChange = (newStartDate: string) => {
+    setStartDate(newStartDate);
+    if (selectedCourse?.duration && newStartDate) {
+      const calculated = calculateEndDateFromDuration(newStartDate, selectedCourse.duration);
+      if (calculated) {
+        setEndDate(calculated);
+      }
+    }
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -84,14 +108,14 @@ export function BatchForm({ courses, instructors }: BatchFormProps) {
           <div className="grid gap-4 sm:grid-cols-2">
             <div className="space-y-2">
               <Label htmlFor="bCourse">Course *</Label>
-              <Select value={courseId} onValueChange={setCourseId}>
+              <Select value={courseId} onValueChange={handleCourseChange}>
                 <SelectTrigger id="bCourse">
                   <SelectValue placeholder="Select course" />
                 </SelectTrigger>
                 <SelectContent>
                   {courses.map((c) => (
                     <SelectItem key={c.id} value={c.id}>
-                      {c.name}
+                      {c.name} {c.duration ? `(${c.duration})` : ""}
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -148,12 +172,19 @@ export function BatchForm({ courses, instructors }: BatchFormProps) {
                 id="bStart"
                 type="date"
                 value={startDate}
-                onChange={(e) => setStartDate(e.target.value)}
+                onChange={(e) => handleStartDateChange(e.target.value)}
               />
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="bEnd">End Date</Label>
+              <div className="flex items-center justify-between">
+                <Label htmlFor="bEnd">End Date</Label>
+                {selectedCourse?.duration && (
+                  <span className="text-xs text-primary font-medium flex items-center gap-1">
+                    <Calendar className="h-3 w-3" /> Auto-calculated ({selectedCourse.duration})
+                  </span>
+                )}
+              </div>
               <Input
                 id="bEnd"
                 type="date"
@@ -169,14 +200,13 @@ export function BatchForm({ courses, instructors }: BatchFormProps) {
               variant="outline"
               className="w-full sm:w-auto"
               onClick={() => router.push("/academy/batches")}
-              disabled={isPending}
             >
               Cancel
             </Button>
-            <Button type="submit" className="w-full sm:w-auto" disabled={isPending}>
+            <Button type="submit" disabled={isPending} className="w-full sm:w-auto">
               {isPending ? (
                 <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Creating...
+                  <Loader2 className="h-4 w-4 mr-2 animate-spin" /> Creating...
                 </>
               ) : (
                 "Create Batch"
@@ -188,4 +218,3 @@ export function BatchForm({ courses, instructors }: BatchFormProps) {
     </Card>
   );
 }
-

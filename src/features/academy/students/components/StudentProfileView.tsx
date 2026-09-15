@@ -45,6 +45,7 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 import { EditStudentDialog } from "./EditStudentDialog";
+import { StudentAvatar } from "./StudentAvatar";
 
 interface StudentProfileViewProps {
   availableBatches?: Array<{ id: string; name: string }>;
@@ -55,6 +56,7 @@ interface StudentProfileViewProps {
     fullName: string;
     phone: string;
     email: string | null;
+    profileImageKey?: string | null;
     status: string;
     joiningDate: Date;
     registrationDate: Date;
@@ -284,6 +286,7 @@ export function StudentProfileView({
                 publicId: student.publicId,
                 studentCode: student.studentCode,
                 fullName: student.fullName,
+                profileImageKey: student.profileImageKey,
                 phone: student.phone,
                 email: student.email,
                 gender: student.gender,
@@ -325,6 +328,7 @@ export function StudentProfileView({
                     publicId: student.publicId,
                     studentCode: student.studentCode,
                     fullName: student.fullName,
+                    profileImageKey: student.profileImageKey,
                     phone: student.phone,
                     email: student.email,
                     gender: student.gender,
@@ -351,10 +355,21 @@ export function StudentProfileView({
                 />
               </CardHeader>
               <CardContent className="space-y-3 text-sm">
-                <div className="flex justify-between border-b pb-2">
-                  <span className="text-muted-foreground">Student Code</span>
-                  <span className="font-mono font-medium">{student.studentCode}</span>
+                <div className="flex items-center gap-4 pb-3 border-b">
+                  <StudentAvatar
+                    profileImageKey={student.profileImageKey}
+                    fullName={student.fullName}
+                    className="h-16 w-16 text-lg border-2 border-primary/20"
+                  />
+                  <div>
+                    <h3 className="text-base font-semibold">{student.fullName}</h3>
+                    <p className="font-mono text-xs text-muted-foreground">{student.studentCode}</p>
+                    <Badge variant={student.status === "ACTIVE" ? "success" : "secondary"} className="mt-1">
+                      {student.status}
+                    </Badge>
+                  </div>
                 </div>
+
                 <div className="flex justify-between border-b pb-2">
                   <span className="text-muted-foreground">Phone</span>
                   <span>{student.phone}</span>
@@ -366,6 +381,10 @@ export function StudentProfileView({
                 <div className="flex justify-between border-b pb-2">
                   <span className="text-muted-foreground">Gender</span>
                   <span>{student.gender || "—"}</span>
+                </div>
+                <div className="flex justify-between border-b pb-2">
+                  <span className="text-muted-foreground">Date of Birth</span>
+                  <span>{student.dateOfBirth ? formatDate(new Date(student.dateOfBirth)) : "—"}</span>
                 </div>
                 <div className="flex justify-between border-b pb-2">
                   <span className="text-muted-foreground">City / State</span>

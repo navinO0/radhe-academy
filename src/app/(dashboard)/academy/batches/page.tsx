@@ -40,7 +40,7 @@ export default async function BatchesPage() {
     }),
     prisma.course.findMany({
       where: { organizationId: session.organizationId, status: "ACTIVE" },
-      select: { id: true, name: true },
+      select: { id: true, name: true, duration: true },
       orderBy: { name: "asc" },
     }),
     prisma.user.findMany({

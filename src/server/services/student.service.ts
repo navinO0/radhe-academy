@@ -89,6 +89,8 @@ export async function listStudents(query: StudentListQuery) {
         status: true,
         joiningDate: true,
         createdAt: true,
+        profileImageKey: true,
+        gender: true,
         course: { select: { id: true, name: true } },
         batch: { select: { id: true, name: true } },
         feeAgreement: {
@@ -185,8 +187,9 @@ export interface CreateStudentInput {
   fullName: string;
   phone: string;
   email?: string;
-  dateOfBirth?: Date;
-  gender?: "MALE" | "FEMALE" | "OTHER" | "PREFER_NOT_TO_SAY";
+  profileImageKey?: string | null;
+  dateOfBirth: Date;
+  gender: "MALE" | "FEMALE" | "OTHER" | "PREFER_NOT_TO_SAY";
   address?: string;
   city?: string;
   state?: string;
@@ -272,6 +275,7 @@ export async function createStudent(input: CreateStudentInput) {
         registrationDate: new Date(),
         status: "ACTIVE",
         ...studentData,
+        profileImageKey: studentData.profileImageKey || null,
         email: studentData.email || null,
         emergencyContactPhone: studentData.emergencyContactPhone || null,
       },
@@ -348,6 +352,7 @@ export interface UpdateStudentInput {
   fullName?: string;
   phone?: string;
   email?: string | null;
+  profileImageKey?: string | null;
   dateOfBirth?: Date | null;
   gender?: any;
   address?: string | null;
@@ -405,6 +410,7 @@ export async function updateStudent(
         ...data,
         updatedById,
         email: data.email === "" ? null : data.email,
+        profileImageKey: data.profileImageKey === "" ? null : data.profileImageKey,
         emergencyContactPhone: data.emergencyContactPhone === "" ? null : data.emergencyContactPhone,
       },
     });

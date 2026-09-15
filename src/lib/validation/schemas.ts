@@ -54,8 +54,11 @@ export const createStudentSchema = z.object({
   fullName: z.string().min(2, "Name must be at least 2 characters").max(100),
   phone: phoneSchema,
   email: emailSchema.optional().or(z.literal("")),
-  dateOfBirth: dateSchema.optional(),
-  gender: z.enum(["MALE", "FEMALE", "OTHER", "PREFER_NOT_TO_SAY"]).optional(),
+  dateOfBirth: dateSchema,
+  gender: z.enum(["MALE", "FEMALE", "OTHER", "PREFER_NOT_TO_SAY"], {
+    required_error: "Gender is required",
+  }),
+  profileImageKey: z.string().optional().nullable(),
   address: z.string().max(500).optional(),
   city: z.string().max(100).optional(),
   state: z.string().max(100).optional(),
@@ -102,6 +105,7 @@ export const updateStudentSchema = z.object({
     .enum(["ACTIVE", "COMPLETED", "ON_HOLD", "DROPPED", "CANCELLED"])
     .optional(),
   notes: z.string().max(1000).optional(),
+  profileImageKey: z.string().optional().nullable(),
 });
 
 export const studentListQuerySchema = z
