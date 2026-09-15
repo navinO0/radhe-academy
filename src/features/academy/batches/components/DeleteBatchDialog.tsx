@@ -112,3 +112,4 @@ export function DeleteBatchDialog({
     </Dialog>
   );
 }
+

@@ -137,3 +137,4 @@ export function DeleteCourseDialog({
     </Dialog>
   );
 }
+
