@@ -112,12 +112,25 @@ async function syncCourses(organizationId: string) {
 async function main() {
   console.log("🌱 Checking database seed status...");
 
+  const adminEmail = process.env.SEED_ADMIN_EMAIL ?? "admin@raadhelabel.com";
   const targetOrgName = process.env.ORGANIZATION_NAME ?? "Radhe Vastraz Academy";
   const adminEmail = process.env.SEED_ADMIN_EMAIL ?? "admin@radhevastraz.in";
   const forceSeed = process.env.FORCE_SEED === "true" || process.env.SEED_FORCE === "true";
 
   if (!forceSeed) {
     try {
+      const [existingOrg, existingAdmin, userCount] = await Promise.all([
+        prisma.organization.findFirst({
+          where: {
+            OR: [
+              { slug: "raadhe-label-academy" },
+              { name: process.env.ORGANIZATION_NAME ?? "Raadhe Label Academy" },
+            ],
+          },
+        }),
+        prisma.user.findUnique({ where: { email: adminEmail } }),
+        prisma.user.count(),
+      ]);
       const existingOrg = await prisma.organization.findFirst({
         where: {
           OR: [
@@ -129,12 +142,15 @@ async function main() {
         },
       });
 
+      if (existingOrg && (existingAdmin || userCount > 0)) {
       const userCount = await prisma.user.count();
 
       if (existingOrg && userCount > 0) {
         console.log(
+          `ℹ️ Database is already seeded (Organization: "${existingOrg.name}", Users: ${userCount}). Skipping seed.`
           `ℹ️ Database is already initialized (Organization: "${existingOrg.name}", Users: ${userCount}).`
         );
+        console.log("⏩ Set FORCE_SEED=true to force re-run the seed script.");
 
         // Update organization name if still using old name
         if (existingOrg.name !== targetOrgName) {
@@ -152,14 +168,29 @@ async function main() {
         return;
       }
     } catch (err) {
+      console.warn("⚠️ Could not verify existing seed status, proceeding with seed check:", err);
       console.warn("⚠️ Could not verify existing seed status, proceeding with full seed:", err);
     }
   } else {
+    console.log("⚡ FORCE_SEED=true detected. Proceeding with seed execution...");
     console.log("⚡ FORCE_SEED=true detected. Proceeding with full seed execution...");
   }
 
+  console.log("🌱 Seed data not found. Executing database seed...");
   console.log("🌱 Executing complete database seed...");
 
+  // 1. Create organization
+  const org = await prisma.organization.upsert({
+    where: { slug: "raadhe-label-academy" },
+    update: {},
+    create: {
+      id: createId(),
+      publicId: createId(),
+      name: process.env.ORGANIZATION_NAME ?? "Raadhe Label Academy",
+      slug: "raadhe-label-academy",
+      timezone: "Asia/Kolkata",
+      currency: "INR",
+      isActive: true,
   // 1. Create or update organization
   const existingOrg = await prisma.organization.findFirst({
     where: {
@@ -190,6 +221,7 @@ async function main() {
 
   // 2. Create permissions
   const permissionDefs = Object.values(PERMISSIONS).map((name) => {
+    const [module, ...rest] = name.split(".");
     const [module] = name.split(".");
     return {
       id: createId(),
@@ -272,6 +304,7 @@ async function main() {
         accounts: {
           create: {
             id: createId(),
+            accountId: adminId, // In Better Auth, accountId must match userId for credentials
             accountId: adminId,
             providerId: "credential",
             password: hashedPassword,
@@ -320,12 +353,40 @@ async function main() {
   }
   console.log("✅ Super admin role assigned");
 
+  // 8. Create sample courses
+  const courses = [
+    { name: "Fashion Design", description: "Full fashion design course", duration: "6 months", defaultFee: "30000" },
+    { name: "Garment Construction", description: "Garment making and construction", duration: "4 months", defaultFee: "20000" },
+    { name: "Fashion Illustration", description: "Design sketching and illustration", duration: "3 months", defaultFee: "15000" },
+  ];
   // 8. Create official courses
   await syncCourses(org.id);
+
+  for (const course of courses) {
+    const existing = await prisma.course.findFirst({
+      where: { organizationId: org.id, name: course.name },
+    });
+    if (!existing) {
+      await prisma.course.create({
+        data: {
+          id: createId(),
+          publicId: createId(),
+          organizationId: org.id,
+          name: course.name,
+          description: course.description,
+          duration: course.duration,
+          defaultFee: course.defaultFee,
+          status: "ACTIVE",
+        },
+      });
+    }
+  }
+  console.log("✅ Sample courses created");
 
   console.log("\n🎉 Seed completed successfully!");
   console.log(`\n📧 Admin login: ${adminEmail}`);
   console.log(`🔑 Admin password: ${adminPassword}`);
+  console.log("\n⚠️  Change the admin password after first login!");
 }
 
 main()
@@ -334,3 +395,4 @@ main()
     process.exit(1);
   })
   .finally(() => prisma.$disconnect());
+

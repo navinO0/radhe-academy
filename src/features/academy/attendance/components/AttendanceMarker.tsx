@@ -146,6 +146,8 @@ export function AttendanceMarker({
             <p className="text-sm">Select a class session from the left to mark attendance</p>
           </div>
         ) : isLoadingStudents ? (
+          <div className="flex items-center justify-center h-64">
+            <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
           <div className="space-y-4">
             <div className="flex items-center justify-between">
               <div className="space-y-1.5">
