@@ -20,3 +20,4 @@ services:
 volumes:
   radhe_academy_pgdata:
     name: radhe_academy_pgdata
+
