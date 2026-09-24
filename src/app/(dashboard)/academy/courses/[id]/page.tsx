@@ -14,11 +14,41 @@ import { EditCourseDialog } from "@/features/academy/courses/components/EditCour
 import { DeleteCourseDialog } from "@/features/academy/courses/components/DeleteCourseDialog";
 import { EditBatchDialog } from "@/features/academy/batches/components/EditBatchDialog";
 import { DeleteBatchDialog } from "@/features/academy/batches/components/DeleteBatchDialog";
+import type { Metadata } from "next";
 
 export const dynamic = "force-dynamic";
 
 interface PageProps {
   params: Promise<{ id: string }>;
+}
+
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+  const { id } = await params;
+  try {
+    const course = await prisma.course.findFirst({
+      where: { OR: [{ id }, { publicId: id }] },
+      select: { name: true, description: true, duration: true },
+    });
+
+    if (!course) {
+      return { title: "Course Details" };
+    }
+
+    return {
+      title: course.name,
+      description:
+        course.description ??
+        `${course.name} - Professional course (Duration: ${course.duration ?? "Flexible"}) at Radhe Vastraz Academy.`,
+      openGraph: {
+        title: `${course.name} | Radhe Vastraz Academy`,
+        description:
+          course.description ??
+          `Learn ${course.name} at Radhe Vastraz Academy with experienced instructors.`,
+      },
+    };
+  } catch {
+    return { title: "Course Details" };
+  }
 }
 
 export default async function CourseDetailPage({ params }: PageProps) {

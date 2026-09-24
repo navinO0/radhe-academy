@@ -11,8 +11,19 @@ import { Plus, BookOpen } from "lucide-react";
 import Link from "next/link";
 import { CourseSearch } from "@/features/academy/courses/components/CourseSearch";
 
+import type { Metadata } from "next";
+
 export const dynamic = "force-dynamic";
-export const metadata = { title: "Courses" };
+export const metadata: Metadata = {
+  title: "Courses & Training Programs",
+  description:
+    "Explore certified fashion design and boutique management courses at Radhe Vastraz Academy. Complete curriculum, duration, and flexible fee schedules.",
+  openGraph: {
+    title: "Courses & Training Programs | Radhe Vastraz Academy",
+    description:
+      "Explore certified courses in Fashion Designing, Boutique Management, Pattern Making, and Machine & Maggam Embroidery.",
+  },
+};
 
 interface PageProps {
   searchParams: Promise<{ search?: string; status?: string }>;

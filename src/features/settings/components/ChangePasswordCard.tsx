@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { PasswordInput } from "@/components/ui/password-input";
 import { Label } from "@/components/ui/label";
 import { Lock, Loader2, CheckCircle2 } from "lucide-react";
 import { toast } from "sonner";
@@ -81,39 +82,39 @@ export function ChangePasswordCard() {
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-1.5">
             <Label htmlFor="current-pw">Current Password</Label>
-            <Input
+            <PasswordInput
               id="current-pw"
-              type="password"
               placeholder="Enter your current password"
               value={formData.currentPassword}
               onChange={(e) => setFormData({ ...formData, currentPassword: e.target.value })}
               required
+              disabled={loading}
             />
           </div>
 
           <div className="space-y-1.5">
             <Label htmlFor="new-pw">New Password (min. 8 characters)</Label>
-            <Input
+            <PasswordInput
               id="new-pw"
-              type="password"
               placeholder="Enter new password"
               value={formData.newPassword}
               onChange={(e) => setFormData({ ...formData, newPassword: e.target.value })}
               required
               minLength={8}
+              disabled={loading}
             />
           </div>
 
           <div className="space-y-1.5">
             <Label htmlFor="confirm-pw">Confirm New Password</Label>
-            <Input
+            <PasswordInput
               id="confirm-pw"
-              type="password"
               placeholder="Re-enter new password"
               value={formData.confirmPassword}
               onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
               required
               minLength={8}
+              disabled={loading}
             />
           </div>
 

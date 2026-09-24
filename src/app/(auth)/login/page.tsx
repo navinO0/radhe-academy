@@ -9,6 +9,7 @@ import { signIn } from "@/lib/auth/auth-client";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { PasswordInput } from "@/components/ui/password-input";
 import { Label } from "@/components/ui/label";
 import {
   Card,
@@ -91,10 +92,12 @@ export default function LoginPage() {
                   placeholder="you@example.com"
                   autoComplete="email"
                   disabled={isLoading}
+                  aria-invalid={!!errors.email}
+                  className={errors.email ? "border-destructive focus-visible:ring-destructive" : ""}
                   {...register("email")}
                 />
                 {errors.email && (
-                  <p className="text-sm text-destructive">
+                  <p className="text-sm text-destructive" role="alert">
                     {errors.email.message}
                   </p>
                 )}
@@ -110,15 +113,17 @@ export default function LoginPage() {
                     Forgot password?
                   </Link>
                 </div>
-                <Input
+                <PasswordInput
                   id="password"
-                  type="password"
                   autoComplete="current-password"
+                  placeholder="••••••••"
                   disabled={isLoading}
+                  aria-invalid={!!errors.password}
+                  className={errors.password ? "border-destructive focus-visible:ring-destructive" : ""}
                   {...register("password")}
                 />
                 {errors.password && (
-                  <p className="text-sm text-destructive">
+                  <p className="text-sm text-destructive" role="alert">
                     {errors.password.message}
                   </p>
                 )}
@@ -142,11 +147,19 @@ export default function LoginPage() {
           </CardContent>
         </Card>
 
-        <p className="text-center text-xs text-slate-500">
-          © {new Date().getFullYear()} Radhe Vastraz Academy
-        </p>
+        <div className="flex flex-col items-center gap-2 text-center text-xs text-slate-500">
+          <div className="flex items-center gap-3">
+            <Link href="/privacy" className="hover:text-slate-300 underline underline-offset-4 transition-colors">
+              Privacy Policy
+            </Link>
+            <span>•</span>
+            <Link href="/terms" className="hover:text-slate-300 underline underline-offset-4 transition-colors">
+              Terms & Conditions
+            </Link>
+          </div>
+          <p>© {new Date().getFullYear()} Radhe Vastraz Academy. All rights reserved.</p>
+        </div>
       </div>
     </div>
   );
 }
-

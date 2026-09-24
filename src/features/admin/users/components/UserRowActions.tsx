@@ -18,6 +18,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
+import { PasswordInput } from "@/components/ui/password-input";
 import { Label } from "@/components/ui/label";
 import { Shield, KeyRound, Power, Loader2 } from "lucide-react";
 import { toast } from "sonner";
@@ -208,14 +209,14 @@ export function UserRowActions({ user, roles, currentUserId }: UserRowActionsPro
             </DialogHeader>
             <div className="py-4 space-y-2">
               <Label htmlFor="new-pw">New Password (min. 8 characters)</Label>
-              <Input
+              <PasswordInput
                 id="new-pw"
-                type="password"
                 placeholder="Enter new password"
                 value={newPassword}
                 onChange={(e) => setNewPassword(e.target.value)}
                 required
                 minLength={8}
+                disabled={loading}
               />
             </div>
             <DialogFooter>

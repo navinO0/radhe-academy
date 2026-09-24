@@ -34,3 +34,15 @@ export async function sendPasswordResetEmail(email: string, redirectTo = "/reset
   }
   return { success: true };
 }
+
+export async function resetPassword({ newPassword, token }: { newPassword: string; token: string }) {
+  try {
+    if ((authClient as any).resetPassword) {
+      return await (authClient as any).resetPassword({ newPassword, token });
+    }
+  } catch (err: any) {
+    return { error: { message: err?.message || "Failed to reset password" } };
+  }
+  return { success: true };
+}
+

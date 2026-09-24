@@ -12,6 +12,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
+import { PasswordInput } from "@/components/ui/password-input";
 import { Label } from "@/components/ui/label";
 import {
   Select,
@@ -124,13 +125,13 @@ export function CreateUserDialog({ roles }: CreateUserDialogProps) {
 
             <div className="space-y-1.5">
               <Label htmlFor="password">Temporary Password *</Label>
-              <Input
+              <PasswordInput
                 id="password"
-                type="password"
                 placeholder="Minimum 8 characters"
                 value={formData.password}
                 onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                 required
+                disabled={loading}
               />
             </div>
 
