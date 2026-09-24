@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/card";
 import { UserCheck, UserX, Clock, Loader2, CalendarCheck } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { Skeleton } from "@/components/ui/skeleton";
 import { markBulkAttendanceAction } from "@/features/academy/attendance/attendance.actions";
 
 type AttendanceStatus = "PRESENT" | "ABSENT" | "LEAVE";
@@ -145,8 +146,32 @@ export function AttendanceMarker({
             <p className="text-sm">Select a class session from the left to mark attendance</p>
           </div>
         ) : isLoadingStudents ? (
-          <div className="flex items-center justify-center h-64">
-            <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+          <div className="space-y-4">
+            <div className="flex items-center justify-between">
+              <div className="space-y-1.5">
+                <Skeleton className="h-6 w-40" />
+                <Skeleton className="h-4 w-28" />
+              </div>
+              <div className="flex gap-2">
+                <Skeleton className="h-9 w-24" />
+                <Skeleton className="h-9 w-24" />
+              </div>
+            </div>
+            <div className="border rounded-md divide-y">
+              {[1, 2, 3, 4, 5].map((i) => (
+                <div key={i} className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 px-4 py-3">
+                  <div className="space-y-1.5">
+                    <Skeleton className="h-4 w-36" />
+                    <Skeleton className="h-3 w-20" />
+                  </div>
+                  <div className="flex gap-1.5">
+                    <Skeleton className="h-8 w-16" />
+                    <Skeleton className="h-8 w-16" />
+                    <Skeleton className="h-8 w-16" />
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
         ) : (
           <div className="space-y-4">

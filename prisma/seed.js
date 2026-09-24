@@ -12,6 +12,10 @@ var __commonJS = (cb, mod) => function __require() {
     throw mod = 0, e;
   }
 };
+var __export = (target, all) => {
+  for (var name in all)
+    __defProp(target, name, { get: all[name], enumerable: true });
+};
 var __copyProps = (to, from, except, desc) => {
   if (from && typeof from === "object" || typeof from === "function") {
     for (let key of __getOwnPropNames(from))
@@ -28,6 +32,7 @@ var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__ge
   isNodeMode || !mod || !mod.__esModule ? __defProp(target, "default", { value: mod, enumerable: true }) : target,
   mod
 ));
+var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
 
 // node_modules/@noble/hashes/_u64.js
 var require_u64 = __commonJS({
@@ -672,6 +677,13 @@ var require_cuid2 = __commonJS({
   }
 });
 
+// prisma/seed.ts
+var seed_exports = {};
+__export(seed_exports, {
+  OFFICIAL_COURSES: () => OFFICIAL_COURSES
+});
+module.exports = __toCommonJS(seed_exports);
+
 // src/lib/db/prisma.ts
 var import_client = require("@prisma/client");
 var globalForPrisma = globalThis;
@@ -826,46 +838,167 @@ async function hashPassword(password) {
 var hashPassword$1 = hashPassword;
 
 // prisma/seed.ts
+var OFFICIAL_COURSES = [
+  // Fashion Designing Courses
+  {
+    name: "Basic Fashion Designing",
+    description: "1-Month foundational fashion design course covering core concepts, garment aesthetics, and design principles. Regular Fee: \u20B930,000 (Founder's Batch 40% OFF: \u20B918,000). Admission fee \u20B92,000 extra. Includes: Expert Trainers, Hands-on Practical Training, Certificate on Completion, Portfolio Development, Lifetime Support, Business & Career Guidance.",
+    duration: "1 Month",
+    defaultFee: "30000"
+  },
+  {
+    name: "Fashion Designing",
+    description: "Comprehensive 3-Month fashion designing program with practical training, portfolio development, and design techniques. Regular Fee: \u20B990,000 (Founder's Batch 40% OFF: \u20B954,000). Admission fee \u20B92,000 extra. Includes: Expert Trainers, Hands-on Practical Training, Certificate on Completion, Portfolio Development, Lifetime Support, Business & Career Guidance.",
+    duration: "3 Months",
+    defaultFee: "90000"
+  },
+  {
+    name: "Advanced Fashion Designing",
+    description: "6-Month in-depth fashion designing program with advanced styling, pattern making, textile studies, and professional portfolio. Regular Fee: \u20B91,80,000 (Founder's Batch 40% OFF: \u20B91,08,000). Admission fee \u20B92,000 extra. Includes: Expert Trainers, Hands-on Practical Training, Certificate on Completion, Portfolio Development, Lifetime Support, Business & Career Guidance.",
+    duration: "6 Months",
+    defaultFee: "180000"
+  },
+  {
+    name: "Professional Fashion Designing (Complete Course)",
+    description: "Full 1-Year master professional fashion designing course covering end-to-end couture, fashion illustration, garment construction, boutique business management, and portfolio. Regular Fee: \u20B93,00,000 (Founder's Batch 40% OFF: \u20B91,80,000). Admission fee \u20B92,000 extra. Includes: Expert Trainers, Hands-on Practical Training, Certificate on Completion, Portfolio Development, Lifetime Support, Business & Career Guidance.",
+    duration: "1 Year",
+    defaultFee: "300000"
+  },
+  // Boutique & Stitching Courses
+  {
+    name: "Personalized Learning",
+    description: "1-Month tailored one-on-one boutique learning module customized to student pace and learning goals. Regular Fee: \u20B925,000 (Founder's Batch 40% OFF: \u20B915,000). Admission fee \u20B92,000 extra. Includes: Expert Trainers, Practical Training, Certificate on Completion, Lifetime Support, Career & Business Guidance.",
+    duration: "1 Month",
+    defaultFee: "25000"
+  },
+  {
+    name: "Foundation Stitching",
+    description: "2-Month foundational stitching course focusing on machine handling, basic cuts, measurements, and finishing techniques. Regular Fee: \u20B950,000 (Founder's Batch 40% OFF: \u20B930,000). Admission fee \u20B92,000 extra. Includes: Expert Trainers, Practical Training, Certificate on Completion, Lifetime Support, Career & Business Guidance.",
+    duration: "2 Months",
+    defaultFee: "50000"
+  },
+  {
+    name: "Professional Stitching",
+    description: "3-Month professional stitching course covering blouses, kurtis, western dresses, and precision tailoring. Regular Fee: \u20B975,000 (Founder's Batch 40% OFF: \u20B945,000). Admission fee \u20B92,000 extra. Includes: Expert Trainers, Practical Training, Certificate on Completion, Lifetime Support, Career & Business Guidance.",
+    duration: "3 Months",
+    defaultFee: "75000"
+  },
+  {
+    name: "Advanced Boutique",
+    description: "4-Month advanced boutique course covering designer cuts, bridal tailoring, pattern making, and boutique client management. Regular Fee: \u20B91,00,000 (Founder's Batch 40% OFF: \u20B960,000). Admission fee \u20B92,000 extra. Includes: Expert Trainers, Practical Training, Certificate on Completion, Lifetime Support, Career & Business Guidance.",
+    duration: "4 Months",
+    defaultFee: "100000"
+  },
+  {
+    name: "Designer Course",
+    description: "5-Month boutique designer course featuring high-end bridal couture, indo-western concepts, drafting, and custom embellishments. Regular Fee: \u20B91,25,000 (Founder's Batch 40% OFF: \u20B975,000). Admission fee \u20B92,000 extra. Includes: Expert Trainers, Practical Training, Certificate on Completion, Lifetime Support, Career & Business Guidance.",
+    duration: "5 Months",
+    defaultFee: "125000"
+  },
+  {
+    name: "Master Boutique Course",
+    description: "Comprehensive 6-Month boutique entrepreneurship course: master stitching, boutique setup, fabric sourcing, pricing, and business scaling. Regular Fee: \u20B91,50,000 (Founder's Batch 40% OFF: \u20B990,000). Admission fee \u20B92,000 extra. Includes: Expert Trainers, Practical Training, Certificate on Completion, Lifetime Support, Career & Business Guidance.",
+    duration: "6 Months",
+    defaultFee: "150000"
+  },
+  {
+    name: "Machine Embroidery & Maggam Essentials",
+    description: "1-Month specialized intensive training in machine embroidery, zardosi, aari/maggam work, and bridal motifs. Regular Fee: \u20B920,000 (Founder's Batch 40% OFF: \u20B912,000). Admission fee \u20B92,000 extra. Includes: Expert Trainers, Practical Training, Certificate on Completion, Lifetime Support, Career & Business Guidance.",
+    duration: "1 Month",
+    defaultFee: "20000"
+  }
+];
+async function syncCourses(organizationId) {
+  console.log(`\u{1F4DA} Syncing ${OFFICIAL_COURSES.length} official courses for organization ${organizationId}...`);
+  for (const course of OFFICIAL_COURSES) {
+    const existing = await prisma.course.findFirst({
+      where: { organizationId, name: course.name }
+    });
+    if (!existing) {
+      await prisma.course.create({
+        data: {
+          id: (0, import_cuid2.createId)(),
+          publicId: (0, import_cuid2.createId)(),
+          organizationId,
+          name: course.name,
+          description: course.description,
+          duration: course.duration,
+          defaultFee: course.defaultFee,
+          status: "ACTIVE"
+        }
+      });
+      console.log(`  \u2795 Created: ${course.name} (${course.duration} \u2022 \u20B9${course.defaultFee})`);
+    } else {
+      await prisma.course.update({
+        where: { id: existing.id },
+        data: {
+          description: course.description,
+          duration: course.duration,
+          defaultFee: course.defaultFee,
+          status: "ACTIVE"
+        }
+      });
+      console.log(`  \u{1F504} Updated: ${course.name} (${course.duration} \u2022 \u20B9${course.defaultFee})`);
+    }
+  }
+}
 async function main() {
   console.log("\u{1F331} Checking database seed status...");
-  const adminEmail = process.env.SEED_ADMIN_EMAIL ?? "admin@raadhelabel.com";
+  const targetOrgName = process.env.ORGANIZATION_NAME ?? "Radhe Vastraz Academy";
+  const adminEmail = process.env.SEED_ADMIN_EMAIL ?? "admin@radhevastraz.in";
   const forceSeed = process.env.FORCE_SEED === "true" || process.env.SEED_FORCE === "true";
   if (!forceSeed) {
     try {
-      const [existingOrg, existingAdmin, userCount] = await Promise.all([
-        prisma.organization.findFirst({
-          where: {
-            OR: [
-              { slug: "raadhe-label-academy" },
-              { name: process.env.ORGANIZATION_NAME ?? "Raadhe Label Academy" }
-            ]
-          }
-        }),
-        prisma.user.findUnique({ where: { email: adminEmail } }),
-        prisma.user.count()
-      ]);
-      if (existingOrg && (existingAdmin || userCount > 0)) {
+      const existingOrg2 = await prisma.organization.findFirst({
+        where: {
+          OR: [
+            { slug: "raadhe-label-academy" },
+            { slug: "radhe-vastraz-academy" },
+            { name: "Raadhe Label Academy" },
+            { name: targetOrgName }
+          ]
+        }
+      });
+      const userCount = await prisma.user.count();
+      if (existingOrg2 && userCount > 0) {
         console.log(
-          `\u2139\uFE0F Database is already seeded (Organization: "${existingOrg.name}", Users: ${userCount}). Skipping seed.`
+          `\u2139\uFE0F Database is already initialized (Organization: "${existingOrg2.name}", Users: ${userCount}).`
         );
-        console.log("\u23E9 Set FORCE_SEED=true to force re-run the seed script.");
+        if (existingOrg2.name !== targetOrgName) {
+          await prisma.organization.update({
+            where: { id: existingOrg2.id },
+            data: { name: targetOrgName }
+          });
+          console.log(`\u{1F504} Updated organization name from "${existingOrg2.name}" to "${targetOrgName}"`);
+        }
+        await syncCourses(existingOrg2.id);
+        console.log("\u2705 Courses and Organization sync completed.");
         return;
       }
     } catch (err) {
-      console.warn("\u26A0\uFE0F Could not verify existing seed status, proceeding with seed check:", err);
+      console.warn("\u26A0\uFE0F Could not verify existing seed status, proceeding with full seed:", err);
     }
   } else {
-    console.log("\u26A1 FORCE_SEED=true detected. Proceeding with seed execution...");
+    console.log("\u26A1 FORCE_SEED=true detected. Proceeding with full seed execution...");
   }
-  console.log("\u{1F331} Seed data not found. Executing database seed...");
-  const org = await prisma.organization.upsert({
-    where: { slug: "raadhe-label-academy" },
-    update: {},
-    create: {
+  console.log("\u{1F331} Executing complete database seed...");
+  const existingOrg = await prisma.organization.findFirst({
+    where: {
+      OR: [
+        { slug: "raadhe-label-academy" },
+        { slug: "radhe-vastraz-academy" }
+      ]
+    }
+  });
+  const org = existingOrg ? await prisma.organization.update({
+    where: { id: existingOrg.id },
+    data: { name: targetOrgName }
+  }) : await prisma.organization.create({
+    data: {
       id: (0, import_cuid2.createId)(),
       publicId: (0, import_cuid2.createId)(),
-      name: process.env.ORGANIZATION_NAME ?? "Raadhe Label Academy",
-      slug: "raadhe-label-academy",
+      name: targetOrgName,
+      slug: "radhe-vastraz-academy",
       timezone: "Asia/Kolkata",
       currency: "INR",
       isActive: true
@@ -873,7 +1006,7 @@ async function main() {
   });
   console.log(`\u2705 Organization: ${org.name} (${org.id})`);
   const permissionDefs = Object.values(PERMISSIONS).map((name) => {
-    const [module2, ...rest] = name.split(".");
+    const [module2] = name.split(".");
     return {
       id: (0, import_cuid2.createId)(),
       name,
@@ -944,7 +1077,6 @@ async function main() {
           create: {
             id: (0, import_cuid2.createId)(),
             accountId: adminId,
-            // In Better Auth, accountId must match userId for credentials
             providerId: "credential",
             password: hashedPassword
           }
@@ -987,41 +1119,20 @@ async function main() {
     });
   }
   console.log("\u2705 Super admin role assigned");
-  const courses = [
-    { name: "Fashion Design", description: "Full fashion design course", duration: "6 months", defaultFee: "30000" },
-    { name: "Garment Construction", description: "Garment making and construction", duration: "4 months", defaultFee: "20000" },
-    { name: "Fashion Illustration", description: "Design sketching and illustration", duration: "3 months", defaultFee: "15000" }
-  ];
-  for (const course of courses) {
-    const existing = await prisma.course.findFirst({
-      where: { organizationId: org.id, name: course.name }
-    });
-    if (!existing) {
-      await prisma.course.create({
-        data: {
-          id: (0, import_cuid2.createId)(),
-          publicId: (0, import_cuid2.createId)(),
-          organizationId: org.id,
-          name: course.name,
-          description: course.description,
-          duration: course.duration,
-          defaultFee: course.defaultFee,
-          status: "ACTIVE"
-        }
-      });
-    }
-  }
-  console.log("\u2705 Sample courses created");
+  await syncCourses(org.id);
   console.log("\n\u{1F389} Seed completed successfully!");
   console.log(`
 \u{1F4E7} Admin login: ${adminEmail}`);
   console.log(`\u{1F511} Admin password: ${adminPassword}`);
-  console.log("\n\u26A0\uFE0F  Change the admin password after first login!");
 }
 main().catch((e) => {
   console.error("\u274C Seed failed:", e);
   process.exit(1);
 }).finally(() => prisma.$disconnect());
+// Annotate the CommonJS export names for ESM import in node:
+0 && (module.exports = {
+  OFFICIAL_COURSES
+});
 /*! Bundled license information:
 
 @noble/hashes/utils.js:

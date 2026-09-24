@@ -23,7 +23,7 @@ describe("Validation Schemas", () => {
   });
 
   it("validates standard emails", () => {
-    expect(emailSchema.safeParse("test@raadhelabel.com").success).toBe(true);
+    expect(emailSchema.safeParse("test@radhevastraz.in").success).toBe(true);
     expect(emailSchema.safeParse("notanemail").success).toBe(false);
   });
 

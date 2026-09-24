@@ -13,8 +13,8 @@ const envSchema = z.object({
   NODE_ENV: z.enum(["development", "test", "production"]).default("development"),
   NEXT_PUBLIC_APP_URL: z.string().url().default("http://localhost:3000"),
   ACADEMY_TIMEZONE: z.string().default("Asia/Kolkata"),
-  ORGANIZATION_NAME: z.string().default("Raadhe Label Academy"),
-  SEED_ADMIN_EMAIL: z.string().email().default("admin@raadhelabel.com"),
+  ORGANIZATION_NAME: z.string().default("Radhe Vastraz Academy"),
+  SEED_ADMIN_EMAIL: z.string().email().default("admin@radhevastraz.in"),
   SEED_ADMIN_PASSWORD: z.string().min(8).default("Admin@123456"),
 
   // Storage (optional in dev - falls back to local disk)
@@ -26,7 +26,7 @@ const envSchema = z.object({
 
   // Email (optional in dev - falls back to console)
   RESEND_API_KEY: z.string().optional(),
-  EMAIL_FROM: z.string().email().default("noreply@raadhelabel.com"),
+  EMAIL_FROM: z.string().email().default("noreply@radhevastraz.in"),
 });
 
 const _env = envSchema.safeParse(process.env);

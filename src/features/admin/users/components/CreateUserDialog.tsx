@@ -115,7 +115,7 @@ export function CreateUserDialog({ roles }: CreateUserDialogProps) {
               <Input
                 id="email"
                 type="email"
-                placeholder="e.g. priya@raadhelabel.com"
+                placeholder="e.g. priya@radhevastraz.in"
                 value={formData.email}
                 onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                 required

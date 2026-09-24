@@ -1,4 +1,4 @@
-// Prisma Schema for Raadhe Label Academy Management System
+// Prisma Schema for Radhe Vastraz Academy Management System
 // PostgreSQL + Prisma ORM
 
 generator client {

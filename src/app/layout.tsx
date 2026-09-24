@@ -13,10 +13,10 @@ export const viewport: Viewport = {
 
 export const metadata: Metadata = {
   title: {
-    default: "Raadhe Label Academy",
-    template: "%s | Raadhe Label Academy",
+    default: "Radhe Vastraz Academy",
+    template: "%s | Radhe Vastraz Academy",
   },
-  description: "Academy Management System for Raadhe Label",
+  description: "Academy Management System for Radhe Vastraz",
   icons: {
     icon: [
       { url: "/favicon.ico" },

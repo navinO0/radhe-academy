@@ -15,7 +15,7 @@ echo "   DATABASE_URL:         $([ -n "$DATABASE_URL" ] && echo '[CONFIGURED]' |
 echo "   BETTER_AUTH_SECRET:   $([ -n "$BETTER_AUTH_SECRET" ] && echo '[CONFIGURED]' || echo '[MISSING]')"
 echo "   BETTER_AUTH_URL:      ${BETTER_AUTH_URL:-[NOT SET]}"
 echo "   NEXT_PUBLIC_APP_URL:  ${NEXT_PUBLIC_APP_URL:-[NOT SET]}"
-echo "   ORGANIZATION_NAME:    ${ORGANIZATION_NAME:-Raadhe Label Academy (default)}"
+echo "   ORGANIZATION_NAME:    ${ORGANIZATION_NAME:-Radhe Vastraz Academy (default)}"
 echo "   ACADEMY_TIMEZONE:     ${ACADEMY_TIMEZONE:-Asia/Kolkata (default)}"
 echo "--------------------------------------------------------"
 

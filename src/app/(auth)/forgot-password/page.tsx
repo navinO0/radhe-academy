@@ -55,7 +55,7 @@ export default function ForgotPasswordPage() {
         <div className="text-center space-y-2">
           <div className="flex items-center justify-center gap-2 text-white">
             <GraduationCap className="h-8 w-8" />
-            <h1 className="text-2xl font-bold tracking-tight">Raadhe Label</h1>
+            <h1 className="text-2xl font-bold tracking-tight">Radhe Vastraz</h1>
           </div>
           <p className="text-slate-400 text-sm">Academy Management System</p>
         </div>

@@ -218,7 +218,7 @@ function ReceiptDocument({ data }: { data: ReceiptData }) {
           <Text style={styles.footerText}>
             Generated on {formatDate(new Date())} by {data.generatedBy?.name ?? "Authorized Staff"}
           </Text>
-          <Text style={styles.footerText}>Raadhe Label Academy • Computer Generated Document</Text>
+          <Text style={styles.footerText}>Radhe Vastraz Academy • Computer Generated Document</Text>
         </View>
       </Page>
     </Document>
