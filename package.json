@@ -3,10 +3,10 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "node prisma/seed.js && next dev",
     "build:seed": "esbuild prisma/seed.ts --bundle --platform=node --format=cjs --external:@prisma/client --external:.prisma/client --alias:@=./src --outfile=prisma/seed.js",
     "build": "npm run build:seed && next build",
-    "start": "next start",
+    "start": "node prisma/seed.js && next start",
     "lint": "next lint",
     "typecheck": "tsc --noEmit",
     "db:generate": "prisma generate",

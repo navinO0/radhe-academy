@@ -796,7 +796,7 @@ var ROLE_PERMISSIONS = {
   ]
 };
 
-// prisma/seed.ts
+// src/lib/db/startup-seeder.ts
 var import_cuid2 = __toESM(require_cuid2());
 
 // node_modules/@better-auth/utils/dist/password.node.mjs
@@ -837,7 +837,7 @@ async function hashPassword(password) {
 // node_modules/better-auth/dist/crypto/password.mjs
 var hashPassword$1 = hashPassword;
 
-// prisma/seed.ts
+// src/lib/db/startup-seeder.ts
 var OFFICIAL_COURSES = [
   // Fashion Designing Courses
   {
@@ -897,7 +897,7 @@ var OFFICIAL_COURSES = [
   },
   {
     name: "Master Boutique Course",
-    description: "Comprehensive 6-Month boutique entrepreneurship course: master stitching, boutique setup, fabric sourcing, pricing, and business scaling. Founder's Batch Fee: \u20B990,000 (40% OFF regular \u20B91,50,000). Admission fee \u20B92,000 extra. Includes: Expert Trainers, Practical Training, Certificate on Completion, Lifetime Support, Career & Business Guidance.",
+    description: "6-Month complete master boutique course mastering couture construction, commercial cutting, client consultation, luxury finishes, and boutique operations. Founder's Batch Fee: \u20B990,000 (40% OFF regular \u20B91,50,000). Admission fee \u20B92,000 extra. Includes: Expert Trainers, Practical Training, Certificate on Completion, Lifetime Support, Career & Business Guidance.",
     duration: "6 Months",
     defaultFee: "90000"
   },
@@ -921,6 +921,18 @@ var OFFICIAL_COURSES = [
     defaultFee: "45000"
   }
 ];
+async function isDatabaseSeeded() {
+  try {
+    const [orgCount, userCount, courseCount] = await Promise.all([
+      prisma.organization.count(),
+      prisma.user.count(),
+      prisma.course.count()
+    ]);
+    return orgCount > 0 && userCount > 0 && courseCount > 0;
+  } catch {
+    return false;
+  }
+}
 async function syncCourses(organizationId) {
   console.log(`\u{1F4DA} Syncing ${OFFICIAL_COURSES.length} official courses for organization ${organizationId}...`);
   for (const course of OFFICIAL_COURSES) {
@@ -955,66 +967,36 @@ async function syncCourses(organizationId) {
     }
   }
 }
-async function main() {
-  console.log("\u{1F331} Checking database seed status...");
+async function executeFullSeed() {
   const targetOrgName = process.env.ORGANIZATION_NAME ?? "Radhe Vastraz Academy";
   const adminEmail = process.env.SEED_ADMIN_EMAIL ?? "admin@radhevastraz.in";
-  const forceSeed = process.env.FORCE_SEED === "true" || process.env.SEED_FORCE === "true";
-  if (!forceSeed) {
-    try {
-      const existingOrg2 = await prisma.organization.findFirst({
-        where: {
-          OR: [
-            { slug: "raadhe-label-academy" },
-            { slug: "radhe-vastraz-academy" },
-            { name: "Raadhe Label Academy" },
-            { name: targetOrgName }
-          ]
-        }
-      });
-      const userCount = await prisma.user.count();
-      if (existingOrg2 && userCount > 0) {
-        console.log(
-          `\u2139\uFE0F Database is already initialized (Organization: "${existingOrg2.name}", Users: ${userCount}).`
-        );
-        await prisma.organization.update({
-          where: { id: existingOrg2.id },
-          data: {
-            name: targetOrgName,
-            phone: "+91 9063643342",
-            email: "radhevastraz@gmail.com",
-            address: "Shop No. 1, Jal Vayu Vihar, Kukatpally, backside of community office building, Hyderabad, Telangana, India (500085)"
-          }
-        });
-        console.log(`\u{1F504} Synced organization details for "${targetOrgName}"`);
-        await syncCourses(existingOrg2.id);
-        console.log("\u2705 Courses and Organization sync completed.");
-        return;
-      }
-    } catch (err) {
-      console.warn("\u26A0\uFE0F Could not verify existing seed status, proceeding with full seed:", err);
-    }
-  } else {
-    console.log("\u26A1 FORCE_SEED=true detected. Proceeding with full seed execution...");
-  }
-  console.log("\u{1F331} Executing complete database seed...");
   const existingOrg = await prisma.organization.findFirst({
     where: {
       OR: [
         { slug: "raadhe-label-academy" },
-        { slug: "radhe-vastraz-academy" }
+        { slug: "radhe-vastraz-academy" },
+        { name: "Raadhe Label Academy" },
+        { name: targetOrgName }
       ]
     }
   });
   const org = existingOrg ? await prisma.organization.update({
     where: { id: existingOrg.id },
-    data: { name: targetOrgName }
+    data: {
+      name: targetOrgName,
+      phone: "+91 9063643342",
+      email: "radhevastraz@gmail.com",
+      address: "Shop No. 1, Jal Vayu Vihar, Kukatpally, backside of community office building, Hyderabad, Telangana, India (500085)"
+    }
   }) : await prisma.organization.create({
     data: {
       id: (0, import_cuid2.createId)(),
       publicId: (0, import_cuid2.createId)(),
       name: targetOrgName,
       slug: "radhe-vastraz-academy",
+      phone: "+91 9063643342",
+      email: "radhevastraz@gmail.com",
+      address: "Shop No. 1, Jal Vayu Vihar, Kukatpally, backside of community office building, Hyderabad, Telangana, India (500085)",
       timezone: "Asia/Kolkata",
       currency: "INR",
       isActive: true
@@ -1136,10 +1118,28 @@ async function main() {
   }
   console.log("\u2705 Super admin role assigned");
   await syncCourses(org.id);
-  console.log("\n\u{1F389} Seed completed successfully!");
+  console.log("\n\u{1F389} Database seed execution finished successfully!");
   console.log(`
 \u{1F4E7} Admin login: ${adminEmail}`);
   console.log(`\u{1F511} Admin password: ${adminPassword}`);
+}
+async function runStartupSeeder(options) {
+  const force = options?.force ?? (process.env.FORCE_SEED === "true" || process.env.SEED_FORCE === "true");
+  if (!force) {
+    const seeded = await isDatabaseSeeded();
+    if (seeded) {
+      console.log("\u2139\uFE0F Database is already seeded. Ignoring seeder.");
+      return { seeded: true, action: "skipped" };
+    }
+  }
+  console.log("\u{1F331} Database is not yet seeded. Running seeder now...");
+  await executeFullSeed();
+  return { seeded: true, action: "seeded" };
+}
+
+// prisma/seed.ts
+async function main() {
+  await runStartupSeeder();
 }
 main().catch((e) => {
   console.error("\u274C Seed failed:", e);

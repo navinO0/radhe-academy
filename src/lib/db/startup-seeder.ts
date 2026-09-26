@@ -1,0 +1,340 @@
+import { prisma } from "@/lib/db/prisma";
+import { PERMISSIONS, ROLE_PERMISSIONS } from "@/lib/auth/permissions";
+import { createId } from "@paralleldrive/cuid2";
+import { hashPassword } from "better-auth/crypto";
+
+export const OFFICIAL_COURSES = [
+  // Fashion Designing Courses
+  {
+    name: "Basic Fashion Designing",
+    description: "1-Month foundational fashion design course covering core concepts, garment aesthetics, and design principles. Founder's Batch Fee: ₹18,000 (40% OFF regular ₹30,000). Admission fee ₹2,000 extra. Includes: Expert Trainers, Hands-on Practical Training, Certificate on Completion, Portfolio Development, Lifetime Support, Business & Career Guidance.",
+    duration: "1 Month",
+    defaultFee: "18000",
+  },
+  {
+    name: "Fashion Designing",
+    description: "Comprehensive 3-Month fashion designing program with practical training, portfolio development, and design techniques. Founder's Batch Fee: ₹54,000 (40% OFF regular ₹90,000). Admission fee ₹2,000 extra. Includes: Expert Trainers, Hands-on Practical Training, Certificate on Completion, Portfolio Development, Lifetime Support, Business & Career Guidance.",
+    duration: "3 Months",
+    defaultFee: "54000",
+  },
+  {
+    name: "Advanced Fashion Designing",
+    description: "6-Month in-depth fashion designing program with advanced styling, pattern making, textile studies, and professional portfolio. Founder's Batch Fee: ₹1,08,000 (40% OFF regular ₹1,80,000). Admission fee ₹2,000 extra. Includes: Expert Trainers, Hands-on Practical Training, Certificate on Completion, Portfolio Development, Lifetime Support, Business & Career Guidance.",
+    duration: "6 Months",
+    defaultFee: "108000",
+  },
+  {
+    name: "Professional Fashion Designing (Complete Course)",
+    description: "Full 1-Year master professional fashion designing course covering end-to-end couture, fashion illustration, garment construction, boutique business management, and portfolio. Founder's Batch Fee: ₹1,80,000 (40% OFF regular ₹3,000,000). Admission fee ₹2,000 extra. Includes: Expert Trainers, Hands-on Practical Training, Certificate on Completion, Portfolio Development, Lifetime Support, Business & Career Guidance.",
+    duration: "1 Year",
+    defaultFee: "180000",
+  },
+  // Boutique & Stitching Courses
+  {
+    name: "Personalized Learning",
+    description: "1-Month tailored one-on-one boutique learning module customized to student pace and learning goals. Founder's Batch Fee: ₹15,000 (40% OFF regular ₹25,000). Admission fee ₹2,000 extra. Includes: Expert Trainers, Practical Training, Certificate on Completion, Lifetime Support, Career & Business Guidance.",
+    duration: "1 Month",
+    defaultFee: "15000",
+  },
+  {
+    name: "Foundation Stitching",
+    description: "2-Month foundational stitching course focusing on machine handling, basic cuts, measurements, and finishing techniques. Founder's Batch Fee: ₹30,000 (40% OFF regular ₹50,000). Admission fee ₹2,000 extra. Includes: Expert Trainers, Practical Training, Certificate on Completion, Lifetime Support, Career & Business Guidance.",
+    duration: "2 Months",
+    defaultFee: "30000",
+  },
+  {
+    name: "Professional Stitching",
+    description: "3-Month professional stitching course covering blouses, kurtis, western dresses, and precision tailoring. Founder's Batch Fee: ₹45,000 (40% OFF regular ₹75,000). Admission fee ₹2,000 extra. Includes: Expert Trainers, Practical Training, Certificate on Completion, Lifetime Support, Career & Business Guidance.",
+    duration: "3 Months",
+    defaultFee: "45000",
+  },
+  {
+    name: "Advanced Boutique",
+    description: "4-Month advanced boutique course covering designer cuts, bridal tailoring, pattern making, and boutique client management. Founder's Batch Fee: ₹60,000 (40% OFF regular ₹1,00,000). Admission fee ₹2,000 extra. Includes: Expert Trainers, Practical Training, Certificate on Completion, Lifetime Support, Career & Business Guidance.",
+    duration: "4 Months",
+    defaultFee: "60000",
+  },
+  {
+    name: "Designer Course",
+    description: "5-Month boutique designer course featuring high-end bridal couture, indo-western concepts, drafting, and custom embellishments. Founder's Batch Fee: ₹75,000 (40% OFF regular ₹1,25,000). Admission fee ₹2,000 extra. Includes: Expert Trainers, Practical Training, Certificate on Completion, Lifetime Support, Career & Business Guidance.",
+    duration: "5 Months",
+    defaultFee: "75000",
+  },
+  {
+    name: "Master Boutique Course",
+    description: "6-Month complete master boutique course mastering couture construction, commercial cutting, client consultation, luxury finishes, and boutique operations. Founder's Batch Fee: ₹90,000 (40% OFF regular ₹1,50,000). Admission fee ₹2,000 extra. Includes: Expert Trainers, Practical Training, Certificate on Completion, Lifetime Support, Career & Business Guidance.",
+    duration: "6 Months",
+    defaultFee: "90000",
+  },
+  {
+    name: "Machine Embroidery & Maggam Essentials",
+    description: "1-Month specialized intensive training in machine embroidery, zardosi, aari/maggam work, and bridal motifs. Founder's Batch Fee: ₹12,000 (40% OFF regular ₹20,000). Admission fee ₹2,000 extra. Includes: Expert Trainers, Practical Training, Certificate on Completion, Lifetime Support, Career & Business Guidance.",
+    duration: "1 Month",
+    defaultFee: "12000",
+  },
+  // Professional Fabric Painting Courses
+  {
+    name: "Basic Fabric Painting",
+    description: "1-Month foundational fabric painting course covering brush techniques, color mixing, floral & traditional designs, and blouse/dupatta painting. Founder's Batch Fee: ₹15,000 (40% OFF regular ₹25,000). Admission fee ₹2,000 extra. Includes: Expert Trainers, Hands-on Practical Training, Certificate on Completion, Portfolio Development, Lifetime Support, Business & Career Guidance.",
+    duration: "1 Month",
+    defaultFee: "15000",
+  },
+  {
+    name: "Advanced Fabric Painting",
+    description: "3-Month advanced fabric painting course mastering Kalamkari, Pichwai, Madhubani, 3D texture & metallic painting, bridal designer collections, and client work. Founder's Batch Fee: ₹45,000 (40% OFF regular ₹75,000). Admission fee ₹2,000 extra. Includes: Expert Trainers, Hands-on Practical Training, Certificate on Completion, Portfolio Development, Lifetime Support, Business & Career Guidance.",
+    duration: "3 Months",
+    defaultFee: "45000",
+  },
+];
+
+export async function isDatabaseSeeded(): Promise<boolean> {
+  try {
+    const [orgCount, userCount, courseCount] = await Promise.all([
+      prisma.organization.count(),
+      prisma.user.count(),
+      prisma.course.count(),
+    ]);
+
+    return orgCount > 0 && userCount > 0 && courseCount > 0;
+  } catch {
+    return false;
+  }
+}
+
+export async function syncCourses(organizationId: string) {
+  console.log(`📚 Syncing ${OFFICIAL_COURSES.length} official courses for organization ${organizationId}...`);
+  for (const course of OFFICIAL_COURSES) {
+    const existing = await prisma.course.findFirst({
+      where: { organizationId, name: course.name },
+    });
+    if (!existing) {
+      await prisma.course.create({
+        data: {
+          id: createId(),
+          publicId: createId(),
+          organizationId,
+          name: course.name,
+          description: course.description,
+          duration: course.duration,
+          defaultFee: course.defaultFee,
+          status: "ACTIVE",
+        },
+      });
+      console.log(`  ➕ Created: ${course.name} (${course.duration} • ₹${course.defaultFee})`);
+    } else {
+      await prisma.course.update({
+        where: { id: existing.id },
+        data: {
+          description: course.description,
+          duration: course.duration,
+          defaultFee: course.defaultFee,
+          status: "ACTIVE",
+        },
+      });
+      console.log(`  🔄 Updated: ${course.name} (${course.duration} • ₹${course.defaultFee})`);
+    }
+  }
+}
+
+export async function executeFullSeed() {
+  const targetOrgName = process.env.ORGANIZATION_NAME ?? "Radhe Vastraz Academy";
+  const adminEmail = process.env.SEED_ADMIN_EMAIL ?? "admin@radhevastraz.in";
+
+  // 1. Create or update organization
+  const existingOrg = await prisma.organization.findFirst({
+    where: {
+      OR: [
+        { slug: "raadhe-label-academy" },
+        { slug: "radhe-vastraz-academy" },
+        { name: "Raadhe Label Academy" },
+        { name: targetOrgName },
+      ],
+    },
+  });
+
+  const org = existingOrg
+    ? await prisma.organization.update({
+        where: { id: existingOrg.id },
+        data: {
+          name: targetOrgName,
+          phone: "+91 9063643342",
+          email: "radhevastraz@gmail.com",
+          address: "Shop No. 1, Jal Vayu Vihar, Kukatpally, backside of community office building, Hyderabad, Telangana, India (500085)",
+        },
+      })
+    : await prisma.organization.create({
+        data: {
+          id: createId(),
+          publicId: createId(),
+          name: targetOrgName,
+          slug: "radhe-vastraz-academy",
+          phone: "+91 9063643342",
+          email: "radhevastraz@gmail.com",
+          address: "Shop No. 1, Jal Vayu Vihar, Kukatpally, backside of community office building, Hyderabad, Telangana, India (500085)",
+          timezone: "Asia/Kolkata",
+          currency: "INR",
+          isActive: true,
+        },
+      });
+  console.log(`✅ Organization: ${org.name} (${org.id})`);
+
+  // 2. Create permissions
+  const permissionDefs = Object.values(PERMISSIONS).map((name) => {
+    const [module] = name.split(".");
+    return {
+      id: createId(),
+      name,
+      description: name,
+      module: module ?? "system",
+    };
+  });
+
+  for (const perm of permissionDefs) {
+    await prisma.permission.upsert({
+      where: { name: perm.name },
+      update: {},
+      create: perm,
+    });
+  }
+  console.log(`✅ Permissions: ${permissionDefs.length} created/updated`);
+
+  // 3. Create roles
+  const roleDefs = [
+    { name: "SUPER_ADMIN", description: "Full system access", isSystem: true },
+    { name: "ADMIN", description: "Academy management", isSystem: true },
+    { name: "STAFF", description: "Student and payment operations", isSystem: true },
+    { name: "ACCOUNTANT", description: "Financial operations", isSystem: true },
+    { name: "INSTRUCTOR", description: "Batch and attendance operations", isSystem: true },
+  ] as const;
+
+  const roles: Record<string, string> = {};
+  for (const roleDef of roleDefs) {
+    const role = await prisma.role.upsert({
+      where: { name: roleDef.name },
+      update: {},
+      create: {
+        id: createId(),
+        name: roleDef.name,
+        description: roleDef.description,
+        isSystem: roleDef.isSystem,
+      },
+    });
+    roles[roleDef.name] = role.id;
+  }
+  console.log(`✅ Roles: ${roleDefs.length} created/updated`);
+
+  // 4. Assign permissions to roles
+  for (const [roleName, permissions] of Object.entries(ROLE_PERMISSIONS)) {
+    const roleId = roles[roleName];
+    if (!roleId) continue;
+
+    await prisma.rolePermission.deleteMany({ where: { roleId } });
+
+    for (const permName of permissions) {
+      const perm = await prisma.permission.findUnique({ where: { name: permName } });
+      if (!perm) continue;
+
+      await prisma.rolePermission.create({
+        data: {
+          id: createId(),
+          roleId,
+          permissionId: perm.id,
+        },
+      });
+    }
+  }
+  console.log("✅ Role permissions assigned and synced");
+
+  // 5. Create super admin user
+  const adminPassword = process.env.SEED_ADMIN_PASSWORD ?? "Admin@123456";
+  const hashedPassword = await hashPassword(adminPassword);
+
+  let adminUser = await prisma.user.findUnique({ where: { email: adminEmail } });
+  if (!adminUser) {
+    const adminId = createId();
+    adminUser = await prisma.user.create({
+      data: {
+        id: adminId,
+        name: "Super Admin",
+        email: adminEmail,
+        emailVerified: true,
+        status: "ACTIVE",
+        accounts: {
+          create: {
+            id: createId(),
+            accountId: adminId,
+            providerId: "credential",
+            password: hashedPassword,
+          },
+        },
+      },
+    });
+  }
+  console.log(`✅ Admin user: ${adminUser.email}`);
+
+  // 6. Link admin to organization
+  await prisma.userOrganization.upsert({
+    where: {
+      userId_organizationId: {
+        userId: adminUser.id,
+        organizationId: org.id,
+      },
+    },
+    update: {},
+    create: {
+      id: createId(),
+      userId: adminUser.id,
+      organizationId: org.id,
+    },
+  });
+
+  // 7. Assign SUPER_ADMIN role
+  const superAdminRoleId = roles["SUPER_ADMIN"];
+  if (superAdminRoleId) {
+    await prisma.userRole.upsert({
+      where: {
+        userId_roleId_organizationId: {
+          userId: adminUser.id,
+          roleId: superAdminRoleId,
+          organizationId: org.id,
+        },
+      },
+      update: {},
+      create: {
+        id: createId(),
+        userId: adminUser.id,
+        roleId: superAdminRoleId,
+        organizationId: org.id,
+      },
+    });
+  }
+  console.log("✅ Super admin role assigned");
+
+  // 8. Create official courses
+  await syncCourses(org.id);
+
+  console.log("\n🎉 Database seed execution finished successfully!");
+  console.log(`\n📧 Admin login: ${adminEmail}`);
+  console.log(`🔑 Admin password: ${adminPassword}`);
+}
+
+/**
+ * Main startup check:
+ * If the database is already seeded, ignores and exits immediately.
+ * Only if the database is not seeded, runs the seeder.
+ */
+export async function runStartupSeeder(options?: { force?: boolean }) {
+  const force = options?.force ?? (process.env.FORCE_SEED === "true" || process.env.SEED_FORCE === "true");
+
+  if (!force) {
+    const seeded = await isDatabaseSeeded();
+    if (seeded) {
+      console.log("ℹ️ Database is already seeded. Ignoring seeder.");
+      return { seeded: true, action: "skipped" };
+    }
+  }
+
+  console.log("🌱 Database is not yet seeded. Running seeder now...");
+  await executeFullSeed();
+  return { seeded: true, action: "seeded" };
+}
