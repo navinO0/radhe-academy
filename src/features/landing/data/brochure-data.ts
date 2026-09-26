@@ -20,7 +20,7 @@ export interface BrochureCategory {
   badge: string;
   brochureImage: string;
   brochureAlt: string;
-  iconName: "scissors" | "sparkles" | "palette";
+  iconName: "scissors" | "fashion" | "palette";
   admissionFee: number;
   includes: string[];
   specialFeatureTitle?: string;
@@ -167,7 +167,7 @@ export const BROCHURE_CATEGORIES: BrochureCategory[] = [
     badge: "Couture & Design",
     brochureImage: "/images/brochures/fashion-designing-brochure.jpg",
     brochureAlt: "Radhe Vastraz Fashion Designing Courses Brochure",
-    iconName: "sparkles",
+    iconName: "fashion",
     admissionFee: 2000,
     includes: [
       "Expert Fashion Designers & Trainers",

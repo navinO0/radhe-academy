@@ -6,7 +6,6 @@ import Link from "next/link";
 import {
   GraduationCap,
   Scissors,
-  Sparkles,
   Palette,
   PhoneCall,
   MessageCircle,
@@ -71,8 +70,10 @@ export function BrochureLanding() {
     categoryTitle: "",
   });
 
+  // Fast inquiry state
   // Fast inquiry state - submits directly to WhatsApp
   const [inquiryName, setInquiryName] = useState("");
+  const [inquiryPhone, setInquiryPhone] = useState("");
   const [inquiryCourse, setInquiryCourse] = useState("Master Boutique Course");
   const [inquiryBatch, setInquiryBatch] = useState("Morning Batch (10:00 AM - 1:00 PM)");
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -173,10 +174,17 @@ export function BrochureLanding() {
       {/* 2. Main Navigation Header - Full Width Soft Pinkish-White */}
       <header className="w-full border-b border-[#E8D3C0] bg-[#FFFDFB]/95 backdrop-blur-md sticky top-9 z-40 shadow-xs">
         <div className="w-full px-4 sm:px-8 lg:px-12 2xl:px-16 h-20 flex items-center justify-between gap-4">
-          {/* Logo & Brand matching the brochure gold lotus styling */}
+          {/* Logo & Brand matching the official Radhe Vastraz gold lotus emblem */}
           <Link href="/" className="flex items-center gap-3 group shrink-0">
-            <div className="h-11 w-11 rounded-xl bg-[#6B1127] border border-[#D4AF37] flex items-center justify-center text-[#E6C875] shadow-md group-hover:scale-105 transition-transform">
-              <GraduationCap className="h-6 w-6" />
+            <div className="relative h-12 w-12 rounded-xl overflow-hidden border border-[#D4AF37] shadow-md group-hover:scale-105 transition-transform shrink-0">
+              <Image
+                src="/images/radhe-vastraz-logo.png"
+                alt="Radhe Vastraz Boutique & Academy"
+                fill
+                sizes="48px"
+                className="object-cover"
+                priority
+              />
             </div>
             <div>
               <div className="flex items-center gap-2">
@@ -260,68 +268,46 @@ export function BrochureLanding() {
       </header>
 
       {/* 3. Hero Section - Full Width with Soft Blush / Warm Pinkish-White Luxury Aesthetic */}
-      <section className="relative w-full overflow-hidden pt-10 pb-16 lg:pt-16 lg:pb-20 border-b border-[#E8D3C0] bg-gradient-to-b from-[#FFF5F2] via-[#FCF5F2] to-[#FAF0ED]">
-        <div className="w-full px-4 sm:px-8 lg:px-12 2xl:px-16 text-center">
-          {/* Eyebrow badge */}
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-md text-xs font-bold bg-[#FCEEEF] text-[#6B1127] border border-[#6B1127]/25 mb-6 shadow-xs">
-            <span>HYDERABAD • PREMIER BOUTIQUE &amp; FASHION ACADEMY</span>
+      <section className="relative w-full overflow-hidden pt-10 pb-16 lg:pt-14 lg:pb-20 border-b border-[#E8D3C0] bg-gradient-to-b from-[#FFF5F2] via-[#FCF5F2] to-[#FAF0ED]">
+        <div className="w-full px-4 sm:px-8 lg:px-12 2xl:px-16 text-center max-w-5xl mx-auto">
+          {/* Official Emblem Logo at Hero Top */}
+          <div className="flex flex-col items-center justify-center mb-6">
+            <div className="relative h-20 w-20 sm:h-24 sm:w-24 rounded-2xl overflow-hidden border-2 border-[#D4AF37] shadow-xl mb-3 group hover:scale-105 transition-transform shrink-0">
+              <Image
+                src="/images/radhe-vastraz-logo.png"
+                alt="Radhe Vastraz Official Crest"
+                fill
+                sizes="(max-width: 640px) 80px, 96px"
+                className="object-cover"
+                priority
+              />
+            </div>
+            <p className="text-xs sm:text-sm uppercase tracking-[0.25em] text-[#6B1127] font-bold font-serif">
+              Radhe Vastraz Boutique &amp; Fashion Academy Hyderabad
+            </p>
           </div>
 
           {/* Main Headline */}
-          <h1 className="text-3xl sm:text-5xl lg:text-6xl font-extrabold text-[#2D0612] tracking-tight max-w-5xl mx-auto leading-tight sm:leading-tight font-serif">
-            Professional Tailoring, Fashion Designing &amp; Fabric Painting Courses
+          <h1 className="text-3xl sm:text-5xl lg:text-6xl font-extrabold text-[#2D0612] tracking-tight leading-tight sm:leading-tight font-serif">
+            Professional Tailoring, Fashion Designing &amp; Fabric Painting
           </h1>
 
           {/* Subtitle */}
           <p className="mt-5 text-base sm:text-lg text-[#5C3842] max-w-3xl mx-auto leading-relaxed">
-            Hands-on studio training in boutique blouse stitching, garment construction, pattern drafting, and artisan fabric painting in Hyderabad. Admissions open for Founder&apos;s Batch with 40% discount.
+            Hands-on studio training in boutique blouse stitching, garment construction, pattern drafting, and artisan fabric painting in Hyderabad. Admissions open for Founder&apos;s Batch with 40% discount and individual sewing workstations.
           </p>
 
-          {/* Highlight Cards Row - Spans Full Width with Clean White-Pinkish Cards */}
-          <div className="mt-8 grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 lg:gap-6 w-full max-w-6xl mx-auto">
-            <div className="p-4 sm:p-5 rounded-xl bg-white border border-[#E8D3C0] text-center shadow-xs hover:shadow-md transition-shadow">
-              <div className="text-2xl sm:text-3xl lg:text-4xl font-black text-[#6B1127] font-serif">40% OFF</div>
-              <div className="text-xs text-[#6A4E56] mt-1 font-semibold">Founder&apos;s Batch Fee</div>
-            </div>
-
-            <div className="p-4 sm:p-5 rounded-xl bg-white border border-[#E8D3C0] text-center shadow-xs hover:shadow-md transition-shadow">
-              <div className="text-2xl sm:text-3xl lg:text-4xl font-black text-[#2D0612] font-serif">13 Courses</div>
-              <div className="text-xs text-[#6A4E56] mt-1 font-semibold">3 Segregated Tracks</div>
-            </div>
-
-            <div className="p-4 sm:p-5 rounded-xl bg-white border border-[#E8D3C0] text-center shadow-xs hover:shadow-md transition-shadow">
-              <div className="text-2xl sm:text-3xl lg:text-4xl font-black text-emerald-700 font-serif">Studio Training</div>
-              <div className="text-xs text-[#6A4E56] mt-1 font-semibold">Live Machine &amp; Art Practice</div>
-            </div>
-
-            <div className="p-4 sm:p-5 rounded-xl bg-white border border-[#E8D3C0] text-center shadow-xs hover:shadow-md transition-shadow">
-              <div className="text-2xl sm:text-3xl lg:text-4xl font-black text-[#6B1127] font-serif">₹2,000</div>
-              <div className="text-xs text-[#6A4E56] mt-1 font-semibold">One-Time Admission Fee</div>
-            </div>
-          </div>
-
-          {/* Action CTAs */}
-          <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 flex-wrap max-w-3xl mx-auto">
+          {/* Action CTAs - 2 Focused, Authoritative Buttons */}
+          <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 max-w-xl mx-auto">
             <a href="#programs-section" className="w-full sm:w-auto">
               <Button
                 size="lg"
-                className="w-full sm:w-auto bg-[#6B1127] hover:bg-[#801431] text-white font-bold shadow-md gap-2 h-12 px-7 rounded-lg"
+                className="w-full sm:w-auto bg-[#6B1127] hover:bg-[#801431] text-white font-bold shadow-md gap-2 h-12 px-8 rounded-lg text-sm"
               >
-                <span>Explore All 13 Programs</span>
+                <span>Explore 13 Certified Programs</span>
                 <ArrowRight className="h-4 w-4 text-[#E6C875]" />
               </Button>
             </a>
-
-            <Link href="/login" className="w-full sm:w-auto">
-              <Button
-                size="lg"
-                variant="outline"
-                className="w-full sm:w-auto border-[#6B1127]/40 bg-white text-[#6B1127] hover:bg-[#FCEEEF] font-bold gap-2 h-12 px-6 rounded-lg shadow-xs"
-              >
-                <LogIn className="h-5 w-5 text-[#6B1127]" />
-                <span>Login to Portal</span>
-              </Button>
-            </Link>
 
             <a
               href="https://wa.me/919063643342?text=Hello%2C%20I%20would%20like%20to%20enroll%20for%20a%20course%20at%20Radhe%20Vastraz%20Academy."
@@ -332,22 +318,32 @@ export function BrochureLanding() {
               <Button
                 size="lg"
                 variant="outline"
-                className="w-full sm:w-auto border-emerald-600/50 bg-emerald-50/70 text-emerald-800 hover:bg-emerald-100 gap-2 h-12 px-6 rounded-lg font-medium"
+                className="w-full sm:w-auto border-emerald-600/50 bg-white text-emerald-800 hover:bg-emerald-50 gap-2 h-12 px-6 rounded-lg font-semibold text-sm shadow-xs"
               >
-                <MessageCircle className="h-5 w-5 text-emerald-600" />
-                <span>WhatsApp Counselor</span>
+                <MessageCircle className="h-4 w-4 text-emerald-600" />
+                <span>WhatsApp Admissions</span>
               </Button>
             </a>
+          </div>
 
-            <a href="#inquiry-form-section" className="w-full sm:w-auto">
-              <Button
-                size="lg"
-                variant="ghost"
-                className="w-full sm:w-auto text-[#6B1127] hover:bg-[#FCEEEF] h-12 px-6 rounded-lg font-semibold"
-              >
-                <span>Apply for Admission &rarr;</span>
-              </Button>
-            </a>
+          {/* Authentic Trust Strip */}
+          <div className="mt-10 pt-6 border-t border-[#E8D3C0]/70 flex flex-wrap items-center justify-center gap-6 sm:gap-10 text-xs text-[#6A4E56] font-medium">
+            <span className="flex items-center gap-1.5">
+              <CheckCircle2 className="h-4 w-4 text-[#6B1127]" />
+              <span>40% Founder&apos;s Batch Discount</span>
+            </span>
+            <span className="flex items-center gap-1.5">
+              <CheckCircle2 className="h-4 w-4 text-[#6B1127]" />
+              <span>100% Practical Studio Training</span>
+            </span>
+            <span className="flex items-center gap-1.5">
+              <CheckCircle2 className="h-4 w-4 text-[#6B1127]" />
+              <span>Individual Sewing Workstations</span>
+            </span>
+            <span className="flex items-center gap-1.5">
+              <CheckCircle2 className="h-4 w-4 text-[#6B1127]" />
+              <span>Recognized Certification</span>
+            </span>
           </div>
         </div>
       </section>
@@ -398,7 +394,7 @@ export function BrochureLanding() {
                 }`}
               >
                 {cat.id === "boutique" && <Scissors className={`h-3.5 w-3.5 ${activeCategory === cat.id ? "text-[#E6C875]" : "text-[#6B1127]"}`} />}
-                {cat.id === "fashion-designing" && <Sparkles className={`h-3.5 w-3.5 ${activeCategory === cat.id ? "text-[#E6C875]" : "text-[#6B1127]"}`} />}
+                {cat.id === "fashion-designing" && <GraduationCap className={`h-3.5 w-3.5 ${activeCategory === cat.id ? "text-[#E6C875]" : "text-[#6B1127]"}`} />}
                 {cat.id === "fabric-painting" && <Palette className={`h-3.5 w-3.5 ${activeCategory === cat.id ? "text-[#E6C875]" : "text-[#6B1127]"}`} />}
                 <span>{cat.shortTitle}</span>
                 <span className={`text-[10px] px-1.5 py-0.5 rounded-md font-bold ${
@@ -923,6 +919,21 @@ export function BrochureLanding() {
             </div>
 
             <div className="space-y-1.5">
+              <Label htmlFor="inq-phone" className="text-xs text-[#2D0612] font-bold">
+                Phone Number / WhatsApp *
+              </Label>
+              <Input
+                id="inq-phone"
+                type="tel"
+                placeholder="e.g. 9063643342"
+                value={inquiryPhone}
+                onChange={(e) => setInquiryPhone(e.target.value)}
+                required
+                className="bg-[#FFF9F6] border-[#E8D3C0] text-[#2D0612] h-11 rounded-lg focus-visible:ring-[#6B1127]"
+              />
+            </div>
+
+            <div className="space-y-1.5">
               <Label htmlFor="inq-course" className="text-xs text-[#2D0612] font-bold">
                 Selected Course / Program *
               </Label>
@@ -1070,10 +1081,21 @@ export function BrochureLanding() {
       {/* 10. Footer - Full Width Grounded Contrast */}
       <footer className="border-t border-[#3D0A16] bg-[#24040E] py-10 text-xs text-[#E0D2C0] w-full px-4 sm:px-8 lg:px-12 2xl:px-16">
         <div className="w-full flex flex-col md:flex-row items-center justify-between gap-6">
-          <div className="space-y-1 text-center md:text-left">
-            <p className="font-bold text-white text-sm font-serif">Radhe Vastraz Boutique &amp; Fashion Academy</p>
-            <p className="text-[#C8B8A6]">Fashion Today. Success Tomorrow. Radhe Vastraz Academy Hyderabad.</p>
-            <p className="text-slate-400 mt-1">© {new Date().getFullYear()} Radhe Vastraz Academy. All rights reserved.</p>
+          <div className="flex items-center gap-3 text-center md:text-left">
+            <div className="relative h-11 w-11 rounded-xl overflow-hidden border border-[#D4AF37]/60 shadow-md shrink-0">
+              <Image
+                src="/images/radhe-vastraz-logo.png"
+                alt="Radhe Vastraz"
+                fill
+                sizes="44px"
+                className="object-cover"
+              />
+            </div>
+            <div className="space-y-0.5">
+              <p className="font-bold text-white text-sm font-serif">Radhe Vastraz Boutique &amp; Fashion Academy</p>
+              <p className="text-[#C8B8A6]">Fashion Today. Success Tomorrow. Radhe Vastraz Academy Hyderabad.</p>
+              <p className="text-slate-400 mt-1">© {new Date().getFullYear()} Radhe Vastraz Academy. All rights reserved.</p>
+            </div>
           </div>
 
           <div className="flex flex-wrap items-center justify-center gap-6 text-[#E0D2C0]">
@@ -1104,7 +1126,7 @@ export function BrochureLanding() {
         <DialogContent className="max-w-4xl bg-white border-[#D4AF37]/50 text-[#2D0612] p-4 sm:p-6 max-h-[92vh] overflow-y-auto rounded-xl shadow-2xl">
           <DialogHeader>
             <DialogTitle className="text-xl font-bold flex items-center gap-2 font-serif text-[#6B1127]">
-              <Sparkles className="h-5 w-5 text-[#D4AF37]" />
+              <GraduationCap className="h-5 w-5 text-[#D4AF37]" />
               {previewBrochure.title}: Official Flyer
             </DialogTitle>
             <DialogDescription className="text-xs text-[#6A4E56]">
