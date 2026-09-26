@@ -1,4 +1,3 @@
-import { redirect } from "next/navigation";
 import type { Metadata } from "next";
 import { auth } from "@/lib/auth/auth";
 import { headers } from "next/headers";
@@ -49,11 +48,8 @@ export const metadata: Metadata = {
 };
 
 export default async function HomePage() {
-  const session = await auth.api.getSession({ headers: await headers() });
   let userSession: { userName?: string | null; userEmail?: string | null } | null = null;
 
-  if (!session?.user) {
-    redirect("/login");
   try {
     const session = await auth.api.getSession({ headers: await headers() });
     if (session?.user) {
@@ -63,11 +59,8 @@ export default async function HomePage() {
       };
     }
   } catch {
-    // If not authenticated or during public static pass, proceed as public visitor
     userSession = null;
   }
 
-  redirect("/dashboard");
   return <BrochureLanding userSession={userSession} />;
 }
-

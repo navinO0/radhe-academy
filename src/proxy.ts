@@ -2,14 +2,20 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
 // Routes that don't require authentication
-const PUBLIC_ROUTES = [
+const PUBLIC_PREFIXES = [
   "/login",
   "/forgot-password",
   "/reset-password",
+  "/thank-you",
+  "/privacy",
+  "/terms",
   "/api/auth",
   "/api/health",
   "/health",
   "/api/academy/students/avatar",
+  "/images",
+  "/robots",
+  "/sitemap",
 ];
 
 export default function proxy(request: NextRequest) {
@@ -35,8 +41,12 @@ export default function proxy(request: NextRequest) {
     return response;
   }
 
-  // Allow public routes
-  if (PUBLIC_ROUTES.some((route) => pathname.startsWith(route))) {
+  // Allow root homepage and public routes
+  const isPublic =
+    pathname === "/" ||
+    PUBLIC_PREFIXES.some((prefix) => pathname.startsWith(prefix));
+
+  if (isPublic) {
     const response = NextResponse.next({
       request: { headers: requestHeaders },
     });
