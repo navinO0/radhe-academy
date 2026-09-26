@@ -906,6 +906,19 @@ var OFFICIAL_COURSES = [
     description: "1-Month specialized intensive training in machine embroidery, zardosi, aari/maggam work, and bridal motifs. Regular Fee: \u20B920,000 (Founder's Batch 40% OFF: \u20B912,000). Admission fee \u20B92,000 extra. Includes: Expert Trainers, Practical Training, Certificate on Completion, Lifetime Support, Career & Business Guidance.",
     duration: "1 Month",
     defaultFee: "20000"
+  },
+  // Professional Fabric Painting Courses
+  {
+    name: "Basic Fabric Painting",
+    description: "1-Month foundational fabric painting course covering brush techniques, color mixing, floral & traditional designs, and blouse/dupatta painting. Regular Fee: \u20B925,000 (Founder's Batch 40% OFF: \u20B915,000). Admission fee \u20B92,000 extra. Includes: Expert Trainers, Hands-on Practical Training, Certificate on Completion, Portfolio Development, Lifetime Support, Business & Career Guidance.",
+    duration: "1 Month",
+    defaultFee: "25000"
+  },
+  {
+    name: "Advanced Fabric Painting",
+    description: "3-Month advanced fabric painting course mastering Kalamkari, Pichwai, Madhubani, 3D texture & metallic painting, bridal designer collections, and client work. Regular Fee: \u20B975,000 (Founder's Batch 40% OFF: \u20B945,000). Admission fee \u20B92,000 extra. Includes: Expert Trainers, Hands-on Practical Training, Certificate on Completion, Portfolio Development, Lifetime Support, Business & Career Guidance.",
+    duration: "3 Months",
+    defaultFee: "75000"
   }
 ];
 async function syncCourses(organizationId) {

@@ -72,6 +72,19 @@ export const OFFICIAL_COURSES = [
     duration: "1 Month",
     defaultFee: "20000",
   },
+  // Professional Fabric Painting Courses
+  {
+    name: "Basic Fabric Painting",
+    description: "1-Month foundational fabric painting course covering brush techniques, color mixing, floral & traditional designs, and blouse/dupatta painting. Regular Fee: ₹25,000 (Founder's Batch 40% OFF: ₹15,000). Admission fee ₹2,000 extra. Includes: Expert Trainers, Hands-on Practical Training, Certificate on Completion, Portfolio Development, Lifetime Support, Business & Career Guidance.",
+    duration: "1 Month",
+    defaultFee: "25000",
+  },
+  {
+    name: "Advanced Fabric Painting",
+    description: "3-Month advanced fabric painting course mastering Kalamkari, Pichwai, Madhubani, 3D texture & metallic painting, bridal designer collections, and client work. Regular Fee: ₹75,000 (Founder's Batch 40% OFF: ₹45,000). Admission fee ₹2,000 extra. Includes: Expert Trainers, Hands-on Practical Training, Certificate on Completion, Portfolio Development, Lifetime Support, Business & Career Guidance.",
+    duration: "3 Months",
+    defaultFee: "75000",
+  },
 ];
 
 async function syncCourses(organizationId: string) {
