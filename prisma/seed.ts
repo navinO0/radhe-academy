@@ -7,83 +7,83 @@ export const OFFICIAL_COURSES = [
   // Fashion Designing Courses
   {
     name: "Basic Fashion Designing",
-    description: "1-Month foundational fashion design course covering core concepts, garment aesthetics, and design principles. Regular Fee: ₹30,000 (Founder's Batch 40% OFF: ₹18,000). Admission fee ₹2,000 extra. Includes: Expert Trainers, Hands-on Practical Training, Certificate on Completion, Portfolio Development, Lifetime Support, Business & Career Guidance.",
+    description: "1-Month foundational fashion design course covering core concepts, garment aesthetics, and design principles. Founder's Batch Fee: ₹18,000 (40% OFF regular ₹30,000). Admission fee ₹2,000 extra. Includes: Expert Trainers, Hands-on Practical Training, Certificate on Completion, Portfolio Development, Lifetime Support, Business & Career Guidance.",
     duration: "1 Month",
-    defaultFee: "30000",
+    defaultFee: "18000",
   },
   {
     name: "Fashion Designing",
-    description: "Comprehensive 3-Month fashion designing program with practical training, portfolio development, and design techniques. Regular Fee: ₹90,000 (Founder's Batch 40% OFF: ₹54,000). Admission fee ₹2,000 extra. Includes: Expert Trainers, Hands-on Practical Training, Certificate on Completion, Portfolio Development, Lifetime Support, Business & Career Guidance.",
+    description: "Comprehensive 3-Month fashion designing program with practical training, portfolio development, and design techniques. Founder's Batch Fee: ₹54,000 (40% OFF regular ₹90,000). Admission fee ₹2,000 extra. Includes: Expert Trainers, Hands-on Practical Training, Certificate on Completion, Portfolio Development, Lifetime Support, Business & Career Guidance.",
     duration: "3 Months",
-    defaultFee: "90000",
+    defaultFee: "54000",
   },
   {
     name: "Advanced Fashion Designing",
-    description: "6-Month in-depth fashion designing program with advanced styling, pattern making, textile studies, and professional portfolio. Regular Fee: ₹1,80,000 (Founder's Batch 40% OFF: ₹1,08,000). Admission fee ₹2,000 extra. Includes: Expert Trainers, Hands-on Practical Training, Certificate on Completion, Portfolio Development, Lifetime Support, Business & Career Guidance.",
+    description: "6-Month in-depth fashion designing program with advanced styling, pattern making, textile studies, and professional portfolio. Founder's Batch Fee: ₹1,08,000 (40% OFF regular ₹1,80,000). Admission fee ₹2,000 extra. Includes: Expert Trainers, Hands-on Practical Training, Certificate on Completion, Portfolio Development, Lifetime Support, Business & Career Guidance.",
     duration: "6 Months",
-    defaultFee: "180000",
+    defaultFee: "108000",
   },
   {
     name: "Professional Fashion Designing (Complete Course)",
-    description: "Full 1-Year master professional fashion designing course covering end-to-end couture, fashion illustration, garment construction, boutique business management, and portfolio. Regular Fee: ₹3,00,000 (Founder's Batch 40% OFF: ₹1,80,000). Admission fee ₹2,000 extra. Includes: Expert Trainers, Hands-on Practical Training, Certificate on Completion, Portfolio Development, Lifetime Support, Business & Career Guidance.",
+    description: "Full 1-Year master professional fashion designing course covering end-to-end couture, fashion illustration, garment construction, boutique business management, and portfolio. Founder's Batch Fee: ₹1,80,000 (40% OFF regular ₹3,000,000). Admission fee ₹2,000 extra. Includes: Expert Trainers, Hands-on Practical Training, Certificate on Completion, Portfolio Development, Lifetime Support, Business & Career Guidance.",
     duration: "1 Year",
-    defaultFee: "300000",
+    defaultFee: "180000",
   },
   // Boutique & Stitching Courses
   {
     name: "Personalized Learning",
-    description: "1-Month tailored one-on-one boutique learning module customized to student pace and learning goals. Regular Fee: ₹25,000 (Founder's Batch 40% OFF: ₹15,000). Admission fee ₹2,000 extra. Includes: Expert Trainers, Practical Training, Certificate on Completion, Lifetime Support, Career & Business Guidance.",
+    description: "1-Month tailored one-on-one boutique learning module customized to student pace and learning goals. Founder's Batch Fee: ₹15,000 (40% OFF regular ₹25,000). Admission fee ₹2,000 extra. Includes: Expert Trainers, Practical Training, Certificate on Completion, Lifetime Support, Career & Business Guidance.",
     duration: "1 Month",
-    defaultFee: "25000",
+    defaultFee: "15000",
   },
   {
     name: "Foundation Stitching",
-    description: "2-Month foundational stitching course focusing on machine handling, basic cuts, measurements, and finishing techniques. Regular Fee: ₹50,000 (Founder's Batch 40% OFF: ₹30,000). Admission fee ₹2,000 extra. Includes: Expert Trainers, Practical Training, Certificate on Completion, Lifetime Support, Career & Business Guidance.",
+    description: "2-Month foundational stitching course focusing on machine handling, basic cuts, measurements, and finishing techniques. Founder's Batch Fee: ₹30,000 (40% OFF regular ₹50,000). Admission fee ₹2,000 extra. Includes: Expert Trainers, Practical Training, Certificate on Completion, Lifetime Support, Career & Business Guidance.",
     duration: "2 Months",
-    defaultFee: "50000",
+    defaultFee: "30000",
   },
   {
     name: "Professional Stitching",
-    description: "3-Month professional stitching course covering blouses, kurtis, western dresses, and precision tailoring. Regular Fee: ₹75,000 (Founder's Batch 40% OFF: ₹45,000). Admission fee ₹2,000 extra. Includes: Expert Trainers, Practical Training, Certificate on Completion, Lifetime Support, Career & Business Guidance.",
+    description: "3-Month professional stitching course covering blouses, kurtis, western dresses, and precision tailoring. Founder's Batch Fee: ₹45,000 (40% OFF regular ₹75,000). Admission fee ₹2,000 extra. Includes: Expert Trainers, Practical Training, Certificate on Completion, Lifetime Support, Career & Business Guidance.",
     duration: "3 Months",
-    defaultFee: "75000",
+    defaultFee: "45000",
   },
   {
     name: "Advanced Boutique",
-    description: "4-Month advanced boutique course covering designer cuts, bridal tailoring, pattern making, and boutique client management. Regular Fee: ₹1,00,000 (Founder's Batch 40% OFF: ₹60,000). Admission fee ₹2,000 extra. Includes: Expert Trainers, Practical Training, Certificate on Completion, Lifetime Support, Career & Business Guidance.",
+    description: "4-Month advanced boutique course covering designer cuts, bridal tailoring, pattern making, and boutique client management. Founder's Batch Fee: ₹60,000 (40% OFF regular ₹1,00,000). Admission fee ₹2,000 extra. Includes: Expert Trainers, Practical Training, Certificate on Completion, Lifetime Support, Career & Business Guidance.",
     duration: "4 Months",
-    defaultFee: "100000",
+    defaultFee: "60000",
   },
   {
     name: "Designer Course",
-    description: "5-Month boutique designer course featuring high-end bridal couture, indo-western concepts, drafting, and custom embellishments. Regular Fee: ₹1,25,000 (Founder's Batch 40% OFF: ₹75,000). Admission fee ₹2,000 extra. Includes: Expert Trainers, Practical Training, Certificate on Completion, Lifetime Support, Career & Business Guidance.",
+    description: "5-Month boutique designer course featuring high-end bridal couture, indo-western concepts, drafting, and custom embellishments. Founder's Batch Fee: ₹75,000 (40% OFF regular ₹1,25,000). Admission fee ₹2,000 extra. Includes: Expert Trainers, Practical Training, Certificate on Completion, Lifetime Support, Career & Business Guidance.",
     duration: "5 Months",
-    defaultFee: "125000",
+    defaultFee: "75000",
   },
   {
     name: "Master Boutique Course",
-    description: "Comprehensive 6-Month boutique entrepreneurship course: master stitching, boutique setup, fabric sourcing, pricing, and business scaling. Regular Fee: ₹1,50,000 (Founder's Batch 40% OFF: ₹90,000). Admission fee ₹2,000 extra. Includes: Expert Trainers, Practical Training, Certificate on Completion, Lifetime Support, Career & Business Guidance.",
+    description: "Comprehensive 6-Month boutique entrepreneurship course: master stitching, boutique setup, fabric sourcing, pricing, and business scaling. Founder's Batch Fee: ₹90,000 (40% OFF regular ₹1,50,000). Admission fee ₹2,000 extra. Includes: Expert Trainers, Practical Training, Certificate on Completion, Lifetime Support, Career & Business Guidance.",
     duration: "6 Months",
-    defaultFee: "150000",
+    defaultFee: "90000",
   },
   {
     name: "Machine Embroidery & Maggam Essentials",
-    description: "1-Month specialized intensive training in machine embroidery, zardosi, aari/maggam work, and bridal motifs. Regular Fee: ₹20,000 (Founder's Batch 40% OFF: ₹12,000). Admission fee ₹2,000 extra. Includes: Expert Trainers, Practical Training, Certificate on Completion, Lifetime Support, Career & Business Guidance.",
+    description: "1-Month specialized intensive training in machine embroidery, zardosi, aari/maggam work, and bridal motifs. Founder's Batch Fee: ₹12,000 (40% OFF regular ₹20,000). Admission fee ₹2,000 extra. Includes: Expert Trainers, Practical Training, Certificate on Completion, Lifetime Support, Career & Business Guidance.",
     duration: "1 Month",
-    defaultFee: "20000",
+    defaultFee: "12000",
   },
   // Professional Fabric Painting Courses
   {
     name: "Basic Fabric Painting",
-    description: "1-Month foundational fabric painting course covering brush techniques, color mixing, floral & traditional designs, and blouse/dupatta painting. Regular Fee: ₹25,000 (Founder's Batch 40% OFF: ₹15,000). Admission fee ₹2,000 extra. Includes: Expert Trainers, Hands-on Practical Training, Certificate on Completion, Portfolio Development, Lifetime Support, Business & Career Guidance.",
+    description: "1-Month foundational fabric painting course covering brush techniques, color mixing, floral & traditional designs, and blouse/dupatta painting. Founder's Batch Fee: ₹15,000 (40% OFF regular ₹25,000). Admission fee ₹2,000 extra. Includes: Expert Trainers, Hands-on Practical Training, Certificate on Completion, Portfolio Development, Lifetime Support, Business & Career Guidance.",
     duration: "1 Month",
-    defaultFee: "25000",
+    defaultFee: "15000",
   },
   {
     name: "Advanced Fabric Painting",
-    description: "3-Month advanced fabric painting course mastering Kalamkari, Pichwai, Madhubani, 3D texture & metallic painting, bridal designer collections, and client work. Regular Fee: ₹75,000 (Founder's Batch 40% OFF: ₹45,000). Admission fee ₹2,000 extra. Includes: Expert Trainers, Hands-on Practical Training, Certificate on Completion, Portfolio Development, Lifetime Support, Business & Career Guidance.",
+    description: "3-Month advanced fabric painting course mastering Kalamkari, Pichwai, Madhubani, 3D texture & metallic painting, bridal designer collections, and client work. Founder's Batch Fee: ₹45,000 (40% OFF regular ₹75,000). Admission fee ₹2,000 extra. Includes: Expert Trainers, Hands-on Practical Training, Certificate on Completion, Portfolio Development, Lifetime Support, Business & Career Guidance.",
     duration: "3 Months",
-    defaultFee: "75000",
+    defaultFee: "45000",
   },
 ];
 
@@ -149,14 +149,17 @@ async function main() {
           `ℹ️ Database is already initialized (Organization: "${existingOrg.name}", Users: ${userCount}).`
         );
 
-        // Update organization name if still using old name
-        if (existingOrg.name !== targetOrgName) {
-          await prisma.organization.update({
-            where: { id: existingOrg.id },
-            data: { name: targetOrgName },
-          });
-          console.log(`🔄 Updated organization name from "${existingOrg.name}" to "${targetOrgName}"`);
-        }
+        // Update organization name and contact details if needed
+        await prisma.organization.update({
+          where: { id: existingOrg.id },
+          data: {
+            name: targetOrgName,
+            phone: "+91 9063643342",
+            email: "radhevastraz@gmail.com",
+            address: "Shop No. 1, Jal Vayu Vihar, Kukatpally, backside of community office building, Hyderabad, Telangana, India (500085)",
+          },
+        });
+        console.log(`🔄 Synced organization details for "${targetOrgName}"`);
 
         // Always sync the official courses so they exist in database
         await syncCourses(existingOrg.id);

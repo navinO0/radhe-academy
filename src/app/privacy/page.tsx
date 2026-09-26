@@ -150,15 +150,15 @@ export default function PrivacyPolicyPage() {
             <div className="grid sm:grid-cols-2 gap-4 mt-3 text-xs sm:text-sm">
               <div className="flex items-center gap-2 text-slate-300">
                 <Mail className="h-4 w-4 text-primary shrink-0" />
-                <span>privacy@radhevastraz.in</span>
+                <span>radhevastraz@gmail.com (Support: raadhelabel@gmail.com)</span>
               </div>
               <div className="flex items-center gap-2 text-slate-300">
                 <Phone className="h-4 w-4 text-primary shrink-0" />
-                <span>+91 90636 43342</span>
+                <span>+91 9063643342 (Contact: Divya)</span>
               </div>
               <div className="flex items-start gap-2 text-slate-300 sm:col-span-2">
                 <MapPin className="h-4 w-4 text-primary shrink-0 mt-0.5" />
-                <span>Radhe Vastraz Academy, Fashion & Design Studio, Hyderabad, Telangana, India</span>
+                <span>Shop No. 1, Jal Vayu Vihar, Kukatpally, backside of community office building, Hyderabad, Telangana, India (500085)</span>
               </div>
             </div>
           </section>

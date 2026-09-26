@@ -199,12 +199,12 @@ export default async function ThankYouPage({ searchParams }: ThankYouProps) {
         <div className="mt-12 pt-8 border-t border-slate-800/80 w-full flex flex-col sm:flex-row items-center justify-center gap-6 text-xs text-slate-400">
           <div className="flex items-center gap-2">
             <PhoneCall className="h-3.5 w-3.5 text-primary" />
-            <span>Admissions Helpline: +91 90636 43342</span>
+            <span>Admissions Helpline: +91 9063643342 (Contact: Divya)</span>
           </div>
           <span className="hidden sm:inline text-slate-600">|</span>
           <div className="flex items-center gap-2">
             <Mail className="h-3.5 w-3.5 text-primary" />
-            <span>Email: admissions@radhevastraz.in</span>
+            <span>Email: radhevastraz@gmail.com</span>
           </div>
         </div>
       </main>

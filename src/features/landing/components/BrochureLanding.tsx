@@ -20,6 +20,8 @@ import {
   Clock,
   ShieldCheck,
   LogIn,
+  MapPin,
+  Mail,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -70,10 +72,8 @@ export function BrochureLanding() {
     categoryTitle: "",
   });
 
-  // Fast inquiry state
   // Fast inquiry state - submits directly to WhatsApp
   const [inquiryName, setInquiryName] = useState("");
-  const [inquiryPhone, setInquiryPhone] = useState("");
   const [inquiryCourse, setInquiryCourse] = useState("Master Boutique Course");
   const [inquiryBatch, setInquiryBatch] = useState("Morning Batch (10:00 AM - 1:00 PM)");
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -174,14 +174,14 @@ export function BrochureLanding() {
       {/* 2. Main Navigation Header - Full Width Soft Pinkish-White */}
       <header className="w-full border-b border-[#E8D3C0] bg-[#FFFDFB]/95 backdrop-blur-md sticky top-9 z-40 shadow-xs">
         <div className="w-full px-4 sm:px-8 lg:px-12 2xl:px-16 h-20 flex items-center justify-between gap-4">
-          {/* Logo & Brand matching the official Radhe Vastraz gold lotus emblem */}
+          {/* Logo & Brand with official Radhe Vastraz gold lotus emblem */}
           <Link href="/" className="flex items-center gap-3 group shrink-0">
-            <div className="relative h-12 w-12 rounded-xl overflow-hidden border border-[#D4AF37] shadow-md group-hover:scale-105 transition-transform shrink-0">
+            <div className="relative h-11 w-11 rounded-xl overflow-hidden border border-[#D4AF37] shadow-md group-hover:scale-105 transition-transform shrink-0">
               <Image
                 src="/images/radhe-vastraz-logo.png"
                 alt="Radhe Vastraz Boutique & Academy"
                 fill
-                sizes="48px"
+                sizes="44px"
                 className="object-cover"
                 priority
               />
@@ -919,21 +919,6 @@ export function BrochureLanding() {
             </div>
 
             <div className="space-y-1.5">
-              <Label htmlFor="inq-phone" className="text-xs text-[#2D0612] font-bold">
-                Phone Number / WhatsApp *
-              </Label>
-              <Input
-                id="inq-phone"
-                type="tel"
-                placeholder="e.g. 9063643342"
-                value={inquiryPhone}
-                onChange={(e) => setInquiryPhone(e.target.value)}
-                required
-                className="bg-[#FFF9F6] border-[#E8D3C0] text-[#2D0612] h-11 rounded-lg focus-visible:ring-[#6B1127]"
-              />
-            </div>
-
-            <div className="space-y-1.5">
               <Label htmlFor="inq-course" className="text-xs text-[#2D0612] font-bold">
                 Selected Course / Program *
               </Label>
@@ -1039,21 +1024,42 @@ export function BrochureLanding() {
         </div>
       </section>
 
-      {/* 9. Contact Helpline Banner - Full Width */}
-      <section className="py-12 w-full px-4 sm:px-8 lg:px-12 2xl:px-16 bg-[#FDF5F2] border-t border-[#E8D3C0]">
-        <div className="w-full flex flex-col md:flex-row items-center justify-between gap-6">
-          <div className="space-y-1 text-center md:text-left">
-            <h3 className="text-xl font-bold text-[#2D0612] font-serif">Have questions about courses or fees?</h3>
-            <p className="text-xs sm:text-sm text-[#6A4E56]">
-              Speak directly with our senior instructors or schedule a studio visit in Hyderabad.
-            </p>
+      {/* 9. Contact Helpline & Studio Visit Banner - Full Width */}
+      <section className="py-14 sm:py-16 w-full px-4 sm:px-8 lg:px-12 2xl:px-16 bg-[#FDF5F2] border-t border-[#E8D3C0]">
+        <div className="w-full flex flex-col lg:flex-row items-start lg:items-center justify-between gap-8">
+          <div className="space-y-3 max-w-2xl">
+            <div className="inline-block px-3 py-1 rounded-md bg-[#6B1127] text-[#E6C875] text-[11px] font-bold uppercase tracking-wider">
+              VISIT OUR STORE &amp; ACADEMY
+            </div>
+            <h3 className="text-2xl sm:text-3xl font-bold text-[#2D0612] font-serif">
+              Visit Our Studio in Hyderabad
+            </h3>
+            <div className="space-y-2 text-xs sm:text-sm text-[#5C3842] leading-relaxed">
+              <p className="flex items-start gap-2">
+                <MapPin className="h-4 w-4 text-[#6B1127] shrink-0 mt-0.5" />
+                <span>Shop No. 1, Jal Vayu Vihar, Kukatpally, backside of community office building, Hyderabad, Telangana, India (500085).</span>
+              </p>
+              <div className="flex flex-wrap items-center gap-x-6 gap-y-1.5 text-xs pt-1">
+                <span className="flex items-center gap-1.5 font-bold text-[#2D0612]">
+                  <PhoneCall className="h-3.5 w-3.5 text-[#6B1127]" />
+                  <span>+91 9063643342 (Contact: Divya)</span>
+                </span>
+                <a href="mailto:radhevastraz@gmail.com" className="flex items-center gap-1.5 text-[#5C3842] hover:text-[#6B1127]">
+                  <Mail className="h-3.5 w-3.5 text-[#6B1127]" />
+                  <span>radhevastraz@gmail.com</span>
+                </a>
+                <span className="text-[#8A6A74]">
+                  Support: raadhelabel@gmail.com
+                </span>
+              </div>
+            </div>
           </div>
 
-          <div className="flex flex-wrap items-center justify-center gap-3">
+          <div className="flex flex-wrap items-center gap-3 shrink-0">
             <a href="tel:9063643342">
               <Button
                 size="lg"
-                className="bg-[#6B1127] hover:bg-[#801431] text-white gap-2 font-bold shadow-md rounded-lg h-11 px-6"
+                className="bg-[#6B1127] hover:bg-[#801431] text-white gap-2 font-bold shadow-md rounded-lg h-12 px-6"
               >
                 <PhoneCall className="h-4 w-4 text-[#E6C875]" />
                 <span>Call: 9063643342</span>
@@ -1061,17 +1067,16 @@ export function BrochureLanding() {
             </a>
 
             <a
-              href="https://wa.me/919063643342?text=Hello%2C%20I%20am%20interested%20in%20visiting%20Radhe%20Vastraz%20Academy."
+              href="https://wa.me/919063643342?text=Hello%20Divya%2C%20I%20am%20interested%20in%20visiting%20the%20Radhe%20Vastraz%20Academy%20at%20Kukatpally."
               target="_blank"
               rel="noopener noreferrer"
             >
               <Button
                 size="lg"
-                variant="outline"
-                className="border-emerald-600/50 bg-white text-emerald-800 hover:bg-emerald-50 gap-2 rounded-lg h-11 px-6 font-semibold"
+                className="bg-[#128C7E] hover:bg-[#0C6E63] text-white gap-2 rounded-lg h-12 px-6 font-bold shadow-md"
               >
-                <MessageCircle className="h-4 w-4 text-emerald-600" />
-                <span>WhatsApp Us</span>
+                <MessageCircle className="h-4 w-4 text-white" />
+                <span>WhatsApp Divya</span>
               </Button>
             </a>
           </div>
@@ -1091,10 +1096,10 @@ export function BrochureLanding() {
                 className="object-cover"
               />
             </div>
-            <div className="space-y-0.5">
+            <div className="space-y-1">
               <p className="font-bold text-white text-sm font-serif">Radhe Vastraz Boutique &amp; Fashion Academy</p>
-              <p className="text-[#C8B8A6]">Fashion Today. Success Tomorrow. Radhe Vastraz Academy Hyderabad.</p>
-              <p className="text-slate-400 mt-1">© {new Date().getFullYear()} Radhe Vastraz Academy. All rights reserved.</p>
+              <p className="text-[#C8B8A6]">Shop No. 1, Jal Vayu Vihar, Kukatpally, Hyderabad (500085) • Divya: +91 9063643342</p>
+              <p className="text-slate-400 mt-1">© {new Date().getFullYear()} Radhe Vastraz Academy. All rights reserved. • radhevastraz@gmail.com</p>
             </div>
           </div>
 
