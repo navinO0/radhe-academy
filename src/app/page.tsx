@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { BrochureLanding } from "@/features/landing/components/BrochureLanding";
 
+import { CLOUDINARY_ASSETS } from "@/lib/cloudinary";
+
 // Static pre-rendering for ultra-fast Cloudflare CDN edge caching
 export const dynamic = "force-static";
 export const revalidate = 86400; // Cache on CDN for 24h with stale-while-revalidate
@@ -30,6 +32,7 @@ export const metadata: Metadata = {
     images: [
       {
         url: "/images/brochures/boutique-courses-brochure.jpg",
+        url: CLOUDINARY_ASSETS.boutiqueBrochure,
         width: 1200,
         height: 630,
         alt: "Radhe Vastraz Boutique & Fashion Academy Courses",
@@ -44,6 +47,7 @@ export const metadata: Metadata = {
     description:
       "Professional hands-on training in Boutique Management, Fashion Designing & Fabric Painting.",
     images: ["/images/brochures/boutique-courses-brochure.jpg"],
+    images: [CLOUDINARY_ASSETS.boutiqueBrochure],
   },
 };
 

@@ -4,9 +4,9 @@ const CSP_HEADER = `
   default-src 'self';
   script-src 'self' 'unsafe-inline' 'unsafe-eval';
   style-src 'self' 'unsafe-inline';
-  img-src 'self' data: blob: https://*.amazonaws.com https://*.r2.cloudflarestorage.com https://*.storageapi.dev https://t3.storageapi.dev;
+  img-src 'self' data: blob: https://*.amazonaws.com https://*.r2.cloudflarestorage.com https://*.storageapi.dev https://t3.storageapi.dev https://res.cloudinary.com;
   font-src 'self' data:;
-  connect-src 'self' https://*.amazonaws.com https://*.r2.cloudflarestorage.com https://*.storageapi.dev https://t3.storageapi.dev;
+  connect-src 'self' https://*.amazonaws.com https://*.r2.cloudflarestorage.com https://*.storageapi.dev https://t3.storageapi.dev https://res.cloudinary.com https://api.cloudinary.com;
   frame-ancestors 'none';
   object-src 'none';
   base-uri 'self';
@@ -34,6 +34,10 @@ const nextConfig: NextConfig = {
     minimumCacheTTL: 60 * 60 * 24 * 7, // 7-day image cache to reduce repeated disk reads
     formats: ["image/webp"], // WebP only (avoids CPU-intensive AVIF compression)
     remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "res.cloudinary.com",
+      },
       {
         protocol: "https",
         hostname: "**.amazonaws.com",

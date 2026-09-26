@@ -48,6 +48,7 @@ import {
   BrochureCategory,
   ProgramItem,
 } from "../data/brochure-data";
+import { CLOUDINARY_ASSETS } from "@/lib/cloudinary";
 import { formatCurrency } from "@/lib/utils";
 import { useSession } from "@/lib/auth/auth-client";
 
@@ -179,6 +180,7 @@ export function BrochureLanding() {
             <div className="relative h-11 w-11 rounded-xl overflow-hidden border border-[#D4AF37] shadow-md group-hover:scale-105 transition-transform shrink-0">
               <Image
                 src="/images/radhe-vastraz-logo.png"
+                src={CLOUDINARY_ASSETS.logo}
                 alt="Radhe Vastraz Boutique & Academy"
                 fill
                 sizes="44px"
@@ -275,6 +277,7 @@ export function BrochureLanding() {
             <div className="relative h-20 w-20 sm:h-24 sm:w-24 rounded-2xl overflow-hidden border-2 border-[#D4AF37] shadow-xl mb-3 group hover:scale-105 transition-transform shrink-0">
               <Image
                 src="/images/radhe-vastraz-logo.png"
+                src={CLOUDINARY_ASSETS.logo}
                 alt="Radhe Vastraz Official Crest"
                 fill
                 sizes="(max-width: 640px) 80px, 96px"
@@ -729,6 +732,7 @@ export function BrochureLanding() {
                 <div className="relative h-64 sm:h-80 w-full rounded-xl overflow-hidden border border-[#E8D3C0] bg-slate-100">
                   <Image
                     src="/images/brochures/fabric-painting-brochure.jpg"
+                    src={CLOUDINARY_ASSETS.fabricPaintingBrochure}
                     alt="Fabric Painting Saree and Dupatta Art at Radhe Vastraz"
                     fill
                     className="object-cover object-top hover:scale-105 transition-transform duration-500"
@@ -1090,6 +1094,7 @@ export function BrochureLanding() {
             <div className="relative h-11 w-11 rounded-xl overflow-hidden border border-[#D4AF37]/60 shadow-md shrink-0">
               <Image
                 src="/images/radhe-vastraz-logo.png"
+                src={CLOUDINARY_ASSETS.logo}
                 alt="Radhe Vastraz"
                 fill
                 sizes="44px"

@@ -19,6 +19,7 @@ import {
   Building,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { CLOUDINARY_ASSETS } from "@/lib/cloudinary";
 
 export const metadata: Metadata = {
   title: "Terms and Conditions | Certificate Issuance, Assessment & Academic Policies",
@@ -71,6 +72,7 @@ export default function TermsPage() {
             <div className="relative h-10 w-10 rounded-xl overflow-hidden border border-[#D4AF37] shadow-md group-hover:scale-105 transition-transform shrink-0">
               <Image
                 src="/images/radhe-vastraz-logo.png"
+                src={CLOUDINARY_ASSETS.logo}
                 alt="Radhe Vastraz Boutique & Academy"
                 fill
                 sizes="40px"

@@ -1,3 +1,5 @@
+import { CLOUDINARY_ASSETS } from "@/lib/cloudinary";
+
 export interface ProgramItem {
   id: string;
   name: string;
@@ -36,7 +38,7 @@ export const BROCHURE_CATEGORIES: BrochureCategory[] = [
     tagline: "Dreaming of Starting Your Own Boutique?",
     subtitle: "Turn Your Passion for Fashion into a Career or Business in Just 6 Months!",
     badge: "Boutique Entrepreneurship",
-    brochureImage: "/images/brochures/boutique-courses-brochure.jpg",
+    brochureImage: CLOUDINARY_ASSETS.boutiqueBrochure,
     brochureAlt: "Radhe Vastraz Boutique & Stitching Courses Brochure",
     iconName: "scissors",
     admissionFee: 2000,
@@ -165,7 +167,7 @@ export const BROCHURE_CATEGORIES: BrochureCategory[] = [
     tagline: "Design | Learn | Create | Grow",
     subtitle: "Turn Your Creativity Into a Career! Fashion Today, Success Tomorrow.",
     badge: "Couture & Design",
-    brochureImage: "/images/brochures/fashion-designing-brochure.jpg",
+    brochureImage: CLOUDINARY_ASSETS.fashionDesigningBrochure,
     brochureAlt: "Radhe Vastraz Fashion Designing Courses Brochure",
     iconName: "fashion",
     admissionFee: 2000,
@@ -250,7 +252,7 @@ export const BROCHURE_CATEGORIES: BrochureCategory[] = [
     tagline: "Paint Your Imagination on Fabric",
     subtitle: "Art Creates A More Beautiful You: Turn Your Creativity Into a Career.",
     badge: "Artisan Craftsmanship",
-    brochureImage: "/images/brochures/fabric-painting-brochure.jpg",
+    brochureImage: CLOUDINARY_ASSETS.fabricPaintingBrochure,
     brochureAlt: "Radhe Vastraz Professional Fabric Painting Courses Brochure",
     iconName: "palette",
     admissionFee: 2000,
