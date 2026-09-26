@@ -56,16 +56,12 @@ import {
   ProgramItem,
 } from "../data/brochure-data";
 import { formatCurrency } from "@/lib/utils";
+import { useSession } from "@/lib/auth/auth-client";
 
-interface BrochureLandingProps {
-  userSession?: {
-    userName?: string | null;
-    userEmail?: string | null;
-  } | null;
-}
-
-export function BrochureLanding({ userSession }: BrochureLandingProps) {
+export function BrochureLanding() {
   const router = useRouter();
+  const { data: sessionData } = useSession();
+  const userSession = sessionData?.user;
 
   // Selected tab: "all" or specific category id
   const [activeCategory, setActiveCategory] = useState<string>("all");

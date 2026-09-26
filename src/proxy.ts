@@ -21,40 +21,31 @@ const PUBLIC_PREFIXES = [
 export default function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  // Preserve or generate correlation request ID
-  const requestId = request.headers.get("x-request-id")?.trim() || crypto.randomUUID();
+  // 1. Immediately allow public root homepage
+  if (pathname === "/") {
+    return NextResponse.next();
+  }
 
-  // Forward request ID to downstream server components & API routes
-  const requestHeaders = new Headers(request.headers);
-  requestHeaders.set("x-request-id", requestId);
-
-  // Allow static assets, next internal files, and files with extensions
+  // 2. Allow static assets, next internal files, and files with extensions
   if (
     pathname.startsWith("/_next") ||
     pathname.startsWith("/favicon") ||
     pathname.includes(".")
   ) {
-    const response = NextResponse.next({
-      request: { headers: requestHeaders },
-    });
-    response.headers.set("x-request-id", requestId);
-    return response;
+    return NextResponse.next();
   }
 
-  // Allow root homepage and public routes
-  const isPublic =
-    pathname === "/" ||
-    PUBLIC_PREFIXES.some((prefix) => pathname.startsWith(prefix));
-
-  if (isPublic) {
-    const response = NextResponse.next({
-      request: { headers: requestHeaders },
-    });
-    response.headers.set("x-request-id", requestId);
-    return response;
+  // 3. Allow public routes
+  if (PUBLIC_PREFIXES.some((prefix) => pathname.startsWith(prefix))) {
+    return NextResponse.next();
   }
 
-  // Edge-safe session cookie presence check
+  // 4. Preserve or generate correlation request ID for authenticated routes
+  const requestId = request.headers.get("x-request-id")?.trim() || crypto.randomUUID();
+  const requestHeaders = new Headers(request.headers);
+  requestHeaders.set("x-request-id", requestId);
+
+  // 5. Edge-safe session cookie presence check for protected dashboard routes
   const sessionToken =
     request.cookies.get("raadhe.session_token")?.value ||
     request.cookies.get("__Secure-raadhe.session_token")?.value ||
@@ -85,4 +76,3 @@ export const config = {
     "/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
   ],
 };
-

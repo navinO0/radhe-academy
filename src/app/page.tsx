@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
-import { auth } from "@/lib/auth/auth";
-import { headers } from "next/headers";
 import { BrochureLanding } from "@/features/landing/components/BrochureLanding";
 
-export const dynamic = "force-dynamic";
+// Static pre-rendering for ultra-fast Cloudflare CDN edge caching
+export const dynamic = "force-static";
+export const revalidate = 86400; // Cache on CDN for 24h with stale-while-revalidate
 
 export const metadata: Metadata = {
   title: "Radhe Vastraz Academy | Boutique, Fashion Designing & Fabric Painting Courses",
@@ -47,20 +47,6 @@ export const metadata: Metadata = {
   },
 };
 
-export default async function HomePage() {
-  let userSession: { userName?: string | null; userEmail?: string | null } | null = null;
-
-  try {
-    const session = await auth.api.getSession({ headers: await headers() });
-    if (session?.user) {
-      userSession = {
-        userName: session.user.name,
-        userEmail: session.user.email,
-      };
-    }
-  } catch {
-    userSession = null;
-  }
-
-  return <BrochureLanding userSession={userSession} />;
+export default function HomePage() {
+  return <BrochureLanding />;
 }
