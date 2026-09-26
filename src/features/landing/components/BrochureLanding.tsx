@@ -29,6 +29,7 @@ import {
   ExternalLink,
   BookOpen,
   Filter,
+  LogIn,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -146,6 +147,13 @@ export function BrochureLanding() {
           >
             <PhoneCall className="h-3 w-3" /> Call: 9063643342
           </a>
+          <span className="hidden sm:inline text-rose-300">•</span>
+          <Link
+            href="/login"
+            className="inline-flex items-center gap-1 bg-white/20 hover:bg-white/30 text-white px-2.5 py-0.5 rounded-full font-bold transition-colors border border-white/20"
+          >
+            <LogIn className="h-3 w-3" /> Login
+          </Link>
         </div>
       </div>
 
@@ -189,6 +197,9 @@ export function BrochureLanding() {
             <a href="#inquiry-form-section" className="hover:text-amber-400 transition-colors">
               Admissions
             </a>
+            <Link href="/login" className="hover:text-amber-400 transition-colors">
+              Login
+            </Link>
           </nav>
 
           {/* Action CTAs */}
@@ -209,17 +220,21 @@ export function BrochureLanding() {
               </Button>
             </a>
 
-            {userSession ? (
-              <Link href="/dashboard">
-                <Button size="sm" className="bg-amber-600 hover:bg-amber-500 text-white gap-1.5 shadow-md">
+            <Link href="/login">
+              <Button
+                size="sm"
+                className="bg-gradient-to-r from-amber-600 to-rose-600 hover:from-amber-500 hover:to-rose-500 text-white gap-1.5 shadow-md font-bold px-3.5 sm:px-4"
+              >
+                <LogIn className="h-4 w-4" />
+                Login
+              </Button>
+            </Link>
+
+            {userSession && (
+              <Link href="/dashboard" className="hidden sm:inline-flex">
+                <Button size="sm" variant="outline" className="border-amber-500/40 text-amber-300 hover:bg-amber-950/40 gap-1.5 shadow-md font-semibold">
                   <LayoutDashboardIcon className="h-4 w-4" />
                   Dashboard
-                </Button>
-              </Link>
-            ) : (
-              <Link href="/login">
-                <Button size="sm" variant="outline" className="border-slate-700 bg-slate-800 text-slate-200 hover:bg-slate-700">
-                  Student Portal
                 </Button>
               </Link>
             )}
@@ -277,13 +292,20 @@ export function BrochureLanding() {
           </div>
 
           {/* Action CTAs */}
-          <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4">
+          <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 flex-wrap">
             <a href="#programs-section" className="w-full sm:w-auto">
               <Button size="lg" className="w-full sm:w-auto bg-gradient-to-r from-amber-600 to-rose-600 hover:from-amber-500 hover:to-rose-500 text-white font-semibold shadow-lg shadow-amber-950/50 gap-2 h-12 px-6">
                 Explore All 13 Programs
                 <ArrowRight className="h-4 w-4" />
               </Button>
             </a>
+
+            <Link href="/login" className="w-full sm:w-auto">
+              <Button size="lg" variant="outline" className="w-full sm:w-auto border-amber-500/50 bg-amber-950/20 text-amber-300 hover:bg-amber-950/40 hover:text-amber-200 font-bold gap-2 h-12 px-6 shadow-md">
+                <LogIn className="h-5 w-5 text-amber-400" />
+                Login to Portal
+              </Button>
+            </Link>
 
             <a
               href="https://wa.me/919063643342?text=Hello%2C%20I%20would%20like%20to%20enroll%20for%20a%20course%20at%20Radhe%20Vastraz%20Academy."
@@ -293,7 +315,7 @@ export function BrochureLanding() {
             >
               <Button size="lg" variant="outline" className="w-full sm:w-auto border-emerald-600/50 text-emerald-300 hover:bg-emerald-950/40 gap-2 h-12 px-6">
                 <MessageCircle className="h-5 w-5 text-emerald-400" />
-                Chat with Counselor (WhatsApp)
+                WhatsApp Counselor
               </Button>
             </a>
 
@@ -973,8 +995,9 @@ export function BrochureLanding() {
             <Link href="/thank-you" className="hover:text-amber-400 transition-colors">
               Thank You
             </Link>
-            <Link href="/login" className="hover:text-amber-400 transition-colors">
-              Staff & Student Portal
+            <Link href="/login" className="hover:text-amber-300 text-amber-400 font-semibold transition-colors inline-flex items-center gap-1.5">
+              <LogIn className="h-3.5 w-3.5" />
+              Login
             </Link>
           </div>
         </div>
