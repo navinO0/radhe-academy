@@ -3,7 +3,6 @@
 import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import {
   GraduationCap,
   Scissors,
@@ -52,7 +51,6 @@ import { formatCurrency } from "@/lib/utils";
 import { useSession } from "@/lib/auth/auth-client";
 
 export function BrochureLanding() {
-  const router = useRouter();
   const { data: sessionData } = useSession();
   const userSession = sessionData?.user;
 
@@ -73,12 +71,12 @@ export function BrochureLanding() {
     categoryTitle: "",
   });
 
-  // Fast inquiry state
+  // Fast inquiry state - submits directly to WhatsApp
   const [inquiryName, setInquiryName] = useState("");
-  const [inquiryPhone, setInquiryPhone] = useState("");
   const [inquiryCourse, setInquiryCourse] = useState("Master Boutique Course");
   const [inquiryBatch, setInquiryBatch] = useState("Morning Batch (10:00 AM - 1:00 PM)");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [whatsappSent, setWhatsappSent] = useState(false);
 
   // Filtered categories
   const displayedCategories =
@@ -110,11 +108,29 @@ export function BrochureLanding() {
 
   const handleInquirySubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    if (!inquiryName.trim()) return;
+
     setIsSubmitting(true);
-    const refCode = "RV-" + Math.floor(100000 + Math.random() * 900000);
-    setTimeout(() => {
-      router.push(`/thank-you?type=admission&ref=${refCode}`);
-    }, 400);
+
+    const messageLines = [
+      "Hello Radhe Vastraz Academy,",
+      "",
+      "I would like to submit an admission inquiry:",
+      `• Student Name: ${inquiryName.trim()}`,
+      `• Selected Course: ${inquiryCourse}`,
+      `• Preferred Batch: ${inquiryBatch}`,
+      "",
+      "Please share the syllabus, fee details, and seat availability.",
+    ];
+
+    const encodedText = encodeURIComponent(messageLines.join("\n"));
+    const whatsappUrl = `https://wa.me/919063643342?text=${encodedText}`;
+
+    // Open WhatsApp directly with prefilled inquiry
+    window.open(whatsappUrl, "_blank", "noopener,noreferrer");
+
+    setIsSubmitting(false);
+    setWhatsappSent(true);
   };
 
   return (
@@ -907,21 +923,6 @@ export function BrochureLanding() {
             </div>
 
             <div className="space-y-1.5">
-              <Label htmlFor="inq-phone" className="text-xs text-[#2D0612] font-bold">
-                Phone Number / WhatsApp *
-              </Label>
-              <Input
-                id="inq-phone"
-                type="tel"
-                placeholder="e.g. 9063643342"
-                value={inquiryPhone}
-                onChange={(e) => setInquiryPhone(e.target.value)}
-                required
-                className="bg-[#FFF9F6] border-[#E8D3C0] text-[#2D0612] h-11 rounded-lg focus-visible:ring-[#6B1127]"
-              />
-            </div>
-
-            <div className="space-y-1.5">
               <Label htmlFor="inq-course" className="text-xs text-[#2D0612] font-bold">
                 Selected Course / Program *
               </Label>
@@ -974,18 +975,53 @@ export function BrochureLanding() {
             <Button
               type="submit"
               disabled={isSubmitting}
-              className="w-full bg-[#6B1127] hover:bg-[#801431] text-white font-bold h-12 text-sm mt-4 shadow-lg rounded-lg"
+              className="w-full bg-[#128C7E] hover:bg-[#0C6E63] text-white font-bold h-12 text-sm mt-4 shadow-lg rounded-lg gap-2"
             >
-              {isSubmitting ? "Submitting Inquiry..." : "Submit Enrollment Inquiry"}
+              <MessageCircle className="h-5 w-5" />
+              <span>{isSubmitting ? "Opening WhatsApp..." : "Send Inquiry via WhatsApp"}</span>
             </Button>
 
-            <div className="flex items-center justify-center gap-4 text-xs text-[#6A4E56] pt-2 flex-wrap">
+            <p className="text-[11px] text-center text-[#6A4E56]">
+              Your inquiry details will open directly in WhatsApp to chat with our admissions desk. Radhe Vastraz receives your number automatically when you send.
+            </p>
+
+            {whatsappSent && (
+              <div className="p-4 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-900 text-xs sm:text-sm flex flex-col sm:flex-row items-center justify-between gap-3">
+                <div className="flex items-center gap-2">
+                  <CheckCircle2 className="h-5 w-5 text-emerald-600 shrink-0" />
+                  <span>
+                    WhatsApp opened! If it didn&apos;t launch automatically,{" "}
+                    <a
+                      href={`https://wa.me/919063643342?text=${encodeURIComponent(
+                        [
+                          "Hello Radhe Vastraz Academy,",
+                          "",
+                          "I would like to submit an admission inquiry:",
+                          `• Student Name: ${inquiryName.trim()}`,
+                          `• Selected Course: ${inquiryCourse}`,
+                          `• Preferred Batch: ${inquiryBatch}`,
+                          "",
+                          "Please share the syllabus, fee details, and seat availability.",
+                        ].join("\n")
+                      )}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="font-bold underline text-emerald-700 hover:text-emerald-800"
+                    >
+                      click here to send via WhatsApp
+                    </a>.
+                  </span>
+                </div>
+              </div>
+            )}
+
+            <div className="flex items-center justify-center gap-4 text-xs text-[#6A4E56] pt-2 flex-wrap border-t border-[#EFE2DB]">
               <span className="flex items-center gap-1">
                 <ShieldCheck className="h-3.5 w-3.5 text-emerald-600" /> Direct Counselor Connection
               </span>
               <span className="text-slate-300">|</span>
               <span className="flex items-center gap-1 font-semibold text-[#6B1127]">
-                <PhoneCall className="h-3.5 w-3.5" /> Helpline: 9063643342
+                <PhoneCall className="h-3.5 w-3.5" /> Admissions Hotline: 9063643342
               </span>
             </div>
           </form>
