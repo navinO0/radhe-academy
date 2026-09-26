@@ -50,14 +50,14 @@ export default function NotFound() {
 
       {/* Main 404 Hero */}
       <main className="max-w-3xl mx-auto px-4 py-16 flex flex-col items-center justify-center text-center flex-1">
-        {/* Decorative 404 Art */}
+        {/* Clean 404 Display */}
         <div className="relative mb-6">
-          <div className="text-8xl sm:text-9xl font-black tracking-widest text-transparent bg-clip-text bg-gradient-to-r from-primary via-purple-400 to-pink-400 select-none">
+          <div className="text-8xl sm:text-9xl font-black tracking-widest text-slate-700 select-none">
             404
           </div>
           <div className="absolute inset-0 flex items-center justify-center">
-            <div className="h-16 w-16 rounded-full bg-slate-900/90 border border-slate-700 flex items-center justify-center text-primary shadow-2xl backdrop-blur-md">
-              <Compass className="h-8 w-8 animate-spin" style={{ animationDuration: "12s" }} />
+            <div className="h-14 w-14 rounded-xl bg-slate-900 border border-slate-700 flex items-center justify-center text-amber-400 shadow-xl">
+              <Compass className="h-7 w-7" />
             </div>
           </div>
         </div>

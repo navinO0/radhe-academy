@@ -72,7 +72,7 @@ export default async function ReceiptsPage() {
                       </Link>
                     </TableCell>
                     <TableCell className="hidden md:table-cell">
-                      {receipt.instalment?.label ?? "—"}
+                      {receipt.instalment?.label ?? "-"}
                     </TableCell>
                     <TableCell className="hidden md:table-cell">
                       {formatDate(receipt.paymentDate)}

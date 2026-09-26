@@ -243,7 +243,7 @@ export default async function CourseDetailPage({ params }: PageProps) {
                     <TableRow key={batch.id}>
                       <TableCell className="font-medium">{batch.name}</TableCell>
                       <TableCell className="hidden md:table-cell">
-                        {batch.instructor?.name ?? "—"}
+                        {batch.instructor?.name ?? "-"}
                       </TableCell>
                       <TableCell>
                         <span className={batch._count.students >= batch.capacity ? "text-red-600 font-medium" : ""}>
@@ -251,10 +251,10 @@ export default async function CourseDetailPage({ params }: PageProps) {
                         </span>
                       </TableCell>
                       <TableCell className="hidden lg:table-cell">
-                        {batch.startDate ? formatDate(batch.startDate) : "—"}
+                        {batch.startDate ? formatDate(batch.startDate) : "-"}
                       </TableCell>
                       <TableCell className="hidden lg:table-cell">
-                        {batch.endDate ? formatDate(batch.endDate) : "—"}
+                        {batch.endDate ? formatDate(batch.endDate) : "-"}
                       </TableCell>
                       <TableCell>
                         <Badge variant={BATCH_STATUS_VARIANTS[batch.status] ?? "secondary"}>
@@ -344,7 +344,7 @@ export default async function CourseDetailPage({ params }: PageProps) {
                         </Link>
                       </TableCell>
                       <TableCell className="hidden md:table-cell">
-                        {student.batch?.name ?? "—"}
+                        {student.batch?.name ?? "-"}
                       </TableCell>
                       <TableCell className="hidden md:table-cell">
                         {formatDate(student.joiningDate)}

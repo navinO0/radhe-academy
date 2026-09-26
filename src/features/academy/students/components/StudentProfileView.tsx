@@ -401,23 +401,23 @@ export function StudentProfileView({
                 </div>
                 <div className="flex justify-between border-b pb-2">
                   <span className="text-muted-foreground">Email</span>
-                  <span>{student.email || "—"}</span>
+                  <span>{student.email || "-"}</span>
                 </div>
                 <div className="flex justify-between border-b pb-2">
                   <span className="text-muted-foreground">Gender</span>
-                  <span>{student.gender || "—"}</span>
+                  <span>{student.gender || "-"}</span>
                 </div>
                 <div className="flex justify-between border-b pb-2">
                   <span className="text-muted-foreground">Date of Birth</span>
-                  <span>{student.dateOfBirth ? formatDate(new Date(student.dateOfBirth)) : "—"}</span>
+                  <span>{student.dateOfBirth ? formatDate(new Date(student.dateOfBirth)) : "-"}</span>
                 </div>
                 <div className="flex justify-between border-b pb-2">
                   <span className="text-muted-foreground">City / State</span>
-                  <span>{[student.city, student.state].filter(Boolean).join(", ") || "—"}</span>
+                  <span>{[student.city, student.state].filter(Boolean).join(", ") || "-"}</span>
                 </div>
                 <div className="flex justify-between border-b pb-2">
                   <span className="text-muted-foreground">Address</span>
-                  <span>{student.address || "—"}</span>
+                  <span>{student.address || "-"}</span>
                 </div>
               </CardContent>
             </Card>
@@ -437,7 +437,7 @@ export function StudentProfileView({
                 </div>
                 <div className="flex justify-between border-b pb-2">
                   <span className="text-muted-foreground">Instructor</span>
-                  <span>{student.batch?.instructor?.name || "—"}</span>
+                  <span>{student.batch?.instructor?.name || "-"}</span>
                 </div>
                 <div className="flex justify-between border-b pb-2">
                   <span className="text-muted-foreground">Joining Date</span>
@@ -445,11 +445,11 @@ export function StudentProfileView({
                 </div>
                 <div className="flex justify-between border-b pb-2">
                   <span className="text-muted-foreground">Emergency Contact</span>
-                  <span>{student.emergencyContactName ? `${student.emergencyContactName} (${student.emergencyContactRelation})` : "—"}</span>
+                  <span>{student.emergencyContactName ? `${student.emergencyContactName} (${student.emergencyContactRelation})` : "-"}</span>
                 </div>
                 <div className="flex justify-between border-b pb-2">
                   <span className="text-muted-foreground">Emergency Phone</span>
-                  <span>{student.emergencyContactPhone || "—"}</span>
+                  <span>{student.emergencyContactPhone || "-"}</span>
                 </div>
               </CardContent>
             </Card>
@@ -501,7 +501,7 @@ export function StudentProfileView({
                             <TableRow key={payment.id}>
                               <TableCell className="font-mono text-xs font-semibold">
                                 <div className="flex items-center gap-1.5 flex-wrap">
-                                  <span>{payment.receiptNumber || "—"}</span>
+                                  <span>{payment.receiptNumber || "-"}</span>
                                   {payment.status === "REFUNDED" ? (
                                     <Badge variant="destructive" className="text-[10px] px-1 py-0 h-4">
                                       REFUNDED
@@ -517,13 +517,13 @@ export function StudentProfileView({
                               <TableCell>{payment.instalmentLabel || "General"}</TableCell>
                               <TableCell>{payment.paymentMethod.replace("_", " ")}</TableCell>
                               <TableCell className="text-xs text-muted-foreground font-mono">
-                                {payment.transactionReference || "—"}
+                                {payment.transactionReference || "-"}
                               </TableCell>
                               <TableCell className="text-right font-medium">
                                 {formatCurrency(payment.amount)}
                               </TableCell>
                               <TableCell className="text-right font-medium text-amber-600">
-                                {refundedAmount > 0 ? formatCurrency(refundedAmount.toFixed(2)) : "—"}
+                                {refundedAmount > 0 ? formatCurrency(refundedAmount.toFixed(2)) : "-"}
                               </TableCell>
                               <TableCell className="text-right">
                                 <div className="flex items-center justify-end gap-1">

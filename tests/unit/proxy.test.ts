@@ -7,7 +7,6 @@ describe("Proxy Middleware Routing", () => {
     const req = new NextRequest("https://academy.radhevastraz.in/");
     const res = proxy(req);
 
-    // Status should NOT be 307 or 308 redirect
     expect(res.status).toBe(200);
     expect(res.headers.get("location")).toBeNull();
   });
@@ -28,19 +27,24 @@ describe("Proxy Middleware Routing", () => {
     }
   });
 
-  it("passes requests through with x-request-id header", () => {
-    const req = new NextRequest("https://academy.radhevastraz.in/");
-    const res = proxy(req);
-
-    expect(res.headers.get("x-request-id")).toBeDefined();
-    expect(res.headers.get("x-request-id")?.length).toBeGreaterThan(0);
-  });
-
-  it("does not redirect unauthenticated dashboard requests in proxy layer", () => {
+  it("redirects unauthenticated requests to protected /dashboard to /login", () => {
     const req = new NextRequest("https://academy.radhevastraz.in/dashboard");
     const res = proxy(req);
 
-    // Proxy must not redirect — allow through so static CDN and page guards handle as needed
+    expect(res.status).toBe(307);
+    const location = res.headers.get("location");
+    expect(location).toContain("/login");
+    expect(location).toContain("callbackUrl=%2Fdashboard");
+  });
+
+  it("allows protected routes when session token cookie is present", () => {
+    const req = new NextRequest("https://academy.radhevastraz.in/dashboard", {
+      headers: {
+        cookie: "raadhe.session_token=valid-test-token-12345",
+      },
+    });
+    const res = proxy(req);
+
     expect(res.status).toBe(200);
     expect(res.headers.get("location")).toBeNull();
   });

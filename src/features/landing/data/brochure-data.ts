@@ -248,7 +248,7 @@ export const BROCHURE_CATEGORIES: BrochureCategory[] = [
     title: "Professional Fabric Painting",
     shortTitle: "Fabric Painting",
     tagline: "Paint Your Imagination on Fabric",
-    subtitle: "Art Creates A More Beautiful You ♡ Turn Your Creativity Into a Career!",
+    subtitle: "Art Creates A More Beautiful You: Turn Your Creativity Into a Career.",
     badge: "Artisan Craftsmanship",
     brochureImage: "/images/brochures/fabric-painting-brochure.jpg",
     brochureAlt: "Radhe Vastraz Professional Fabric Painting Courses Brochure",

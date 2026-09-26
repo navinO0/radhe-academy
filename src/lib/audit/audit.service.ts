@@ -16,7 +16,7 @@ export interface AuditLogEntry {
 
 /**
  * Append-only audit log writer.
- * Never throws — logs errors to console if DB write fails.
+ * Never throws - logs errors to console if DB write fails.
  * Does NOT log: passwords, secrets, payment credentials.
  */
 export async function writeAuditLog(entry: AuditLogEntry): Promise<void> {

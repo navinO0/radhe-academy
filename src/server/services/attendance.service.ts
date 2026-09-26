@@ -4,7 +4,7 @@ import { createId } from "@paralleldrive/cuid2";
 
 /**
  * Bulk submit attendance for a class session.
- * Single transaction — all-or-nothing.
+ * Single transaction - all-or-nothing.
  */
 export async function bulkSubmitAttendance(input: {
   organizationId: string;

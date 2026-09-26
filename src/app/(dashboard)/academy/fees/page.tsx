@@ -120,7 +120,7 @@ export default async function FeesPage() {
                     <TableCell className="text-right">{formatCurrency(agreement.quotedFee.toString())}</TableCell>
                     <TableCell className="text-right">{formatCurrency(agreement.registrationFee.toString())}</TableCell>
                     <TableCell className="text-right text-muted-foreground">
-                      {agreement.discountAmount.gt(0) ? `-${formatCurrency(agreement.discountAmount.toString())}` : "—"}
+                      {agreement.discountAmount.gt(0) ? `-${formatCurrency(agreement.discountAmount.toString())}` : "-"}
                     </TableCell>
                     <TableCell className="text-right font-semibold">
                       {formatCurrency(agreement.totalPayable.toString())}

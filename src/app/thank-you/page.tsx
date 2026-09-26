@@ -109,16 +109,13 @@ export default async function ThankYouPage({ searchParams }: ThankYouProps) {
       {/* Main Content */}
       <main className="flex-1 max-w-3xl mx-auto px-4 py-12 sm:py-16 flex flex-col items-center justify-center text-center">
         {/* Success Badge */}
-        <div className="relative mb-6">
-          <div className="h-20 w-20 rounded-full bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400 shadow-xl shadow-emerald-950/40">
-            <CheckCircle2 className="h-10 w-10 animate-in zoom-in-75 duration-300" />
-          </div>
-          <div className="absolute -top-1 -right-1 h-6 w-6 rounded-full bg-primary/20 border border-primary/30 flex items-center justify-center text-primary animate-pulse">
-            <Sparkles className="h-3 w-3" />
+        <div className="mb-6">
+          <div className="h-16 w-16 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400 shadow-xl shadow-emerald-950/40">
+            <CheckCircle2 className="h-9 w-9" />
           </div>
         </div>
 
-        <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-950/80 text-emerald-300 border border-emerald-800 mb-4">
+        <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-md text-xs font-semibold bg-emerald-950/80 text-emerald-300 border border-emerald-800 mb-4">
           <ShieldCheck className="h-3.5 w-3.5" />
           {config.badge}
         </span>
@@ -145,7 +142,7 @@ export default async function ThankYouPage({ searchParams }: ThankYouProps) {
             </h2>
             <div className="space-y-4">
               <div className="flex items-start gap-3.5">
-                <div className="h-7 w-7 rounded-full bg-primary/20 text-primary flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">
+                <div className="h-7 w-7 rounded-md bg-primary/20 text-primary flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">
                   1
                 </div>
                 <div>
@@ -157,7 +154,7 @@ export default async function ThankYouPage({ searchParams }: ThankYouProps) {
               </div>
 
               <div className="flex items-start gap-3.5">
-                <div className="h-7 w-7 rounded-full bg-primary/20 text-primary flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">
+                <div className="h-7 w-7 rounded-md bg-primary/20 text-primary flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">
                   2
                 </div>
                 <div>
@@ -169,7 +166,7 @@ export default async function ThankYouPage({ searchParams }: ThankYouProps) {
               </div>
 
               <div className="flex items-start gap-3.5">
-                <div className="h-7 w-7 rounded-full bg-primary/20 text-primary flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">
+                <div className="h-7 w-7 rounded-md bg-primary/20 text-primary flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">
                   3
                 </div>
                 <div>
@@ -202,9 +199,9 @@ export default async function ThankYouPage({ searchParams }: ThankYouProps) {
         <div className="mt-12 pt-8 border-t border-slate-800/80 w-full flex flex-col sm:flex-row items-center justify-center gap-6 text-xs text-slate-400">
           <div className="flex items-center gap-2">
             <PhoneCall className="h-3.5 w-3.5 text-primary" />
-            <span>Admissions Helpline: +91 98765 43210</span>
+            <span>Admissions Helpline: +91 90636 43342</span>
           </div>
-          <span className="hidden sm:inline">•</span>
+          <span className="hidden sm:inline text-slate-600">|</span>
           <div className="flex items-center gap-2">
             <Mail className="h-3.5 w-3.5 text-primary" />
             <span>Email: admissions@radhevastraz.in</span>

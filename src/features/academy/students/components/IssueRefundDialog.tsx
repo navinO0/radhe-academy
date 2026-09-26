@@ -117,7 +117,7 @@ export function IssueRefundDialog({
           <div className="bg-muted/40 p-3 rounded-lg border text-xs space-y-1.5">
             <div className="flex justify-between">
               <span className="text-muted-foreground">Original Receipt:</span>
-              <span className="font-mono font-medium">{payment.receiptNumber || "—"}</span>
+              <span className="font-mono font-medium">{payment.receiptNumber || "-"}</span>
             </div>
             <div className="flex justify-between">
               <span className="text-muted-foreground">Payment Date:</span>

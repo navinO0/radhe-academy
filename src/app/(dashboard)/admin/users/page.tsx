@@ -83,7 +83,7 @@ export default async function UsersPage() {
                       <div className="text-xs text-muted-foreground font-mono">{u.email}</div>
                     </TableCell>
                     <TableCell className="text-sm text-muted-foreground">
-                      {u.phone || "—"}
+                      {u.phone || "-"}
                     </TableCell>
                     <TableCell>
                       <div className="flex gap-1 flex-wrap">

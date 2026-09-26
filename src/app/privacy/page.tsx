@@ -154,7 +154,7 @@ export default function PrivacyPolicyPage() {
               </div>
               <div className="flex items-center gap-2 text-slate-300">
                 <Phone className="h-4 w-4 text-primary shrink-0" />
-                <span>+91 98765 43210</span>
+                <span>+91 90636 43342</span>
               </div>
               <div className="flex items-start gap-2 text-slate-300 sm:col-span-2">
                 <MapPin className="h-4 w-4 text-primary shrink-0 mt-0.5" />

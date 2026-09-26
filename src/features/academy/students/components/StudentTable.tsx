@@ -193,10 +193,10 @@ export function StudentTable({
                       {student.phone}
                     </TableCell>
                     <TableCell className="hidden lg:table-cell">
-                      {student.course?.name ?? "—"}
+                      {student.course?.name ?? "-"}
                     </TableCell>
                     <TableCell className="hidden lg:table-cell">
-                      {student.batch?.name ?? "—"}
+                      {student.batch?.name ?? "-"}
                     </TableCell>
                     <TableCell className="hidden md:table-cell">
                       {formatDate(student.joiningDate)}

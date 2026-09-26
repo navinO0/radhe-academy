@@ -32,7 +32,7 @@ export interface DashboardStats {
 }
 
 /**
- * Optimized dashboard stats — uses aggregate queries, not individual queries per card.
+ * Optimized dashboard stats - uses aggregate queries, not individual queries per card.
  */
 export async function getDashboardStats(
   organizationId: string

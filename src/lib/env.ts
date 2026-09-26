@@ -32,7 +32,7 @@ const envSchema = z.object({
 const _env = envSchema.safeParse(process.env);
 
 if (!_env.success) {
-  console.error("❌ Invalid environment variables:");
+  console.error("Invalid environment variables:");
   console.error(_env.error.flatten().fieldErrors);
   process.exit(1);
 }

@@ -79,7 +79,7 @@ export async function listStudents(query: StudentListQuery) {
       orderBy: { [safeSort]: sortOrder },
       skip,
       take: safePageSize,
-      // Data minimization — only return list-required fields
+      // Data minimization - only return list-required fields
       select: {
         id: true,
         publicId: true,

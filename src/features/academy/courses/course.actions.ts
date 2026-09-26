@@ -156,7 +156,7 @@ export async function deleteCourseAction(
       );
     }
 
-    // Course has 0 students — safe to delete empty batches and course
+    // Course has 0 students - safe to delete empty batches and course
     await prisma.$transaction(async (tx) => {
       if (course._count.batches > 0) {
         await tx.batch.deleteMany({ where: { courseId: course.id } });

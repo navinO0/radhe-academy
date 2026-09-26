@@ -109,7 +109,7 @@ export function errorResponse(
 }
 
 /**
- * Safe error handler — never leaks stack traces or SQL errors to clients in production
+ * Safe error handler - never leaks stack traces or SQL errors to clients in production
  */
 export function handleApiError(
   err: unknown,

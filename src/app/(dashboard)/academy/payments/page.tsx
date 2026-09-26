@@ -66,7 +66,7 @@ export default async function PaymentsPage() {
                 payments.map((payment) => (
                   <TableRow key={payment.id}>
                     <TableCell className="font-mono text-xs font-semibold">
-                      {payment.receipt?.receiptNumber ?? "—"}
+                      {payment.receipt?.receiptNumber ?? "-"}
                     </TableCell>
                     <TableCell>
                       <Link
@@ -80,7 +80,7 @@ export default async function PaymentsPage() {
                       </Link>
                     </TableCell>
                     <TableCell className="hidden md:table-cell">
-                      {payment.instalment?.label ?? "—"}
+                      {payment.instalment?.label ?? "-"}
                     </TableCell>
                     <TableCell className="hidden md:table-cell">
                       {formatDate(payment.paymentDate)}

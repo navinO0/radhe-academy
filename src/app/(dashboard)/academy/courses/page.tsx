@@ -147,7 +147,7 @@ export default async function CoursesPage({ searchParams }: PageProps) {
                   <div className="grid grid-cols-3 gap-2 text-center">
                     <div>
                       <p className="text-xs text-muted-foreground">Duration</p>
-                      <p className="text-sm font-medium">{course.duration ?? "—"}</p>
+                      <p className="text-sm font-medium">{course.duration ?? "-"}</p>
                     </div>
                     <div>
                       <p className="text-xs text-muted-foreground">Students</p>

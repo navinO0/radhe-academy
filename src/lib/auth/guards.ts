@@ -70,7 +70,7 @@ export async function requireAuth(): Promise<AuthenticatedSession> {
 
 /**
  * Check if a user has a given permission.
- * Server-side only — never trust client permission checks.
+ * Server-side only - never trust client permission checks.
  */
 export async function hasPermission(
   userId: string,
@@ -99,7 +99,7 @@ export async function hasPermission(
 }
 
 /**
- * Require a specific permission — throws ForbiddenError and logs security event if not granted.
+ * Require a specific permission - throws ForbiddenError and logs security event if not granted.
  */
 export async function requirePermission(
   session: AuthenticatedSession,

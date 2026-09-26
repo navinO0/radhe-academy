@@ -17,7 +17,7 @@ export interface StudentFinancials {
 
 /**
  * Recalculate student financials inside a transaction (with row locking).
- * NEVER call this with stale data — always recalculate from DB.
+ * NEVER call this with stale data - always recalculate from DB.
  */
 export async function recalculateStudentBalance(
   studentId: string,
@@ -110,7 +110,7 @@ export async function createPayment(input: CreatePaymentInput) {
       if (new Date() < existingKey.expiresAt) {
         return existingKey.result as ReturnType<typeof buildPaymentResult>;
       }
-      // Key expired — treat as new request, delete old key
+      // Key expired - treat as new request, delete old key
       await tx.idempotencyKey.delete({ where: { key: idempotencyKey } });
     }
 

@@ -74,10 +74,10 @@ export default async function AuditLogsPage() {
                     </TableCell>
                     <TableCell className="text-sm font-medium">{log.resourceType}</TableCell>
                     <TableCell className="hidden md:table-cell text-xs font-mono text-muted-foreground">
-                      {log.resourceId ? `${log.resourceId.slice(0, 10)}...` : "—"}
+                      {log.resourceId ? `${log.resourceId.slice(0, 10)}...` : "-"}
                     </TableCell>
                     <TableCell className="hidden lg:table-cell text-xs text-muted-foreground">
-                      {log.ipAddress ?? "—"}
+                      {log.ipAddress ?? "-"}
                     </TableCell>
                   </TableRow>
                 ))

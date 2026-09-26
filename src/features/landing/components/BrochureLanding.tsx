@@ -19,16 +19,8 @@ import {
   ArrowRight,
   Eye,
   Download,
-  Calendar,
   Clock,
-  Tag,
   ShieldCheck,
-  ChevronRight,
-  Star,
-  MapPin,
-  ExternalLink,
-  BookOpen,
-  Filter,
   LogIn,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -64,7 +56,7 @@ export function BrochureLanding() {
   const { data: sessionData } = useSession();
   const userSession = sessionData?.user;
 
-  // Selected tab: "all" or specific category id
+  // Selected category tab: "all" or specific category id
   const [activeCategory, setActiveCategory] = useState<string>("all");
   const [viewMode, setViewMode] = useState<"cards" | "table">("cards");
 
@@ -120,121 +112,130 @@ export function BrochureLanding() {
     e.preventDefault();
     setIsSubmitting(true);
     const refCode = "RV-" + Math.floor(100000 + Math.random() * 900000);
-    // Smooth redirect to Thank You page with admission reference
     setTimeout(() => {
       router.push(`/thank-you?type=admission&ref=${refCode}`);
     }, 400);
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col justify-between selection:bg-amber-500/30 selection:text-amber-200">
-      {/* 1. Top Announcement Bar */}
-      <div className="bg-gradient-to-r from-red-900 via-rose-900 to-amber-950 text-white text-xs sm:text-sm py-2 px-4 text-center font-medium border-b border-rose-950/60 sticky top-0 z-50 shadow-md">
-        <div className="max-w-7xl mx-auto flex items-center justify-center gap-2 sm:gap-4 flex-wrap">
-          <span className="flex items-center gap-1.5 font-bold tracking-wide">
-            <span className="h-2 w-2 rounded-full bg-emerald-400 animate-ping inline-block" />
-            Founder&apos;s Batch Admissions Open Now!
-          </span>
-          <span className="hidden md:inline text-rose-300">•</span>
-          <span className="bg-white/10 px-2 py-0.5 rounded text-amber-200 font-semibold border border-white/10">
-            Special 40% OFF
-          </span>
-          <span className="hidden sm:inline text-rose-200">Limited Seats Available</span>
-          <span className="hidden md:inline text-rose-300">•</span>
-          <a
-            href="tel:9063643342"
-            className="inline-flex items-center gap-1 text-white hover:text-amber-300 underline underline-offset-2 font-bold transition-colors"
-          >
-            <PhoneCall className="h-3 w-3" /> Call: 9063643342
-          </a>
-          <span className="hidden sm:inline text-rose-300">•</span>
-          <Link
-            href="/login"
-            className="inline-flex items-center gap-1 bg-white/20 hover:bg-white/30 text-white px-2.5 py-0.5 rounded-full font-bold transition-colors border border-white/20"
-          >
-            <LogIn className="h-3 w-3" /> Login
-          </Link>
+    <div className="min-h-screen w-full overflow-x-hidden bg-[#FFF9F6] text-[#2D0612] selection:bg-[#FCEEEF] selection:text-[#6B1127] flex flex-col justify-between font-sans">
+      {/* 1. Top Announcement Bar - Full Width Maroon Ribbon */}
+      <div className="w-full bg-gradient-to-r from-[#4A0A17] via-[#6B1127] to-[#4A0A17] text-white text-xs sm:text-sm py-2 px-4 sm:px-8 lg:px-12 border-b border-[#D4AF37]/40 sticky top-0 z-50 shadow-md">
+        <div className="w-full flex items-center justify-between gap-3 flex-wrap">
+          <div className="flex items-center gap-2 sm:gap-3 flex-wrap">
+            <span className="flex items-center gap-1.5 font-bold tracking-wide text-white">
+              <span className="h-2 w-2 rounded-full bg-emerald-400 inline-block" />
+              Founder&apos;s Batch Admissions Open Now
+            </span>
+            <span className="hidden md:inline text-[#D4AF37]">|</span>
+            <span className="bg-[#FAF5E8]/20 px-2.5 py-0.5 rounded-md text-[#E6C875] font-bold border border-[#D4AF37]/40 text-[11px] sm:text-xs">
+              Special 40% OFF
+            </span>
+            <span className="hidden sm:inline text-rose-200 text-xs">Limited Seats Available</span>
+          </div>
+
+          <div className="flex items-center gap-3 ml-auto">
+            <a
+              href="tel:9063643342"
+              className="inline-flex items-center gap-1.5 text-white hover:text-[#E6C875] font-bold transition-colors text-xs"
+            >
+              <PhoneCall className="h-3.5 w-3.5 text-[#E6C875]" />
+              <span>9063643342</span>
+            </a>
+            <span className="text-[#D4AF37]/50">|</span>
+            <Link
+              href="/login"
+              className="inline-flex items-center gap-1 bg-[#D4AF37] hover:bg-[#E6C875] text-[#2A050E] px-2.5 py-0.5 rounded-md font-bold transition-colors text-xs shadow-sm"
+            >
+              <LogIn className="h-3.5 w-3.5" />
+              Login
+            </Link>
+          </div>
         </div>
       </div>
 
-      {/* 2. Main Navigation Header */}
-      <header className="border-b border-slate-800/80 bg-slate-900/80 backdrop-blur-xl sticky top-9 z-40">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 h-20 flex items-center justify-between gap-4">
-          {/* Logo & Brand */}
-          <Link href="/" className="flex items-center gap-3 group">
-            <div className="h-11 w-11 rounded-xl bg-gradient-to-br from-amber-500/20 via-rose-500/20 to-primary/20 border border-amber-500/30 flex items-center justify-center text-amber-400 shadow-lg shadow-amber-950/30 group-hover:scale-105 transition-transform">
+      {/* 2. Main Navigation Header - Full Width Soft Pinkish-White */}
+      <header className="w-full border-b border-[#E8D3C0] bg-[#FFFDFB]/95 backdrop-blur-md sticky top-9 z-40 shadow-xs">
+        <div className="w-full px-4 sm:px-8 lg:px-12 2xl:px-16 h-20 flex items-center justify-between gap-4">
+          {/* Logo & Brand matching the brochure gold lotus styling */}
+          <Link href="/" className="flex items-center gap-3 group shrink-0">
+            <div className="h-11 w-11 rounded-xl bg-[#6B1127] border border-[#D4AF37] flex items-center justify-center text-[#E6C875] shadow-md group-hover:scale-105 transition-transform">
               <GraduationCap className="h-6 w-6" />
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <span className="font-extrabold text-lg sm:text-xl tracking-tight text-white block">
+                <span className="font-extrabold text-lg sm:text-xl tracking-wider text-[#2D0612] block font-serif">
                   RADHE VASTRAZ
                 </span>
-                <span className="hidden sm:inline-block text-[10px] px-1.5 py-0.5 rounded bg-amber-500/20 text-amber-300 font-semibold border border-amber-500/30">
+                <span className="hidden sm:inline-block text-[10px] px-1.5 py-0.5 rounded-md bg-[#6B1127] text-[#E6C875] font-semibold border border-[#D4AF37]/40">
                   ACADEMY
                 </span>
               </div>
-              <span className="text-[11px] uppercase tracking-widest text-slate-400 block font-medium -mt-0.5">
-                Boutique & Fashion Academy
+              <span className="text-[11px] uppercase tracking-widest text-[#7A3F4C] block font-medium -mt-0.5">
+                Boutique &amp; Fashion Academy Hyderabad
               </span>
             </div>
           </Link>
 
           {/* Desktop Navigation Links */}
-          <nav className="hidden lg:flex items-center gap-6 text-sm text-slate-300 font-medium">
-            <a href="#programs-section" className="hover:text-amber-400 transition-colors">
+          <nav className="hidden lg:flex items-center gap-7 text-sm text-[#5A2530] font-semibold">
+            <a href="#programs-section" className="hover:text-[#6B1127] transition-colors">
               Programs
             </a>
-            <a href="#fee-tables" className="hover:text-amber-400 transition-colors">
+            <a href="#fee-tables" className="hover:text-[#6B1127] transition-colors">
               Fee Structure
             </a>
-            <a href="#features-section" className="hover:text-amber-400 transition-colors">
-              What&apos;s Included
+            <a href="#features-section" className="hover:text-[#6B1127] transition-colors">
+              Every Course Includes
             </a>
-            <a href="#fabric-art-section" className="hover:text-amber-400 transition-colors">
+            <a href="#fabric-art-section" className="hover:text-[#6B1127] transition-colors">
               Fabric Painting
             </a>
-            <a href="#inquiry-form-section" className="hover:text-amber-400 transition-colors">
+            <a href="#inquiry-form-section" className="hover:text-[#6B1127] transition-colors">
               Admissions
             </a>
-            <Link href="/login" className="hover:text-amber-400 transition-colors">
-              Login
+            <Link href="/login" className="hover:text-[#6B1127] transition-colors">
+              Portal
             </Link>
           </nav>
 
           {/* Action CTAs */}
-          <div className="flex items-center gap-2 sm:gap-3">
+          <div className="flex items-center gap-2 sm:gap-3 shrink-0">
             <a
               href="https://wa.me/919063643342?text=Hi%20Radhe%20Vastraz%20Academy%2C%20I%20am%20interested%20in%20learning%20more%20about%20your%20courses."
               target="_blank"
               rel="noopener noreferrer"
-              className="hidden sm:inline-flex"
+              className="inline-flex"
             >
               <Button
                 size="sm"
                 variant="outline"
-                className="border-emerald-600/40 text-emerald-400 hover:bg-emerald-950/40 hover:text-emerald-300 gap-1.5"
+                className="border-emerald-600/40 bg-emerald-50/60 text-emerald-800 hover:bg-emerald-100 hover:text-emerald-900 gap-1.5 h-9 px-3 rounded-lg font-medium"
               >
-                <MessageCircle className="h-4 w-4" />
-                WhatsApp
+                <MessageCircle className="h-4 w-4 text-emerald-600" />
+                <span className="hidden sm:inline">WhatsApp</span>
               </Button>
             </a>
 
             <Link href="/login">
               <Button
                 size="sm"
-                className="bg-gradient-to-r from-amber-600 to-rose-600 hover:from-amber-500 hover:to-rose-500 text-white gap-1.5 shadow-md font-bold px-3.5 sm:px-4"
+                className="bg-[#6B1127] hover:bg-[#801431] text-white font-bold gap-1.5 h-9 px-4 rounded-lg shadow-sm"
               >
-                <LogIn className="h-4 w-4" />
-                Login
+                <LogIn className="h-4 w-4 text-[#E6C875]" />
+                <span>Login</span>
               </Button>
             </Link>
 
             {userSession && (
               <Link href="/dashboard" className="hidden sm:inline-flex">
-                <Button size="sm" variant="outline" className="border-amber-500/40 text-amber-300 hover:bg-amber-950/40 gap-1.5 shadow-md font-semibold">
+                <Button
+                  size="sm"
+                  variant="outline"
+                  className="border-[#6B1127]/30 text-[#6B1127] hover:bg-[#FCEEEF] gap-1.5 h-9 px-3 rounded-lg font-semibold"
+                >
                   <LayoutDashboardIcon className="h-4 w-4" />
-                  Dashboard
+                  <span>Dashboard</span>
                 </Button>
               </Link>
             )}
@@ -242,68 +243,67 @@ export function BrochureLanding() {
         </div>
       </header>
 
-      {/* 3. Hero Section */}
-      <section className="relative overflow-hidden pt-12 pb-16 lg:pt-20 lg:pb-24 border-b border-slate-800">
-        {/* Decorative background glows */}
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-96 bg-gradient-to-b from-rose-950/20 via-amber-950/10 to-transparent blur-3xl pointer-events-none -z-10" />
-
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 text-center">
+      {/* 3. Hero Section - Full Width with Soft Blush / Warm Pinkish-White Luxury Aesthetic */}
+      <section className="relative w-full overflow-hidden pt-10 pb-16 lg:pt-16 lg:pb-20 border-b border-[#E8D3C0] bg-gradient-to-b from-[#FFF5F2] via-[#FCF5F2] to-[#FAF0ED]">
+        <div className="w-full px-4 sm:px-8 lg:px-12 2xl:px-16 text-center">
           {/* Eyebrow badge */}
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-semibold bg-gradient-to-r from-amber-500/10 via-rose-500/10 to-amber-500/10 text-amber-300 border border-amber-500/30 mb-6 shadow-sm">
-            <Sparkles className="h-3.5 w-3.5 text-amber-400" />
-            <span>HYDERABAD&apos;S PREMIER FASHION & BOUTIQUE ACADEMY</span>
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-md text-xs font-bold bg-[#FCEEEF] text-[#6B1127] border border-[#6B1127]/25 mb-6 shadow-xs">
+            <span>HYDERABAD • PREMIER BOUTIQUE &amp; FASHION ACADEMY</span>
           </div>
 
           {/* Main Headline */}
-          <h1 className="text-3xl sm:text-5xl lg:text-6xl font-extrabold text-white tracking-tight max-w-4xl mx-auto leading-tight sm:leading-tight">
-            Turn Your Passion for Fashion into a{" "}
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-300 via-rose-300 to-amber-200">
-              Career or Business!
-            </span>
+          <h1 className="text-3xl sm:text-5xl lg:text-6xl font-extrabold text-[#2D0612] tracking-tight max-w-5xl mx-auto leading-tight sm:leading-tight font-serif">
+            Professional Tailoring, Fashion Designing &amp; Fabric Painting Courses
           </h1>
 
           {/* Subtitle */}
-          <p className="mt-5 text-base sm:text-xl text-slate-300 max-w-2xl mx-auto leading-relaxed">
-            Dreaming of starting your own boutique or becoming a certified designer? Join our hands-on
-            vocational atelier with practical studio training and lifetime entrepreneurial mentorship.
+          <p className="mt-5 text-base sm:text-lg text-[#5C3842] max-w-3xl mx-auto leading-relaxed">
+            Hands-on studio training in boutique blouse stitching, garment construction, pattern drafting, and artisan fabric painting in Hyderabad. Admissions open for Founder&apos;s Batch with 40% discount.
           </p>
 
-          {/* Highlight Cards Row */}
-          <div className="mt-8 grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 max-w-4xl mx-auto">
-            <div className="p-4 rounded-xl bg-slate-900/90 border border-slate-800 text-center shadow-lg">
-              <div className="text-2xl sm:text-3xl font-black text-amber-400">40% OFF</div>
-              <div className="text-xs text-slate-400 mt-0.5">Founder&apos;s Batch Fee</div>
+          {/* Highlight Cards Row - Spans Full Width with Clean White-Pinkish Cards */}
+          <div className="mt-8 grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 lg:gap-6 w-full max-w-6xl mx-auto">
+            <div className="p-4 sm:p-5 rounded-xl bg-white border border-[#E8D3C0] text-center shadow-xs hover:shadow-md transition-shadow">
+              <div className="text-2xl sm:text-3xl lg:text-4xl font-black text-[#6B1127] font-serif">40% OFF</div>
+              <div className="text-xs text-[#6A4E56] mt-1 font-semibold">Founder&apos;s Batch Fee</div>
             </div>
 
-            <div className="p-4 rounded-xl bg-slate-900/90 border border-slate-800 text-center shadow-lg">
-              <div className="text-2xl sm:text-3xl font-black text-rose-400">13 Courses</div>
-              <div className="text-xs text-slate-400 mt-0.5">3 Segregated Tracks</div>
+            <div className="p-4 sm:p-5 rounded-xl bg-white border border-[#E8D3C0] text-center shadow-xs hover:shadow-md transition-shadow">
+              <div className="text-2xl sm:text-3xl lg:text-4xl font-black text-[#2D0612] font-serif">13 Courses</div>
+              <div className="text-xs text-[#6A4E56] mt-1 font-semibold">3 Segregated Tracks</div>
             </div>
 
-            <div className="p-4 rounded-xl bg-slate-900/90 border border-slate-800 text-center shadow-lg">
-              <div className="text-2xl sm:text-3xl font-black text-emerald-400">100% Practical</div>
-              <div className="text-xs text-slate-400 mt-0.5">Sewing, Cutting & Art</div>
+            <div className="p-4 sm:p-5 rounded-xl bg-white border border-[#E8D3C0] text-center shadow-xs hover:shadow-md transition-shadow">
+              <div className="text-2xl sm:text-3xl lg:text-4xl font-black text-emerald-700 font-serif">Studio Training</div>
+              <div className="text-xs text-[#6A4E56] mt-1 font-semibold">Live Machine &amp; Art Practice</div>
             </div>
 
-            <div className="p-4 rounded-xl bg-slate-900/90 border border-slate-800 text-center shadow-lg">
-              <div className="text-2xl sm:text-3xl font-black text-sky-400">₹2,000</div>
-              <div className="text-xs text-slate-400 mt-0.5">One-Time Admission</div>
+            <div className="p-4 sm:p-5 rounded-xl bg-white border border-[#E8D3C0] text-center shadow-xs hover:shadow-md transition-shadow">
+              <div className="text-2xl sm:text-3xl lg:text-4xl font-black text-[#6B1127] font-serif">₹2,000</div>
+              <div className="text-xs text-[#6A4E56] mt-1 font-semibold">One-Time Admission Fee</div>
             </div>
           </div>
 
           {/* Action CTAs */}
-          <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 flex-wrap">
+          <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 flex-wrap max-w-3xl mx-auto">
             <a href="#programs-section" className="w-full sm:w-auto">
-              <Button size="lg" className="w-full sm:w-auto bg-gradient-to-r from-amber-600 to-rose-600 hover:from-amber-500 hover:to-rose-500 text-white font-semibold shadow-lg shadow-amber-950/50 gap-2 h-12 px-6">
-                Explore All 13 Programs
-                <ArrowRight className="h-4 w-4" />
+              <Button
+                size="lg"
+                className="w-full sm:w-auto bg-[#6B1127] hover:bg-[#801431] text-white font-bold shadow-md gap-2 h-12 px-7 rounded-lg"
+              >
+                <span>Explore All 13 Programs</span>
+                <ArrowRight className="h-4 w-4 text-[#E6C875]" />
               </Button>
             </a>
 
             <Link href="/login" className="w-full sm:w-auto">
-              <Button size="lg" variant="outline" className="w-full sm:w-auto border-amber-500/50 bg-amber-950/20 text-amber-300 hover:bg-amber-950/40 hover:text-amber-200 font-bold gap-2 h-12 px-6 shadow-md">
-                <LogIn className="h-5 w-5 text-amber-400" />
-                Login to Portal
+              <Button
+                size="lg"
+                variant="outline"
+                className="w-full sm:w-auto border-[#6B1127]/40 bg-white text-[#6B1127] hover:bg-[#FCEEEF] font-bold gap-2 h-12 px-6 rounded-lg shadow-xs"
+              >
+                <LogIn className="h-5 w-5 text-[#6B1127]" />
+                <span>Login to Portal</span>
               </Button>
             </Link>
 
@@ -313,50 +313,60 @@ export function BrochureLanding() {
               rel="noopener noreferrer"
               className="w-full sm:w-auto"
             >
-              <Button size="lg" variant="outline" className="w-full sm:w-auto border-emerald-600/50 text-emerald-300 hover:bg-emerald-950/40 gap-2 h-12 px-6">
-                <MessageCircle className="h-5 w-5 text-emerald-400" />
-                WhatsApp Counselor
+              <Button
+                size="lg"
+                variant="outline"
+                className="w-full sm:w-auto border-emerald-600/50 bg-emerald-50/70 text-emerald-800 hover:bg-emerald-100 gap-2 h-12 px-6 rounded-lg font-medium"
+              >
+                <MessageCircle className="h-5 w-5 text-emerald-600" />
+                <span>WhatsApp Counselor</span>
               </Button>
             </a>
 
             <a href="#inquiry-form-section" className="w-full sm:w-auto">
-              <Button size="lg" variant="ghost" className="w-full sm:w-auto text-slate-300 hover:text-white hover:bg-slate-800 h-12 px-6">
-                Apply for Admission &rarr;
+              <Button
+                size="lg"
+                variant="ghost"
+                className="w-full sm:w-auto text-[#6B1127] hover:bg-[#FCEEEF] h-12 px-6 rounded-lg font-semibold"
+              >
+                <span>Apply for Admission &rarr;</span>
               </Button>
             </a>
           </div>
         </div>
       </section>
 
-      {/* 4. Interactive Program Segregation & Explorer */}
-      <section id="programs-section" className="py-14 sm:py-20 max-w-7xl mx-auto px-4 sm:px-6 w-full">
-        {/* Section Heading */}
+      {/* 4. Interactive Program Segregation & Explorer - Full Width */}
+      <section id="programs-section" className="py-12 sm:py-16 w-full px-4 sm:px-8 lg:px-12 2xl:px-16">
+        {/* Section Heading with Brochure Style Diamond Ribbon */}
         <div className="text-center max-w-3xl mx-auto mb-10">
-          <Badge variant="outline" className="text-xs uppercase tracking-wider text-amber-400 border-amber-500/30 mb-3 px-3 py-1">
-            Official Curriculum & Brochures
-          </Badge>
-          <h2 className="text-2xl sm:text-4xl font-extrabold text-white tracking-tight">
+          <div className="inline-block px-4 py-1 rounded-md bg-[#6B1127] text-[#E6C875] border border-[#D4AF37]/50 text-xs font-bold uppercase tracking-wider mb-3 shadow-xs">
+            FEE STRUCTURE &amp; CURRICULUM
+          </div>
+          <h2 className="text-2xl sm:text-4xl font-extrabold text-[#2D0612] tracking-tight font-serif">
             Select Your Creative Career Track
           </h2>
-          <p className="text-sm sm:text-base text-slate-400 mt-2">
-            Explore programs segregated across Boutique Tailoring, Fashion Designing, and Traditional Artisan Fabric Painting.
+          <p className="text-sm sm:text-base text-[#6A4E56] mt-2">
+            Explore 13 certified vocational programs segregated across Boutique Tailoring, Fashion Designing, and Traditional Artisan Fabric Painting.
           </p>
         </div>
 
-        {/* Category Segregation Switcher Tabs */}
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mb-8 pb-4 border-b border-slate-800">
-          {/* Tabs */}
-          <div className="flex flex-wrap items-center gap-2 p-1.5 rounded-2xl bg-slate-900 border border-slate-800 w-full sm:w-auto">
+        {/* Category Segregation Switcher Tabs - Mobile Touch Friendly */}
+        <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4 mb-8 pb-4 border-b border-[#E8D3C0]">
+          {/* Scrollable Track Tabs on Mobile */}
+          <div className="flex items-center gap-2 p-1.5 rounded-xl bg-white border border-[#E8D3C0] overflow-x-auto no-scrollbar w-full md:w-auto shadow-xs">
             <button
               onClick={() => setActiveCategory("all")}
-              className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all flex items-center gap-2 ${
+              className={`px-4 py-2 rounded-lg text-xs sm:text-sm font-semibold transition-all flex items-center gap-2 shrink-0 ${
                 activeCategory === "all"
-                  ? "bg-amber-600 text-white shadow-md"
-                  : "text-slate-400 hover:text-white hover:bg-slate-800"
+                  ? "bg-[#6B1127] text-white shadow-sm"
+                  : "text-[#6A404B] hover:text-[#2D0612] hover:bg-[#FCF6F4]"
               }`}
             >
               <span>All Tracks</span>
-              <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-white/20 text-white">
+              <span className={`text-[10px] px-1.5 py-0.5 rounded-md font-bold ${
+                activeCategory === "all" ? "bg-white/20 text-[#E6C875]" : "bg-[#FCEEEF] text-[#6B1127]"
+              }`}>
                 {totalCourseCount}
               </span>
             </button>
@@ -365,17 +375,19 @@ export function BrochureLanding() {
               <button
                 key={cat.id}
                 onClick={() => setActiveCategory(cat.id)}
-                className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all flex items-center gap-2 ${
+                className={`px-4 py-2 rounded-lg text-xs sm:text-sm font-semibold transition-all flex items-center gap-2 shrink-0 ${
                   activeCategory === cat.id
-                    ? "bg-amber-600 text-white shadow-md"
-                    : "text-slate-400 hover:text-white hover:bg-slate-800"
+                    ? "bg-[#6B1127] text-white shadow-sm"
+                    : "text-[#6A404B] hover:text-[#2D0612] hover:bg-[#FCF6F4]"
                 }`}
               >
-                {cat.id === "boutique" && <Scissors className="h-3.5 w-3.5" />}
-                {cat.id === "fashion-designing" && <Sparkles className="h-3.5 w-3.5" />}
-                {cat.id === "fabric-painting" && <Palette className="h-3.5 w-3.5" />}
+                {cat.id === "boutique" && <Scissors className={`h-3.5 w-3.5 ${activeCategory === cat.id ? "text-[#E6C875]" : "text-[#6B1127]"}`} />}
+                {cat.id === "fashion-designing" && <Sparkles className={`h-3.5 w-3.5 ${activeCategory === cat.id ? "text-[#E6C875]" : "text-[#6B1127]"}`} />}
+                {cat.id === "fabric-painting" && <Palette className={`h-3.5 w-3.5 ${activeCategory === cat.id ? "text-[#E6C875]" : "text-[#6B1127]"}`} />}
                 <span>{cat.shortTitle}</span>
-                <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-white/20 text-white">
+                <span className={`text-[10px] px-1.5 py-0.5 rounded-md font-bold ${
+                  activeCategory === cat.id ? "bg-white/20 text-[#E6C875]" : "bg-[#FCEEEF] text-[#6B1127]"
+                }`}>
                   {cat.programs.length}
                 </span>
               </button>
@@ -383,21 +395,21 @@ export function BrochureLanding() {
           </div>
 
           {/* View toggle (Cards vs Table) */}
-          <div className="flex items-center gap-2 self-end sm:self-auto text-xs text-slate-400">
-            <span>View:</span>
-            <div className="flex rounded-lg bg-slate-900 border border-slate-800 p-0.5">
+          <div className="flex items-center gap-2 self-end md:self-auto text-xs text-[#6A4E56]">
+            <span>View Mode:</span>
+            <div className="flex rounded-lg bg-white border border-[#E8D3C0] p-0.5 shadow-xs">
               <button
                 onClick={() => setViewMode("cards")}
-                className={`px-3 py-1 rounded-md transition-colors ${
-                  viewMode === "cards" ? "bg-slate-800 text-white font-medium" : "hover:text-white"
+                className={`px-3 py-1.5 rounded-md transition-colors font-medium ${
+                  viewMode === "cards" ? "bg-[#6B1127] text-white" : "hover:text-[#2D0612]"
                 }`}
               >
                 Cards View
               </button>
               <button
                 onClick={() => setViewMode("table")}
-                className={`px-3 py-1 rounded-md transition-colors ${
-                  viewMode === "table" ? "bg-slate-800 text-white font-medium" : "hover:text-white"
+                className={`px-3 py-1.5 rounded-md transition-colors font-medium ${
+                  viewMode === "table" ? "bg-[#6B1127] text-white" : "hover:text-[#2D0612]"
                 }`}
               >
                 Table Matrix
@@ -406,30 +418,30 @@ export function BrochureLanding() {
           </div>
         </div>
 
-        {/* Displaying Categories */}
-        <div className="space-y-16">
+        {/* Displaying Categories - Full Width Desktop Layout */}
+        <div className="space-y-16 w-full">
           {displayedCategories.map((category) => (
             <div
               key={category.id}
-              className="space-y-6 pt-2"
+              className="space-y-6 pt-2 w-full"
               id={`cat-${category.id}`}
             >
-              {/* Category Header Card */}
-              <div className="p-6 sm:p-8 rounded-2xl bg-gradient-to-r from-slate-900 via-slate-900 to-rose-950/40 border border-slate-800 relative overflow-hidden flex flex-col md:flex-row items-start md:items-center justify-between gap-6 shadow-xl">
-                <div className="space-y-2 max-w-2xl">
+              {/* Category Header Card - Deep Maroon with Gold Accents */}
+              <div className="p-6 sm:p-8 rounded-2xl bg-gradient-to-r from-[#5A0A1A] via-[#6B1127] to-[#4A0815] border border-[#D4AF37]/50 text-white relative overflow-hidden flex flex-col md:flex-row items-start md:items-center justify-between gap-6 shadow-xl">
+                <div className="space-y-2 max-w-3xl">
                   <div className="flex items-center gap-2">
-                    <span className="px-2.5 py-1 rounded-full text-xs font-semibold bg-amber-500/20 text-amber-300 border border-amber-500/30">
+                    <span className="px-2.5 py-1 rounded-md text-xs font-bold bg-[#FAF5E8] text-[#5A0A1A] uppercase tracking-wide">
                       {category.badge}
                     </span>
-                    <span className="text-xs text-slate-400">
+                    <span className="text-xs text-rose-200">
                       {category.programs.length} Certified Programs
                     </span>
                   </div>
-                  <h3 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
+                  <h3 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight font-serif">
                     {category.title}
                   </h3>
-                  <p className="text-sm sm:text-base text-rose-200/90 font-medium">
-                    &ldquo;{category.tagline}&rdquo; — {category.subtitle}
+                  <p className="text-sm sm:text-base text-[#E6C875] font-medium">
+                    &ldquo;{category.tagline}&rdquo;: {category.subtitle}
                   </p>
                 </div>
 
@@ -437,97 +449,96 @@ export function BrochureLanding() {
                 <div className="flex items-center gap-3 shrink-0">
                   <Button
                     onClick={() => handleOpenBrochure(category)}
-                    variant="outline"
-                    className="border-amber-500/40 text-amber-300 hover:bg-amber-950/40 gap-2 shadow-sm"
+                    className="bg-[#FAF5E8] hover:bg-white text-[#5A0A1A] border border-[#D4AF37] font-bold gap-2 shadow-sm rounded-lg"
                   >
-                    <Eye className="h-4 w-4" />
-                    View Original Flyer
+                    <Eye className="h-4 w-4 text-[#6B1127]" />
+                    <span>View Official Flyer</span>
                   </Button>
                 </div>
               </div>
 
-              {/* Mode: Cards View */}
+              {/* Mode: Cards View - Multi-Column Full Width on White-Pinkish Background */}
               {viewMode === "cards" && (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-6 w-full">
                   {category.programs.map((program) => (
                     <Card
                       key={program.id}
-                      className={`relative flex flex-col justify-between bg-slate-900/80 border-slate-800 hover:border-amber-500/40 transition-all hover:shadow-xl hover:-translate-y-0.5 ${
+                      className={`relative flex flex-col justify-between bg-white border-[#E8D3C0] hover:border-[#6B1127]/60 transition-all hover:shadow-xl hover:-translate-y-1 rounded-xl shadow-xs ${
                         program.bestValue
-                          ? "ring-1 ring-amber-500/50"
+                          ? "ring-2 ring-[#D4AF37]"
                           : program.popular
-                          ? "ring-1 ring-rose-500/40"
+                          ? "ring-2 ring-[#6B1127]"
                           : ""
                       }`}
                     >
                       {/* Ribbon tag */}
                       {program.bestValue && (
-                        <div className="absolute -top-3 right-4 px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 shadow-md">
-                          ★ Most Recommended
+                        <div className="absolute -top-3 right-4 px-2.5 py-0.5 rounded-md text-[10px] font-bold uppercase tracking-wider bg-[#D4AF37] text-[#1A030A] shadow-md">
+                          Recommended Program
                         </div>
                       )}
                       {program.popular && !program.bestValue && (
-                        <div className="absolute -top-3 right-4 px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-gradient-to-r from-rose-500 to-rose-600 text-white shadow-md">
+                        <div className="absolute -top-3 right-4 px-2.5 py-0.5 rounded-md text-[10px] font-bold uppercase tracking-wider bg-[#6B1127] text-white shadow-md">
                           Popular Choice
                         </div>
                       )}
 
                       <CardHeader className="pb-3">
                         <div className="flex items-start justify-between gap-2 mb-1.5">
-                          <CardTitle className="text-lg font-bold text-white group-hover:text-amber-400 transition-colors">
+                          <CardTitle className="text-lg font-bold text-[#2D0612] group-hover:text-[#6B1127] transition-colors">
                             {program.name}
                           </CardTitle>
                         </div>
-                        <div className="inline-flex items-center gap-1.5 text-xs text-amber-300 bg-amber-500/10 border border-amber-500/20 px-2.5 py-1 rounded-md font-medium w-fit">
+                        <div className="inline-flex items-center gap-1.5 text-xs text-[#6B1127] bg-[#FCEEEF] border border-[#6B1127]/20 px-2.5 py-1 rounded-md font-semibold w-fit">
                           <Clock className="h-3.5 w-3.5" />
                           <span>Duration: {program.duration}</span>
                         </div>
-                        <CardDescription className="text-xs text-slate-400 line-clamp-2 mt-2 leading-relaxed">
+                        <CardDescription className="text-xs text-[#6A4E56] line-clamp-2 mt-2 leading-relaxed">
                           {program.description}
                         </CardDescription>
                       </CardHeader>
 
                       <CardContent className="space-y-4 pt-0">
-                        {/* Price box */}
-                        <div className="p-3.5 rounded-xl bg-slate-950/80 border border-slate-800/80 space-y-1.5">
+                        {/* Price box with Soft Blush Styling */}
+                        <div className="p-3.5 rounded-xl bg-[#FCF6F4] border border-[#EFE2DB] space-y-1.5">
                           <div className="flex items-baseline justify-between">
-                            <span className="text-xs text-slate-400">Regular Tuition:</span>
-                            <span className="text-xs line-through text-slate-500 font-mono">
+                            <span className="text-xs text-[#8C7A80]">Regular Fee:</span>
+                            <span className="text-xs line-through text-slate-400 font-mono">
                               {formatCurrency(program.regularFee.toString())}
                             </span>
                           </div>
                           <div className="flex items-baseline justify-between">
                             <div>
-                              <span className="text-xs font-semibold text-rose-300 block">
+                              <span className="text-xs font-bold text-[#6B1127] block">
                                 Founder&apos;s Batch:
                               </span>
-                              <span className="text-[10px] text-emerald-400 font-medium">
+                              <span className="text-[10px] text-emerald-700 font-bold">
                                 Flat 40% OFF Special
                               </span>
                             </div>
                             <div className="text-right">
-                              <span className="text-xl font-extrabold text-amber-400 font-mono block">
+                              <span className="text-xl font-extrabold text-[#6B1127] font-mono block">
                                 {formatCurrency(program.foundersFee.toString())}
                               </span>
-                              <span className="text-[10px] text-emerald-400 font-medium block">
+                              <span className="text-[10px] text-emerald-700 font-bold block">
                                 You Save {formatCurrency(program.savings.toString())}
                               </span>
                             </div>
                           </div>
-                          <div className="text-[10px] text-slate-500 border-t border-slate-800/60 pt-1.5 text-right">
+                          <div className="text-[10px] text-[#7A5B64] border-t border-[#E8D3C0] pt-1.5 text-right font-medium">
                             + Admission Fee: ₹{category.admissionFee} (one-time)
                           </div>
                         </div>
 
                         {/* Program highlights list */}
                         <div className="space-y-1.5">
-                          <p className="text-[11px] font-semibold text-slate-300 uppercase tracking-wider">
+                          <p className="text-[11px] font-bold text-[#6B1127] uppercase tracking-wider">
                             Key Skills Covered:
                           </p>
-                          <ul className="space-y-1 text-xs text-slate-300">
+                          <ul className="space-y-1 text-xs text-[#452830]">
                             {program.highlights.slice(0, 3).map((h, i) => (
                               <li key={i} className="flex items-start gap-1.5">
-                                <CheckCircle2 className="h-3.5 w-3.5 text-emerald-400 shrink-0 mt-0.5" />
+                                <CheckCircle2 className="h-3.5 w-3.5 text-emerald-600 shrink-0 mt-0.5" />
                                 <span className="line-clamp-1">{h}</span>
                               </li>
                             ))}
@@ -538,10 +549,10 @@ export function BrochureLanding() {
                         <div className="pt-2">
                           <Button
                             onClick={() => handleCourseInquire(program.name)}
-                            className="w-full bg-slate-800 hover:bg-amber-600 hover:text-white text-slate-200 transition-colors gap-2 text-xs h-9"
+                            className="w-full bg-[#6B1127] hover:bg-[#801431] text-white transition-colors gap-2 text-xs h-10 rounded-lg font-bold shadow-xs"
                           >
                             <span>Enroll in This Program</span>
-                            <ArrowRight className="h-3.5 w-3.5" />
+                            <ArrowRight className="h-3.5 w-3.5 text-[#E6C875]" />
                           </Button>
                         </div>
                       </CardContent>
@@ -550,68 +561,79 @@ export function BrochureLanding() {
                 </div>
               )}
 
-              {/* Mode: Table Matrix View */}
+              {/* Mode: Table Matrix View - Direct replica of the physical brochure fee structure */}
               {viewMode === "table" && (
-                <div className="overflow-x-auto rounded-xl border border-slate-800 bg-slate-900/60 shadow-xl">
-                  <table className="w-full text-left text-xs sm:text-sm">
-                    <thead className="bg-slate-950/80 text-slate-300 uppercase text-[11px] tracking-wider border-b border-slate-800">
-                      <tr>
-                        <th className="py-3.5 px-4 font-semibold">Program</th>
-                        <th className="py-3.5 px-4 font-semibold">Duration</th>
-                        <th className="py-3.5 px-4 font-semibold">Regular Fee</th>
-                        <th className="py-3.5 px-4 font-semibold text-amber-400">
-                          Founder&apos;s Fee (40% OFF)
-                        </th>
-                        <th className="py-3.5 px-4 font-semibold text-emerald-400">Your Savings</th>
-                        <th className="py-3.5 px-4 font-semibold text-right">Action</th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-slate-800">
-                      {category.programs.map((program) => (
-                        <tr
-                          key={program.id}
-                          className="hover:bg-slate-800/40 transition-colors group"
-                        >
-                          <td className="py-3 px-4 font-medium text-white">
-                            <div className="flex items-center gap-2">
-                              <span>{program.name}</span>
-                              {program.popular && (
-                                <Badge variant="secondary" className="text-[10px] bg-rose-950 text-rose-300 border-rose-800">
-                                  Popular
-                                </Badge>
-                              )}
-                              {program.bestValue && (
-                                <Badge variant="secondary" className="text-[10px] bg-amber-950 text-amber-300 border-amber-800">
-                                  Best Value
-                                </Badge>
-                              )}
-                            </div>
-                          </td>
-                          <td className="py-3 px-4 text-slate-300">{program.duration}</td>
-                          <td className="py-3 px-4 line-through text-slate-500 font-mono">
-                            {formatCurrency(program.regularFee.toString())}
-                          </td>
-                          <td className="py-3 px-4 font-bold text-amber-400 font-mono text-base">
-                            {formatCurrency(program.foundersFee.toString())}
-                          </td>
-                          <td className="py-3 px-4 font-semibold text-emerald-400 font-mono">
-                            Save {formatCurrency(program.savings.toString())}
-                          </td>
-                          <td className="py-3 px-4 text-right">
-                            <Button
-                              size="sm"
-                              onClick={() => handleCourseInquire(program.name)}
-                              className="bg-amber-600 hover:bg-amber-500 text-white text-xs h-8 px-3"
-                            >
-                              Enroll Now
-                            </Button>
-                          </td>
+                <div className="w-full overflow-x-auto -mx-4 sm:mx-0 px-4 sm:px-0">
+                  <div className="rounded-xl border border-[#D4AF37]/50 bg-white shadow-xl overflow-hidden min-w-[620px]">
+                    <table className="w-full text-left text-xs sm:text-sm">
+                      <thead className="bg-[#6B1127] text-white uppercase text-[11px] sm:text-xs tracking-wider border-b border-[#D4AF37]/30">
+                        <tr>
+                          <th className="py-3.5 px-4 font-bold">PROGRAM</th>
+                          <th className="py-3.5 px-4 font-bold">DURATION</th>
+                          <th className="py-3.5 px-4 font-bold">REGULAR FEE</th>
+                          <th className="py-3.5 px-4 font-bold text-[#E6C875]">
+                            FOUNDER&apos;S BATCH FEE (40% OFF)
+                          </th>
+                          <th className="py-3.5 px-4 font-bold text-emerald-300">SAVINGS</th>
+                          <th className="py-3.5 px-4 font-bold text-right">QUICK ENROLL</th>
                         </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                  <div className="p-3 bg-slate-950/60 text-right text-xs text-slate-400 border-t border-slate-800">
-                    * Admission Fee of ₹{category.admissionFee} is extra and applicable one-time at registration.
+                      </thead>
+                      <tbody className="divide-y divide-[#F0E2DB]">
+                        {category.programs.map((program, idx) => (
+                          <tr
+                            key={program.id}
+                            className={`transition-colors hover:bg-[#FDF4F2] ${
+                              idx % 2 === 0 ? "bg-white" : "bg-[#FFF9F7]"
+                            }`}
+                          >
+                            <td className="py-3.5 px-4 font-bold text-[#2D0612]">
+                              <div className="flex items-center gap-2">
+                                <span>{program.name}</span>
+                                {program.popular && (
+                                  <span className="text-[10px] px-2 py-0.5 rounded-md bg-[#6B1127] text-white font-semibold">
+                                    Popular
+                                  </span>
+                                )}
+                                {program.bestValue && (
+                                  <span className="text-[10px] px-2 py-0.5 rounded-md bg-[#D4AF37] text-[#1A030A] font-bold">
+                                    Best Value
+                                  </span>
+                                )}
+                              </div>
+                            </td>
+                            <td className="py-3.5 px-4 text-[#5A3840] font-medium">{program.duration}</td>
+                            <td className="py-3.5 px-4 line-through text-slate-400 font-mono">
+                              {formatCurrency(program.regularFee.toString())}
+                            </td>
+                            <td className="py-3.5 px-4 font-extrabold text-[#6B1127] font-mono text-base">
+                              {formatCurrency(program.foundersFee.toString())}
+                            </td>
+                            <td className="py-3.5 px-4 font-bold text-emerald-700 font-mono">
+                              Save {formatCurrency(program.savings.toString())}
+                            </td>
+                            <td className="py-3.5 px-4 text-right">
+                              <Button
+                                size="sm"
+                                onClick={() => handleCourseInquire(program.name)}
+                                className="bg-[#6B1127] hover:bg-[#801431] text-white text-xs h-8 px-3 rounded-lg font-bold"
+                              >
+                                Enroll
+                              </Button>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+
+                    {/* Table Footer Banner from Brochure */}
+                    <div className="bg-[#FCF3F1] px-4 py-3 border-t border-[#E8D3C0] flex flex-col sm:flex-row items-center justify-between gap-3 text-xs">
+                      <div className="flex items-center gap-2 text-[#6B1127] font-bold">
+                        <span>Admission Fee: ₹{category.admissionFee} (Extra)</span>
+                        <span className="text-slate-400">|</span>
+                        <span className="text-[#6A4E56] font-normal">Includes starter practical tools kit</span>
+                      </div>
+                      <span className="text-[#8C1833] font-serif italic text-xs font-bold">Limited Seats Only!</span>
+                    </div>
                   </div>
                 </div>
               )}
@@ -620,26 +642,26 @@ export function BrochureLanding() {
         </div>
       </section>
 
-      {/* 5. Fabric Painting Masterclass Spotlight (from Brochure 3) */}
-      <section id="fabric-art-section" className="py-14 bg-gradient-to-b from-slate-900/60 via-rose-950/20 to-slate-950 border-y border-slate-800">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+      {/* 5. Fabric Painting Masterclass Spotlight (from Brochure 2) - Full Width */}
+      <section id="fabric-art-section" className="py-14 sm:py-18 w-full px-4 sm:px-8 lg:px-12 2xl:px-16 bg-gradient-to-b from-[#FDF5F2] via-[#FAF0ED] to-[#FFF9F6] border-y border-[#E8D3C0]">
+        <div className="w-full">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
             {/* Left text column */}
             <div className="lg:col-span-7 space-y-5">
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-rose-500/10 text-rose-300 border border-rose-500/20">
-                <Palette className="h-3.5 w-3.5 text-rose-400" />
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-md text-xs font-bold bg-[#FCEEEF] text-[#6B1127] border border-[#6B1127]/25">
+                <Palette className="h-3.5 w-3.5 text-[#6B1127]" />
                 <span>SPECIALIZED ARTISAN CRAFT</span>
               </div>
-              <h2 className="text-2xl sm:text-4xl font-extrabold text-white tracking-tight leading-tight">
+              <h2 className="text-2xl sm:text-4xl font-extrabold text-[#2D0612] tracking-tight leading-tight font-serif">
                 Professional Fabric Painting Courses
               </h2>
-              <p className="text-sm sm:text-base text-slate-300 leading-relaxed">
+              <p className="text-sm sm:text-base text-[#5C3842] leading-relaxed">
                 &ldquo;Paint Your Imagination on Fabric.&rdquo; From royal Pichwai lotuses to intricate Kalamkari and Madhubani heritage art, learn how to transform plain sarees, dupattas, and bridal lehengas into wearable masterpieces.
               </p>
 
-              {/* What You Will Learn Grid */}
+              {/* What You Will Learn Grid from Brochure */}
               <div className="pt-2">
-                <p className="text-xs font-bold uppercase tracking-wider text-amber-400 mb-3">
+                <p className="text-xs font-bold uppercase tracking-wider text-[#6B1127] mb-3">
                   Syllabus Masterclass Includes:
                 </p>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
@@ -657,23 +679,23 @@ export function BrochureLanding() {
                   ].map((topic, idx) => (
                     <div
                       key={idx}
-                      className="flex items-center gap-2 p-2 rounded-lg bg-slate-900/80 border border-slate-800 text-xs text-slate-200"
+                      className="flex items-center gap-2 p-2.5 rounded-lg bg-white border border-[#E8D3C0] text-xs text-[#2D0612] shadow-xs"
                     >
-                      <CheckCircle2 className="h-3.5 w-3.5 text-amber-400 shrink-0" />
+                      <CheckCircle2 className="h-3.5 w-3.5 text-[#6B1127] shrink-0" />
                       <span>{topic}</span>
                     </div>
                   ))}
                 </div>
               </div>
 
-              {/* CTA */}
-              <div className="pt-4 flex items-center gap-3">
+              {/* Action buttons */}
+              <div className="pt-3 flex flex-wrap items-center gap-3">
                 <Button
                   onClick={() => handleCourseInquire("Advanced Fabric Painting")}
-                  className="bg-amber-600 hover:bg-amber-500 text-white font-semibold gap-2"
+                  className="bg-[#6B1127] hover:bg-[#801431] text-white font-bold gap-2 h-11 px-6 rounded-lg shadow-md"
                 >
-                  Join Fabric Painting Masterclass
-                  <ArrowRight className="h-4 w-4" />
+                  <span>Join Fabric Painting Masterclass</span>
+                  <ArrowRight className="h-4 w-4 text-[#E6C875]" />
                 </Button>
                 <Button
                   variant="outline"
@@ -681,35 +703,36 @@ export function BrochureLanding() {
                     const fabCat = BROCHURE_CATEGORIES.find((c) => c.id === "fabric-painting");
                     if (fabCat) handleOpenBrochure(fabCat);
                   }}
-                  className="border-slate-700 text-slate-300 hover:bg-slate-800 gap-1.5"
+                  className="border-[#E8D3C0] bg-white text-[#6B1127] hover:bg-[#FCEEEF] gap-1.5 h-11 px-5 rounded-lg font-semibold"
                 >
-                  <Eye className="h-4 w-4" /> View Flyer
+                  <Eye className="h-4 w-4" />
+                  <span>View Original Flyer</span>
                 </Button>
               </div>
             </div>
 
             {/* Right visual card */}
             <div className="lg:col-span-5">
-              <div className="p-6 rounded-2xl bg-slate-900/90 border border-slate-800 shadow-2xl relative overflow-hidden space-y-4">
-                <div className="relative h-64 sm:h-72 w-full rounded-xl overflow-hidden border border-slate-800">
+              <div className="p-6 rounded-2xl bg-white border border-[#E8D3C0] shadow-xl relative overflow-hidden space-y-4">
+                <div className="relative h-64 sm:h-80 w-full rounded-xl overflow-hidden border border-[#E8D3C0] bg-slate-100">
                   <Image
                     src="/images/brochures/fabric-painting-brochure.jpg"
                     alt="Fabric Painting Saree and Dupatta Art at Radhe Vastraz"
                     fill
                     className="object-cover object-top hover:scale-105 transition-transform duration-500"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-transparent" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
                   <div className="absolute bottom-3 left-3 right-3 text-white">
-                    <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-amber-500 text-slate-950">
+                    <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-[#D4AF37] text-[#120206]">
                       Founder&apos;s Batch: 40% OFF
                     </span>
-                    <p className="text-sm font-bold mt-1">Basic (1M) & Advanced (3M)</p>
+                    <p className="text-sm font-bold mt-1 font-serif">Basic (1M) &amp; Advanced (3M)</p>
                   </div>
                 </div>
 
-                <div className="flex items-center justify-between text-xs text-slate-400 pt-1">
+                <div className="flex items-center justify-between text-xs text-[#6A4E56] pt-1">
                   <span>Regular: ₹25,000 / ₹75,000</span>
-                  <span className="text-amber-400 font-bold font-mono">
+                  <span className="text-[#6B1127] font-bold font-mono">
                     Founder Fee: ₹15,000 / ₹45,000
                   </span>
                 </div>
@@ -719,108 +742,126 @@ export function BrochureLanding() {
         </div>
       </section>
 
-      {/* 6. "Every Course Includes" (Brochure Guarantee) */}
-      <section id="features-section" className="py-16 max-w-7xl mx-auto px-4 sm:px-6 w-full">
+      {/* 6. "Every Course Includes" (Brochure Guarantee) - 6 Column Full Width on Desktop */}
+      <section id="features-section" className="py-14 sm:py-18 w-full px-4 sm:px-8 lg:px-12 2xl:px-16">
         <div className="text-center max-w-3xl mx-auto mb-12">
-          <Badge variant="outline" className="text-xs uppercase tracking-wider text-rose-400 border-rose-500/30 mb-3 px-3 py-1">
-            Complete Student Experience
-          </Badge>
-          <h2 className="text-2xl sm:text-4xl font-extrabold text-white tracking-tight">
-            Every Course Includes
+          <div className="inline-block px-4 py-1 rounded-md bg-[#6B1127] text-[#E6C875] border border-[#D4AF37]/50 text-xs font-bold uppercase tracking-wider mb-3 shadow-xs">
+            EVERY COURSE INCLUDES
+          </div>
+          <h2 className="text-2xl sm:text-4xl font-extrabold text-[#2D0612] tracking-tight font-serif">
+            The Complete Academy Guarantee
           </h2>
-          <p className="text-sm sm:text-base text-slate-400 mt-2">
+          <p className="text-sm sm:text-base text-[#6A4E56] mt-2">
             No matter which program you choose, you get our complete vocational toolkit designed to launch your career.
           </p>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+        {/* 6-Column Grid matching the 6 icons across all 3 brochures */}
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4 w-full">
           {GENERAL_INCLUSIONS.map((item, idx) => (
-            <Card key={idx} className="bg-slate-900/80 border-slate-800 hover:border-slate-700 transition-all shadow-md">
-              <CardContent className="p-6 space-y-3">
-                <div className="h-10 w-10 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-400 flex items-center justify-center">
-                  {item.icon === "GraduationCap" && <GraduationCap className="h-5 w-5" />}
-                  {item.icon === "Scissors" && <Scissors className="h-5 w-5" />}
-                  {item.icon === "Award" && <Award className="h-5 w-5" />}
-                  {item.icon === "Layers" && <Layers className="h-5 w-5" />}
-                  {item.icon === "Heart" && <Heart className="h-5 w-5" />}
-                  {item.icon === "Briefcase" && <Briefcase className="h-5 w-5" />}
+            <Card
+              key={idx}
+              className="bg-white border-[#E8D3C0] hover:border-[#6B1127]/50 transition-all shadow-xs hover:shadow-md rounded-xl text-center flex flex-col justify-between"
+            >
+              <CardContent className="p-5 flex flex-col items-center gap-3">
+                <div className="h-12 w-12 rounded-xl bg-[#6B1127] text-[#E6C875] flex items-center justify-center shadow-sm shrink-0">
+                  {item.icon === "GraduationCap" && <GraduationCap className="h-6 w-6" />}
+                  {item.icon === "Scissors" && <Scissors className="h-6 w-6" />}
+                  {item.icon === "Award" && <Award className="h-6 w-6" />}
+                  {item.icon === "Layers" && <Layers className="h-6 w-6" />}
+                  {item.icon === "Heart" && <Heart className="h-6 w-6" />}
+                  {item.icon === "Briefcase" && <Briefcase className="h-6 w-6" />}
                 </div>
-                <h3 className="text-base font-bold text-white">{item.title}</h3>
-                <p className="text-xs sm:text-sm text-slate-400 leading-relaxed">
-                  {item.description}
-                </p>
+                <div>
+                  <h3 className="text-sm font-bold text-[#2D0612]">{item.title}</h3>
+                  <p className="text-xs text-[#6A4E56] mt-1 line-clamp-3 leading-relaxed">
+                    {item.description}
+                  </p>
+                </div>
               </CardContent>
             </Card>
           ))}
         </div>
       </section>
 
-      {/* 7. Comprehensive Fee Tables Anchor Section */}
-      <section id="fee-tables" className="py-14 bg-slate-900/40 border-t border-slate-800">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6">
+      {/* 7. Comprehensive Fee Tables Section - Full Width */}
+      <section id="fee-tables" className="py-14 sm:py-18 w-full px-4 sm:px-8 lg:px-12 2xl:px-16 bg-[#FFF5F2] border-t border-[#E8D3C0]">
+        <div className="w-full">
           <div className="text-center max-w-3xl mx-auto mb-10">
-            <h2 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
-              Transparent Fee Schedules
+            <h2 className="text-2xl sm:text-3xl font-extrabold text-[#2D0612] tracking-tight font-serif">
+              Transparent Fee Schedules Across All Tracks
             </h2>
-            <p className="text-sm text-slate-400 mt-1">
-              Compare durations, regular prices, and founder discount rates across all 13 programs.
+            <p className="text-sm text-[#6A4E56] mt-1">
+              Compare durations, regular fees, and founder discount rates across all 13 accredited programs.
             </p>
           </div>
 
-          <div className="space-y-8">
+          <div className="space-y-10 w-full">
             {BROCHURE_CATEGORIES.map((cat) => (
-              <div key={cat.id} className="space-y-3">
+              <div key={cat.id} className="space-y-3 w-full">
                 <div className="flex items-center justify-between">
-                  <h3 className="text-lg font-bold text-white flex items-center gap-2">
-                    <span className="h-2.5 w-2.5 rounded-full bg-amber-500" />
-                    {cat.title} ({cat.programs.length} Programs)
+                  <h3 className="text-base sm:text-lg font-bold text-[#2D0612] flex items-center gap-2 font-serif">
+                    <span className="h-2 w-2 rounded-full bg-[#6B1127]" />
+                    <span>{cat.title}</span>
+                    <span className="text-xs text-[#6A4E56] font-sans font-normal">
+                      ({cat.programs.length} Programs)
+                    </span>
                   </h3>
                   <button
                     onClick={() => handleOpenBrochure(cat)}
-                    className="text-xs text-amber-400 hover:underline flex items-center gap-1"
+                    className="text-xs text-[#6B1127] hover:underline flex items-center gap-1 font-bold"
                   >
-                    <Eye className="h-3 w-3" /> View Flyer
+                    <Eye className="h-3.5 w-3.5" />
+                    <span>View Official Flyer</span>
                   </button>
                 </div>
 
-                <div className="overflow-x-auto rounded-xl border border-slate-800 bg-slate-900/80">
-                  <table className="w-full text-left text-xs sm:text-sm">
-                    <thead className="bg-slate-950 text-slate-300 uppercase text-[11px] tracking-wider border-b border-slate-800">
-                      <tr>
-                        <th className="py-3 px-4 font-semibold">Program</th>
-                        <th className="py-3 px-4 font-semibold">Duration</th>
-                        <th className="py-3 px-4 font-semibold">Regular Fee</th>
-                        <th className="py-3 px-4 font-semibold text-amber-400">Founder&apos;s Fee (40% OFF)</th>
-                        <th className="py-3 px-4 font-semibold text-emerald-400">Savings</th>
-                        <th className="py-3 px-4 font-semibold text-right">Quick Apply</th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-slate-800/80">
-                      {cat.programs.map((p) => (
-                        <tr key={p.id} className="hover:bg-slate-800/30 transition-colors">
-                          <td className="py-2.5 px-4 font-medium text-white">{p.name}</td>
-                          <td className="py-2.5 px-4 text-slate-300">{p.duration}</td>
-                          <td className="py-2.5 px-4 line-through text-slate-500 font-mono">
-                            {formatCurrency(p.regularFee.toString())}
-                          </td>
-                          <td className="py-2.5 px-4 font-bold text-amber-400 font-mono">
-                            {formatCurrency(p.foundersFee.toString())}
-                          </td>
-                          <td className="py-2.5 px-4 font-medium text-emerald-400 font-mono">
-                            Save {formatCurrency(p.savings.toString())}
-                          </td>
-                          <td className="py-2.5 px-4 text-right">
-                            <button
-                              onClick={() => handleCourseInquire(p.name)}
-                              className="text-xs text-amber-400 hover:text-amber-300 font-semibold underline underline-offset-2"
-                            >
-                              Inquire &rarr;
-                            </button>
-                          </td>
+                <div className="w-full overflow-x-auto -mx-4 sm:mx-0 px-4 sm:px-0">
+                  <div className="rounded-xl border border-[#D4AF37]/50 bg-white overflow-hidden min-w-[620px] shadow-sm">
+                    <table className="w-full text-left text-xs sm:text-sm">
+                      <thead className="bg-[#6B1127] text-white uppercase text-[11px] tracking-wider border-b border-[#D4AF37]/30">
+                        <tr>
+                          <th className="py-3 px-4 font-bold">PROGRAM</th>
+                          <th className="py-3 px-4 font-bold">DURATION</th>
+                          <th className="py-3 px-4 font-bold">REGULAR FEE</th>
+                          <th className="py-3 px-4 font-bold text-[#E6C875]">FOUNDER&apos;S FEE (40% OFF)</th>
+                          <th className="py-3 px-4 font-bold text-emerald-300">SAVINGS</th>
+                          <th className="py-3 px-4 font-bold text-right">ACTION</th>
                         </tr>
-                      ))}
-                    </tbody>
-                  </table>
+                      </thead>
+                      <tbody className="divide-y divide-[#F0E2DB]">
+                        {cat.programs.map((p, pIdx) => (
+                          <tr
+                            key={p.id}
+                            className={`transition-colors hover:bg-[#FDF4F2] ${
+                              pIdx % 2 === 0 ? "bg-white" : "bg-[#FFF9F7]"
+                            }`}
+                          >
+                            <td className="py-3 px-4 font-bold text-[#2D0612]">{p.name}</td>
+                            <td className="py-3 px-4 text-[#5A3840] font-medium">{p.duration}</td>
+                            <td className="py-3 px-4 line-through text-slate-400 font-mono">
+                              {formatCurrency(p.regularFee.toString())}
+                            </td>
+                            <td className="py-3 px-4 font-extrabold text-[#6B1127] font-mono text-base">
+                              {formatCurrency(p.foundersFee.toString())}
+                            </td>
+                            <td className="py-3 px-4 font-bold text-emerald-700 font-mono">
+                              Save {formatCurrency(p.savings.toString())}
+                            </td>
+                            <td className="py-3 px-4 text-right">
+                              <Button
+                                size="sm"
+                                onClick={() => handleCourseInquire(p.name)}
+                                className="bg-[#6B1127] hover:bg-[#801431] text-white text-xs h-8 px-3 rounded-lg font-bold"
+                              >
+                                Enroll
+                              </Button>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
                 </div>
               </div>
             ))}
@@ -828,24 +869,31 @@ export function BrochureLanding() {
         </div>
       </section>
 
-      {/* 8. Fast Admissions & Inquiry Form Section */}
-      <section id="inquiry-form-section" className="py-16 sm:py-20 border-t border-slate-800 max-w-4xl mx-auto px-4 sm:px-6 w-full">
-        <div className="p-8 sm:p-10 rounded-3xl bg-gradient-to-br from-slate-900 via-slate-900 to-rose-950/40 border border-slate-800 shadow-2xl relative overflow-hidden">
-          <div className="text-center max-w-xl mx-auto mb-8 space-y-2">
-            <Badge variant="outline" className="text-xs uppercase tracking-wider text-amber-400 border-amber-500/30 px-3 py-1">
-              Admissions Open • Founder&apos;s Batch
-            </Badge>
-            <h2 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
-              Reserve Your Seat Today
+      {/* 8. Fast Admissions Inquiry Section - Full Width */}
+      <section
+        id="inquiry-form-section"
+        className="py-16 sm:py-20 w-full px-4 sm:px-8 lg:px-12 2xl:px-16 bg-[#FFFDFB] border-t border-[#E8D3C0]"
+      >
+        <div className="w-full max-w-4xl mx-auto">
+          <div className="text-center space-y-3 mb-10">
+            <div className="inline-block px-4 py-1 rounded-md bg-[#6B1127] text-[#E6C875] border border-[#D4AF37]/50 text-xs font-bold uppercase tracking-wider shadow-xs">
+              ADMISSIONS OPEN NOW
+            </div>
+            <h2 className="text-2xl sm:text-4xl font-extrabold text-[#2D0612] tracking-tight font-serif">
+              Secure Your Founder&apos;s Batch Seat
             </h2>
-            <p className="text-xs sm:text-sm text-slate-300">
-              Fill out this quick form and our academic counselor will contact you via WhatsApp or call to discuss batch timing and seat reservation.
+            <p className="text-xs sm:text-sm text-[#6A4E56] max-w-xl mx-auto">
+              Limited seats per batch to guarantee individual sewing workstations and dedicated instructor guidance.
             </p>
           </div>
 
-          <form onSubmit={handleInquirySubmit} className="space-y-4 max-w-lg mx-auto">
+          {/* Form Card with Maroon & Gold Trim on Clean White Parchment */}
+          <form
+            onSubmit={handleInquirySubmit}
+            className="p-6 sm:p-10 rounded-2xl bg-white border border-[#D4AF37]/60 shadow-xl space-y-5"
+          >
             <div className="space-y-1.5">
-              <Label htmlFor="inq-name" className="text-xs text-slate-300">
+              <Label htmlFor="inq-name" className="text-xs text-[#2D0612] font-bold">
                 Full Name *
               </Label>
               <Input
@@ -854,12 +902,12 @@ export function BrochureLanding() {
                 value={inquiryName}
                 onChange={(e) => setInquiryName(e.target.value)}
                 required
-                className="bg-slate-950/80 border-slate-700 text-white"
+                className="bg-[#FFF9F6] border-[#E8D3C0] text-[#2D0612] h-11 rounded-lg focus-visible:ring-[#6B1127]"
               />
             </div>
 
             <div className="space-y-1.5">
-              <Label htmlFor="inq-phone" className="text-xs text-slate-300">
+              <Label htmlFor="inq-phone" className="text-xs text-[#2D0612] font-bold">
                 Phone Number / WhatsApp *
               </Label>
               <Input
@@ -869,27 +917,27 @@ export function BrochureLanding() {
                 value={inquiryPhone}
                 onChange={(e) => setInquiryPhone(e.target.value)}
                 required
-                className="bg-slate-950/80 border-slate-700 text-white"
+                className="bg-[#FFF9F6] border-[#E8D3C0] text-[#2D0612] h-11 rounded-lg focus-visible:ring-[#6B1127]"
               />
             </div>
 
             <div className="space-y-1.5">
-              <Label htmlFor="inq-course" className="text-xs text-slate-300">
+              <Label htmlFor="inq-course" className="text-xs text-[#2D0612] font-bold">
                 Selected Course / Program *
               </Label>
               <Select value={inquiryCourse} onValueChange={setInquiryCourse}>
-                <SelectTrigger id="inq-course" className="bg-slate-950/80 border-slate-700 text-white">
+                <SelectTrigger id="inq-course" className="bg-[#FFF9F6] border-[#E8D3C0] text-[#2D0612] h-11 rounded-lg">
                   <SelectValue placeholder="Select course" />
                 </SelectTrigger>
-                <SelectContent className="max-h-80 bg-slate-900 border-slate-800 text-white">
+                <SelectContent className="max-h-80 bg-white border-[#E8D3C0] text-[#2D0612]">
                   {BROCHURE_CATEGORIES.map((cat) => (
                     <div key={cat.id} className="py-1">
-                      <div className="px-2 py-1 text-[11px] font-bold uppercase tracking-wider text-amber-400 bg-slate-800/60">
+                      <div className="px-2 py-1 text-[11px] font-bold uppercase tracking-wider text-white bg-[#6B1127]">
                         {cat.title}
                       </div>
                       {cat.programs.map((p) => (
-                        <SelectItem key={p.id} value={p.name} className="text-xs">
-                          {p.name} ({p.duration} • {formatCurrency(p.foundersFee.toString())})
+                        <SelectItem key={p.id} value={p.name} className="text-xs hover:bg-[#FCEEEF]">
+                          {p.name} ({p.duration} | {formatCurrency(p.foundersFee.toString())})
                         </SelectItem>
                       ))}
                     </div>
@@ -899,14 +947,14 @@ export function BrochureLanding() {
             </div>
 
             <div className="space-y-1.5">
-              <Label htmlFor="inq-batch" className="text-xs text-slate-300">
+              <Label htmlFor="inq-batch" className="text-xs text-[#2D0612] font-bold">
                 Preferred Batch Timing
               </Label>
               <Select value={inquiryBatch} onValueChange={setInquiryBatch}>
-                <SelectTrigger id="inq-batch" className="bg-slate-950/80 border-slate-700 text-white">
+                <SelectTrigger id="inq-batch" className="bg-[#FFF9F6] border-[#E8D3C0] text-[#2D0612] h-11 rounded-lg">
                   <SelectValue placeholder="Select batch timing" />
                 </SelectTrigger>
-                <SelectContent className="bg-slate-900 border-slate-800 text-white">
+                <SelectContent className="bg-white border-[#E8D3C0] text-[#2D0612]">
                   <SelectItem value="Morning Batch (10:00 AM - 1:00 PM)">
                     Morning Batch (10:00 AM - 1:00 PM)
                   </SelectItem>
@@ -917,7 +965,7 @@ export function BrochureLanding() {
                     Evening Batch (5:00 PM - 8:00 PM)
                   </SelectItem>
                   <SelectItem value="Weekend Fast-Track (Saturday & Sunday)">
-                    Weekend Fast-Track (Saturday & Sunday)
+                    Weekend Fast-Track (Saturday &amp; Sunday)
                   </SelectItem>
                 </SelectContent>
               </Select>
@@ -926,39 +974,42 @@ export function BrochureLanding() {
             <Button
               type="submit"
               disabled={isSubmitting}
-              className="w-full bg-gradient-to-r from-amber-600 via-rose-600 to-amber-600 hover:from-amber-500 hover:to-rose-500 text-white font-bold h-12 text-sm mt-4 shadow-xl"
+              className="w-full bg-[#6B1127] hover:bg-[#801431] text-white font-bold h-12 text-sm mt-4 shadow-lg rounded-lg"
             >
               {isSubmitting ? "Submitting Inquiry..." : "Submit Enrollment Inquiry"}
             </Button>
 
-            <div className="flex items-center justify-center gap-4 text-xs text-slate-400 pt-2">
+            <div className="flex items-center justify-center gap-4 text-xs text-[#6A4E56] pt-2 flex-wrap">
               <span className="flex items-center gap-1">
-                <ShieldCheck className="h-3.5 w-3.5 text-emerald-400" /> No Spam Guarantee
+                <ShieldCheck className="h-3.5 w-3.5 text-emerald-600" /> Direct Counselor Connection
               </span>
-              <span>•</span>
-              <span className="flex items-center gap-1">
-                <PhoneCall className="h-3.5 w-3.5 text-amber-400" /> Helpline: 9063643342
+              <span className="text-slate-300">|</span>
+              <span className="flex items-center gap-1 font-semibold text-[#6B1127]">
+                <PhoneCall className="h-3.5 w-3.5" /> Helpline: 9063643342
               </span>
             </div>
           </form>
         </div>
       </section>
 
-      {/* 9. Contact Helpline Banner */}
-      <section className="py-12 bg-slate-900 border-t border-slate-800">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 flex flex-col md:flex-row items-center justify-between gap-6">
+      {/* 9. Contact Helpline Banner - Full Width */}
+      <section className="py-12 w-full px-4 sm:px-8 lg:px-12 2xl:px-16 bg-[#FDF5F2] border-t border-[#E8D3C0]">
+        <div className="w-full flex flex-col md:flex-row items-center justify-between gap-6">
           <div className="space-y-1 text-center md:text-left">
-            <h3 className="text-xl font-bold text-white">Have questions about courses or fees?</h3>
-            <p className="text-xs sm:text-sm text-slate-400">
+            <h3 className="text-xl font-bold text-[#2D0612] font-serif">Have questions about courses or fees?</h3>
+            <p className="text-xs sm:text-sm text-[#6A4E56]">
               Speak directly with our senior instructors or schedule a studio visit in Hyderabad.
             </p>
           </div>
 
           <div className="flex flex-wrap items-center justify-center gap-3">
             <a href="tel:9063643342">
-              <Button size="lg" className="bg-amber-600 hover:bg-amber-500 text-white gap-2 font-bold shadow-lg">
-                <PhoneCall className="h-4 w-4" />
-                Call 9063643342
+              <Button
+                size="lg"
+                className="bg-[#6B1127] hover:bg-[#801431] text-white gap-2 font-bold shadow-md rounded-lg h-11 px-6"
+              >
+                <PhoneCall className="h-4 w-4 text-[#E6C875]" />
+                <span>Call: 9063643342</span>
               </Button>
             </a>
 
@@ -967,37 +1018,41 @@ export function BrochureLanding() {
               target="_blank"
               rel="noopener noreferrer"
             >
-              <Button size="lg" variant="outline" className="border-emerald-600/50 text-emerald-400 hover:bg-emerald-950/40 gap-2">
-                <MessageCircle className="h-4 w-4" />
-                WhatsApp Us
+              <Button
+                size="lg"
+                variant="outline"
+                className="border-emerald-600/50 bg-white text-emerald-800 hover:bg-emerald-50 gap-2 rounded-lg h-11 px-6 font-semibold"
+              >
+                <MessageCircle className="h-4 w-4 text-emerald-600" />
+                <span>WhatsApp Us</span>
               </Button>
             </a>
           </div>
         </div>
       </section>
 
-      {/* 10. Footer */}
-      <footer className="border-t border-slate-800 bg-slate-950 py-10 text-xs text-slate-500">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 flex flex-col md:flex-row items-center justify-between gap-6">
+      {/* 10. Footer - Full Width Grounded Contrast */}
+      <footer className="border-t border-[#3D0A16] bg-[#24040E] py-10 text-xs text-[#E0D2C0] w-full px-4 sm:px-8 lg:px-12 2xl:px-16">
+        <div className="w-full flex flex-col md:flex-row items-center justify-between gap-6">
           <div className="space-y-1 text-center md:text-left">
-            <p className="font-bold text-slate-300 text-sm">Radhe Vastraz Boutique & Fashion Academy</p>
-            <p className="text-slate-400">Fashion Today • Success Tomorrow • Only at Radhe Vastraz ♡</p>
-            <p className="text-slate-500 mt-1">© {new Date().getFullYear()} Radhe Vastraz Academy. All rights reserved.</p>
+            <p className="font-bold text-white text-sm font-serif">Radhe Vastraz Boutique &amp; Fashion Academy</p>
+            <p className="text-[#C8B8A6]">Fashion Today. Success Tomorrow. Radhe Vastraz Academy Hyderabad.</p>
+            <p className="text-slate-400 mt-1">© {new Date().getFullYear()} Radhe Vastraz Academy. All rights reserved.</p>
           </div>
 
-          <div className="flex flex-wrap items-center justify-center gap-5 text-slate-400">
-            <Link href="/privacy" className="hover:text-amber-400 transition-colors">
+          <div className="flex flex-wrap items-center justify-center gap-6 text-[#E0D2C0]">
+            <Link href="/privacy" className="hover:text-[#E6C875] transition-colors">
               Privacy Policy
             </Link>
-            <Link href="/terms" className="hover:text-amber-400 transition-colors">
-              Terms & Conditions
+            <Link href="/terms" className="hover:text-[#E6C875] transition-colors">
+              Terms &amp; Conditions
             </Link>
-            <Link href="/thank-you" className="hover:text-amber-400 transition-colors">
+            <Link href="/thank-you" className="hover:text-[#E6C875] transition-colors">
               Thank You
             </Link>
-            <Link href="/login" className="hover:text-amber-300 text-amber-400 font-semibold transition-colors inline-flex items-center gap-1.5">
+            <Link href="/login" className="hover:text-white text-[#E6C875] font-bold transition-colors inline-flex items-center gap-1.5">
               <LogIn className="h-3.5 w-3.5" />
-              Login
+              <span>Login</span>
             </Link>
           </div>
         </div>
@@ -1010,20 +1065,20 @@ export function BrochureLanding() {
           setPreviewBrochure((prev) => ({ ...prev, isOpen: open }))
         }
       >
-        <DialogContent className="max-w-3xl bg-slate-900 border-slate-800 text-white p-6 max-h-[90vh] overflow-y-auto">
+        <DialogContent className="max-w-4xl bg-white border-[#D4AF37]/50 text-[#2D0612] p-4 sm:p-6 max-h-[92vh] overflow-y-auto rounded-xl shadow-2xl">
           <DialogHeader>
-            <DialogTitle className="text-xl font-bold flex items-center gap-2">
-              <Sparkles className="h-5 w-5 text-amber-400" />
-              {previewBrochure.title} — Official Flyer
+            <DialogTitle className="text-xl font-bold flex items-center gap-2 font-serif text-[#6B1127]">
+              <Sparkles className="h-5 w-5 text-[#D4AF37]" />
+              {previewBrochure.title}: Official Flyer
             </DialogTitle>
-            <DialogDescription className="text-xs text-slate-400">
+            <DialogDescription className="text-xs text-[#6A4E56]">
               Official printed brochure for {previewBrochure.categoryTitle} at Radhe Vastraz Academy.
             </DialogDescription>
           </DialogHeader>
 
           {previewBrochure.imageSrc && (
             <div className="space-y-4 pt-2">
-              <div className="relative w-full h-[65vh] rounded-xl overflow-hidden border border-slate-800 bg-slate-950">
+              <div className="relative w-full h-[60vh] sm:h-[72vh] rounded-xl overflow-hidden border border-[#E8D3C0] bg-slate-100">
                 <Image
                   src={previewBrochure.imageSrc}
                   alt={previewBrochure.title}
@@ -1033,13 +1088,13 @@ export function BrochureLanding() {
                 />
               </div>
 
-              <div className="flex items-center justify-between pt-2">
+              <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-2">
                 <a
                   href={previewBrochure.imageSrc}
                   download
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1.5 text-xs text-amber-400 hover:underline"
+                  className="inline-flex items-center gap-1.5 text-xs text-[#6B1127] hover:underline font-bold"
                 >
                   <Download className="h-4 w-4" /> Download High-Res Flyer Image
                 </a>
@@ -1050,7 +1105,7 @@ export function BrochureLanding() {
                     const form = document.getElementById("inquiry-form-section");
                     if (form) form.scrollIntoView({ behavior: "smooth" });
                   }}
-                  className="bg-amber-600 hover:bg-amber-500 text-white text-xs h-8"
+                  className="bg-[#6B1127] hover:bg-[#801431] text-white text-xs h-9 px-5 rounded-lg font-bold w-full sm:w-auto"
                 >
                   Inquire for This Track
                 </Button>
@@ -1084,4 +1139,3 @@ function LayoutDashboardIcon(props: React.SVGProps<SVGSVGElement>) {
     </svg>
   );
 }
-
