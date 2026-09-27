@@ -31,7 +31,6 @@ export const metadata: Metadata = {
     siteName: "Radhe Vastraz Academy",
     images: [
       {
-        url: "/images/brochures/boutique-courses-brochure.jpg",
         url: CLOUDINARY_ASSETS.boutiqueBrochure,
         width: 1200,
         height: 630,
@@ -46,7 +45,6 @@ export const metadata: Metadata = {
     title: "Radhe Vastraz Academy | Boutique & Fashion Designing Courses",
     description:
       "Professional hands-on training in Boutique Management, Fashion Designing & Fabric Painting.",
-    images: ["/images/brochures/boutique-courses-brochure.jpg"],
     images: [CLOUDINARY_ASSETS.boutiqueBrochure],
   },
 };

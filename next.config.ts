@@ -29,6 +29,17 @@ const nextConfig: NextConfig = {
     serverActions: {
       bodySizeLimit: "2mb",
     },
+    optimizePackageImports: [
+      "lucide-react",
+      "date-fns",
+      "recharts",
+      "@radix-ui/react-dialog",
+      "@radix-ui/react-dropdown-menu",
+      "@radix-ui/react-select",
+      "@radix-ui/react-popover",
+      "@radix-ui/react-tooltip",
+      "decimal.js",
+    ],
   },
   images: {
     minimumCacheTTL: 60 * 60 * 24 * 7, // 7-day image cache to reduce repeated disk reads
@@ -58,6 +69,23 @@ const nextConfig: NextConfig = {
   },
   async headers() {
     return [
+      {
+        source: "/(terms|privacy)",
+        headers: [
+          {
+            key: "Cache-Control",
+            value: "public, max-age=31536000, s-maxage=31536000, immutable",
+          },
+          {
+            key: "CDN-Cache-Control",
+            value: "public, max-age=31536000",
+          },
+          {
+            key: "Cloudflare-CDN-Cache-Control",
+            value: "public, max-age=31536000",
+          },
+        ],
+      },
       {
         source: "/",
         headers: [

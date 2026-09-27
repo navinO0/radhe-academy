@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useState, useTransition, useEffect, useRef } from "react";
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -24,6 +24,13 @@ export function CourseSearch() {
 
   const [searchTerm, setSearchTerm] = useState(currentSearch);
   const [status, setStatus] = useState(currentStatus);
+  const isInitialMount = useRef(true);
+
+  // Synchronize internal state if URL parameters change from outside
+  useEffect(() => {
+    setSearchTerm(currentSearch);
+    setStatus(currentStatus);
+  }, [currentSearch, currentStatus]);
 
   const applyFilters = (newSearch?: string, newStatus?: string) => {
     const s = newSearch !== undefined ? newSearch : searchTerm;
@@ -47,6 +54,20 @@ export function CourseSearch() {
     });
   };
 
+  // High-performance 250ms debounced search for instant response
+  useEffect(() => {
+    if (isInitialMount.current) {
+      isInitialMount.current = false;
+      return;
+    }
+    const timer = setTimeout(() => {
+      if (searchTerm.trim() !== currentSearch.trim()) {
+        applyFilters(searchTerm, status);
+      }
+    }, 250);
+    return () => clearTimeout(timer);
+  }, [searchTerm]);
+
   const handleClear = () => {
     setSearchTerm("");
     setStatus("all");
@@ -61,7 +82,11 @@ export function CourseSearch() {
     <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
       {/* Search Input */}
       <div className="relative flex-1">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+        {isPending ? (
+          <Loader2 className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-primary animate-spin" />
+        ) : (
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+        )}
         <Input
           placeholder="Search by course name, duration, description..."
           value={searchTerm}

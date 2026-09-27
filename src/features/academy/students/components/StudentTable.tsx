@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
-import { useCallback } from "react";
+import { useCallback, useState, useEffect, useRef, useTransition } from "react";
 import {
   Table,
   TableBody,
@@ -22,7 +22,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { formatDate, formatCurrency } from "@/lib/utils";
-import { ChevronLeft, ChevronRight, Search, X } from "lucide-react";
+import { ChevronLeft, ChevronRight, Search, X, Loader2 } from "lucide-react";
 import { StudentAvatar } from "./StudentAvatar";
 
 type Student = {
@@ -40,19 +40,21 @@ type Student = {
   financials: { totalPayable: string; totalPaid: string; outstanding: string };
 };
 
-interface Pagination {
+type Pagination = {
   page: number;
   pageSize: number;
   total: number;
   totalPages: number;
-}
+};
 
-const STATUS_VARIANTS: Record<string, "default" | "success" | "warning" | "destructive" | "secondary"> = {
-  ACTIVE: "success",
+const STATUS_VARIANTS: Record<
+  string,
+  "default" | "secondary" | "destructive" | "outline"
+> = {
+  ACTIVE: "default",
   COMPLETED: "secondary",
-  ON_HOLD: "warning",
+  ON_HOLD: "outline",
   DROPPED: "destructive",
-  CANCELLED: "destructive",
 };
 
 const STATUS_LABELS: Record<string, string> = {
@@ -60,7 +62,6 @@ const STATUS_LABELS: Record<string, string> = {
   COMPLETED: "Completed",
   ON_HOLD: "On Hold",
   DROPPED: "Dropped",
-  CANCELLED: "Cancelled",
 };
 
 export function StudentTable({
@@ -73,6 +74,18 @@ export function StudentTable({
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
+  const [isPending, startTransition] = useTransition();
+
+  const currentSearch = searchParams.get("search") ?? "";
+  const currentStatus = searchParams.get("status") ?? "";
+
+  const [searchTerm, setSearchTerm] = useState(currentSearch);
+  const isInitialMount = useRef(true);
+
+  // Sync internal state if URL parameters change from outside
+  useEffect(() => {
+    setSearchTerm(currentSearch);
+  }, [currentSearch]);
 
   const updateParams = useCallback(
     (updates: Record<string, string | undefined>) => {
@@ -86,30 +99,56 @@ export function StudentTable({
       }
       // Reset to page 1 on filter change
       if (!updates.page) params.set("page", "1");
-      router.push(`${pathname}?${params.toString()}`);
+      startTransition(() => {
+        router.push(`${pathname}?${params.toString()}`);
+      });
     },
     [router, pathname, searchParams]
   );
 
-  const currentSearch = searchParams.get("search") ?? "";
-  const currentStatus = searchParams.get("status") ?? "";
+  // Fast 250ms debounced search for instant responsiveness
+  useEffect(() => {
+    if (isInitialMount.current) {
+      isInitialMount.current = false;
+      return;
+    }
+    const timer = setTimeout(() => {
+      if (searchTerm.trim() !== currentSearch.trim()) {
+        updateParams({ search: searchTerm.trim() || undefined });
+      }
+    }, 250);
+    return () => clearTimeout(timer);
+  }, [searchTerm, currentSearch, updateParams]);
 
   return (
     <div className="space-y-4">
       {/* Filters */}
       <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
         <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+          {isPending ? (
+            <Loader2 className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-primary animate-spin" />
+          ) : (
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+          )}
           <Input
             placeholder="Search name, code, phone..."
-            defaultValue={currentSearch}
-            className="pl-9"
-            onKeyDown={(e) => {
-              if (e.key === "Enter") {
-                updateParams({ search: e.currentTarget.value });
-              }
-            }}
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="pl-9 pr-8"
           />
+          {searchTerm && (
+            <button
+              type="button"
+              onClick={() => {
+                setSearchTerm("");
+                updateParams({ search: undefined });
+              }}
+              className="absolute right-2.5 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+              title="Clear search"
+            >
+              <X className="h-4 w-4" />
+            </button>
+          )}
         </div>
 
         <div className="flex items-center gap-2">
@@ -135,7 +174,10 @@ export function StudentTable({
             <Button
               variant="ghost"
               size="sm"
-              onClick={() => updateParams({ search: undefined, status: undefined })}
+              onClick={() => {
+                setSearchTerm("");
+                updateParams({ search: undefined, status: undefined });
+              }}
             >
               <X className="h-4 w-4 mr-1" />
               Reset
@@ -255,3 +297,4 @@ export function StudentTable({
     </div>
   );
 }
+

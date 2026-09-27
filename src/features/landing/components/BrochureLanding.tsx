@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import {
@@ -22,6 +22,8 @@ import {
   LogIn,
   MapPin,
   Mail,
+  Search,
+  X,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -79,12 +81,35 @@ export function BrochureLanding() {
   const [inquiryBatch, setInquiryBatch] = useState("Morning Batch (10:00 AM - 1:00 PM)");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [whatsappSent, setWhatsappSent] = useState(false);
+  const [courseSearch, setCourseSearch] = useState("");
 
-  // Filtered categories
-  const displayedCategories =
-    activeCategory === "all"
-      ? BROCHURE_CATEGORIES
-      : BROCHURE_CATEGORIES.filter((c) => c.id === activeCategory);
+  // Ultra-fast instant client-side course search & category filtering
+  const displayedCategories = useMemo(() => {
+    const query = courseSearch.trim().toLowerCase();
+    const baseCategories =
+      activeCategory === "all"
+        ? BROCHURE_CATEGORIES
+        : BROCHURE_CATEGORIES.filter((c) => c.id === activeCategory);
+
+    if (!query) return baseCategories;
+
+    return baseCategories
+      .map((cat) => {
+        const matchingPrograms = cat.programs.filter((prog) => {
+          return (
+            prog.name.toLowerCase().includes(query) ||
+            prog.description.toLowerCase().includes(query) ||
+            prog.duration.toLowerCase().includes(query) ||
+            prog.highlights.some((h) => h.toLowerCase().includes(query))
+          );
+        });
+        return {
+          ...cat,
+          programs: matchingPrograms,
+        };
+      })
+      .filter((cat) => cat.programs.length > 0);
+  }, [activeCategory, courseSearch]);
 
   const totalCourseCount = BROCHURE_CATEGORIES.reduce(
     (acc, cat) => acc + cat.programs.length,
@@ -179,7 +204,6 @@ export function BrochureLanding() {
           <Link href="/" className="flex items-center gap-3 group shrink-0">
             <div className="relative h-11 w-11 rounded-xl overflow-hidden border border-[#D4AF37] shadow-md group-hover:scale-105 transition-transform shrink-0">
               <Image
-                src="/images/radhe-vastraz-logo.png"
                 src={CLOUDINARY_ASSETS.logo}
                 alt="Radhe Vastraz Boutique & Academy"
                 fill
@@ -276,7 +300,6 @@ export function BrochureLanding() {
           <div className="flex flex-col items-center justify-center mb-6">
             <div className="relative h-20 w-20 sm:h-24 sm:w-24 rounded-2xl overflow-hidden border-2 border-[#D4AF37] shadow-xl mb-3 group hover:scale-105 transition-transform shrink-0">
               <Image
-                src="/images/radhe-vastraz-logo.png"
                 src={CLOUDINARY_ASSETS.logo}
                 alt="Radhe Vastraz Official Crest"
                 fill
@@ -364,6 +387,28 @@ export function BrochureLanding() {
           <p className="text-sm sm:text-base text-[#6A4E56] mt-2">
             Explore 13 certified vocational programs segregated across Boutique Tailoring, Fashion Designing, and Traditional Artisan Fabric Painting.
           </p>
+
+          {/* Real-time Instant Course Search Bar */}
+          <div className="max-w-md mx-auto mt-6 relative">
+            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-[#7A3F4C]" />
+            <input
+              type="text"
+              placeholder="Search courses: e.g. blouse, aari, zardosi, pattern, diploma..."
+              value={courseSearch}
+              onChange={(e) => setCourseSearch(e.target.value)}
+              className="w-full pl-10 pr-9 py-2 rounded-xl border border-[#E8D3C0] bg-white text-xs sm:text-sm text-[#2D0612] placeholder:text-[#9A7D85] shadow-2xs focus:outline-none focus:ring-2 focus:ring-[#6B1127]/20 focus:border-[#6B1127] transition-all"
+            />
+            {courseSearch && (
+              <button
+                type="button"
+                onClick={() => setCourseSearch("")}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-[#7A3F4C] hover:text-[#2D0612]"
+                title="Clear search"
+              >
+                <X className="h-4 w-4" />
+              </button>
+            )}
+          </div>
         </div>
 
         {/* Category Segregation Switcher Tabs - Mobile Touch Friendly */}
@@ -435,6 +480,28 @@ export function BrochureLanding() {
 
         {/* Displaying Categories - Full Width Desktop Layout */}
         <div className="space-y-16 w-full">
+          {displayedCategories.length === 0 && (
+            <div className="text-center py-12 p-8 bg-white border border-[#E8D3C0] rounded-2xl max-w-md mx-auto space-y-3 shadow-xs">
+              <p className="font-serif font-bold text-base text-[#2D0612]">
+                No courses matching &ldquo;{courseSearch}&rdquo;
+              </p>
+              <p className="text-xs text-[#6A4E56]">
+                Try searching for &ldquo;blouse&rdquo;, &ldquo;embroidery&rdquo;, &ldquo;painting&rdquo;, or reset the search to view all 13 courses.
+              </p>
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={() => {
+                  setCourseSearch("");
+                  setActiveCategory("all");
+                }}
+                className="border-[#6B1127] text-[#6B1127] hover:bg-[#6B1127] hover:text-white text-xs font-semibold"
+              >
+                Reset Search Filters
+              </Button>
+            </div>
+          )}
+
           {displayedCategories.map((category) => (
             <div
               key={category.id}
@@ -731,7 +798,6 @@ export function BrochureLanding() {
               <div className="p-6 rounded-2xl bg-white border border-[#E8D3C0] shadow-xl relative overflow-hidden space-y-4">
                 <div className="relative h-64 sm:h-80 w-full rounded-xl overflow-hidden border border-[#E8D3C0] bg-slate-100">
                   <Image
-                    src="/images/brochures/fabric-painting-brochure.jpg"
                     src={CLOUDINARY_ASSETS.fabricPaintingBrochure}
                     alt="Fabric Painting Saree and Dupatta Art at Radhe Vastraz"
                     fill
@@ -1093,7 +1159,6 @@ export function BrochureLanding() {
           <div className="flex items-center gap-3 text-center md:text-left">
             <div className="relative h-11 w-11 rounded-xl overflow-hidden border border-[#D4AF37]/60 shadow-md shrink-0">
               <Image
-                src="/images/radhe-vastraz-logo.png"
                 src={CLOUDINARY_ASSETS.logo}
                 alt="Radhe Vastraz"
                 fill
